@@ -3,29 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviral Nigam | Spatial AI & Vision</title>
+  <title>Aviral Nigam | Spatial AI</title>
   
   <!-- High-End Editorial & Tech Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Particle.js for Sakura Petal Effects -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
   <style>
     :root {
-      /* Sakura x Tech Color Palette (Curated & Minimalist) */
-      --bg: #0d0a0b; /* Deep obsidian with a warm tint */
-      --card-bg: rgba(22, 17, 19, 0.6); /* Smoked glass */
-      --card-border: rgba(255, 183, 197, 0.15); /* Subtle petal pink border */
-      --primary: #ffb7c5; /* Sakura Pink */
-      --secondary: #e88c9f; /* Deep Blossom */
-      --accent: #ffffff; /* Crisp White */
-      --text: #f4f0f1; /* Off-white for reading comfort */
-      --text-muted: #a3999b; /* Elegant gray */
-      --glow: 0 4px 30px rgba(255, 183, 197, 0.1); /* Soft, non-aggressive glow */
+      /* Ultra-Minimalist Dark Mode Palette */
+      --bg: #050505;
+      --surface: #121212;
+      --border: #262626;
+      --text-main: #f5f5f7;
+      --text-muted: #86868b;
+      --accent: #ffffff;
+      --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * {
@@ -37,68 +32,77 @@
 
     body {
       background-color: var(--bg);
-      color: var(--text);
+      color: var(--text-main);
       font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      position: relative;
-      background-image: radial-gradient(circle at 50% 0%, rgba(30, 20, 22, 1) 0%, var(--bg) 70%);
-      line-height: 1.7;
     }
 
-    /* Ambient Sakura Falling Effects */
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
+    /* Layout Containers */
     .container {
-      max-width: 1000px; /* Tighter width for editorial feel */
+      max-width: 900px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 0 2rem;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
-    /* Scroll Reveal Classes */
-    .reveal {
+    /* Scroll Fade Animation */
+    .fade-up {
       opacity: 0;
       transform: translateY(30px);
-      transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: var(--transition);
     }
-    .reveal.active {
+    .fade-up.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* Minimalist Navigation */
+    /* --- Ambient Blurred Hero Graphic --- */
+    .hero-ambient-blur {
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 80vh;
+      /* Curated Tech/Cherry Blossom Vibe Image */
+      background-image: url('https://images.unsplash.com/photo-1522283692459-028eb2e12487?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      /* Extreme blur to create a glowing color mesh */
+      filter: blur(90px) saturate(150%) opacity(0.35);
+      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
+      animation: ambientShift 15s ease-in-out infinite alternate;
+    }
+
+    @keyframes ambientShift {
+      0% { transform: translateX(-50%) scale(1); filter: blur(90px) saturate(150%) opacity(0.35); }
+      100% { transform: translateX(-45%) scale(1.1); filter: blur(120px) saturate(200%) opacity(0.45); }
+    }
+
+    /* --- Navigation --- */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 2rem;
-      background: rgba(13, 10, 11, 0.7);
-      backdrop-filter: blur(20px); 
-      border-bottom: 1px solid var(--card-border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 5rem;
+      position: relative;
+      z-index: 10;
     }
 
     .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: var(--text);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-main);
       text-decoration: none;
-    }
-    .logo span {
-      color: var(--primary);
-      font-style: italic;
+      letter-spacing: -0.5px;
     }
 
     .nav-links {
@@ -111,709 +115,433 @@
       color: var(--text-muted);
       text-decoration: none;
       font-size: 0.85rem;
-      font-weight: 400;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: 0.4s ease;
+      transition: color 0.3s ease;
     }
 
     .nav-links a:hover {
-      color: var(--primary);
+      color: var(--accent);
     }
 
-    /* Focused Typographic Hero Section */
+    /* --- Hero Section (Typography + Glow) --- */
     .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 8rem 0 6rem;
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 4rem 0 8rem;
+      position: relative;
+      z-index: 10;
     }
 
-    .hero-title {
+    .hero h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3rem, 6vw, 5rem);
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.1;
-      margin-bottom: 1rem;
-      letter-spacing: -0.5px;
-    }
-
-    .typing-text {
-      font-family: 'Fira Code', monospace;
-      color: var(--primary);
-      font-size: 1rem;
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -1px;
       margin-bottom: 2rem;
-      min-height: 24px;
-      letter-spacing: 0.5px;
+      color: var(--accent);
+      text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .hero-bio {
-      color: var(--text-muted);
-      font-size: 1.1rem;
+      font-size: 1.15rem;
+      color: #b4b4b4;
+      max-width: 650px;
       font-weight: 300;
       line-height: 1.8;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    }
+
+    .hero-bio strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* --- Sections --- */
+    section {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
+      background: var(--bg);
+    }
+
+    .section-header {
       margin-bottom: 3rem;
-    }
-    
-    .highlight-text {
-      color: var(--text);
-      font-weight: 400;
-      border-bottom: 1px solid var(--primary);
-      padding-bottom: 2px;
-    }
-
-    .badge-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    .badge {
-      background: transparent;
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      padding: 0.4rem 1.2rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 400;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: 0.4s ease;
-      cursor: default;
-    }
-
-    .badge:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: rgba(255, 183, 197, 0.05);
-    }
-
-    /* Refined Glass Cards */
-    .glass-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(25px); 
-      border: 1px solid var(--card-border);
-      border-radius: 2px; /* Sharp editorial corners */
-      padding: 3rem 2.5rem;
-      margin-bottom: 2rem;
-      transition: all 0.5s ease;
-    }
-
-    .glass-card:hover {
-      border-color: rgba(255, 183, 197, 0.3);
-      box-shadow: var(--glow);
     }
 
     .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 2.5rem;
-      letter-spacing: 1px;
-      text-align: center;
-    }
-    .section-title i { 
-      color: var(--primary); 
-      font-size: 1.5rem; 
-      margin-right: 0.8rem;
-      vertical-align: middle;
-    }
-
-    /* Stats */
-    .stats-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0 5rem;
-    }
-
-    .stat-box {
-      text-align: center;
-      padding: 2rem;
-      background: transparent;
-      border-top: 1px solid var(--card-border);
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .stat-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3rem;
-      color: var(--primary);
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    .stat-label {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      margin-top: 1rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 2px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
-    /* Curated Vision Gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-bottom: 5rem;
+    /* --- Cards (Experience & Projects) --- */
+    .card {
+      background: rgba(18, 18, 18, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      transition: var(--transition);
     }
 
-    .gallery-img-container {
+    .card:hover {
+      border-color: #444;
+      transform: translateY(-2px);
+      background: rgba(25, 25, 25, 0.8);
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .card-subtitle {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .card ul {
+      padding-left: 1.2rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .card ul li {
+      margin-bottom: 0.8rem;
+    }
+
+    /* --- Mini Slider for RRC Experience --- */
+    .mini-slider {
+      display: block;
       position: relative;
+      width: 100%;
+      max-width: 350px;
+      height: 220px;
+      margin-top: 2rem;
+      border-radius: 6px;
       overflow: hidden;
-      border-radius: 2px;
-      aspect-ratio: 4/3;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      cursor: pointer;
     }
 
-    .gallery-img {
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-      filter: grayscale(20%) contrast(110%);
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
     }
 
-    .gallery-overlay {
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slider-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(13, 10, 11, 0.4);
+      background: rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
-      transition: 0.6s ease;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(3px);
     }
 
-    .gallery-overlay-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
-      color: var(--text);
-      letter-spacing: 2px;
-      transform: translateY(20px);
-      transition: 0.6s ease;
+    .slider-overlay span {
+      color: var(--accent);
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transform: translateY(10px);
+      transition: transform 0.4s ease;
     }
 
-    .gallery-img-container:hover .gallery-img {
-      transform: scale(1.05);
-      filter: grayscale(0%) contrast(100%);
-    }
-    
-    .gallery-img-container:hover .gallery-overlay {
+    .mini-slider:hover .slider-overlay {
       opacity: 1;
     }
-
-    .gallery-img-container:hover .gallery-overlay-text {
+    
+    .mini-slider:hover .slider-overlay span {
       transform: translateY(0);
     }
 
-    /* Minimalist Terminal / Code Block */
-    .terminal {
-      background: rgba(10, 8, 9, 0.8);
-      border: 1px solid var(--card-border);
-      border-radius: 4px;
-      font-family: 'Fira Code', monospace;
-      margin: 0 auto 5rem;
-      max-width: 800px;
-    }
-
-    .terminal-header {
-      padding: 0.8rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-bottom: 1px solid rgba(255, 183, 197, 0.1);
-    }
-
-    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    .red { background: #4a3b3d; }
-    .yellow { background: #5c4b4d; }
-    .green { background: #735d60; }
-
-    .terminal-body {
-      padding: 2rem;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      line-height: 1.8;
-      min-height: 150px;
-    }
-
-    /* Projects & Tech */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-bottom: 5rem;
-    }
-
-    .project-card h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      color: var(--text);
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-
-    .project-card .tech-stack {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.75rem;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-    }
-
-    .tech-grid {
+    /* --- Dedicated Gallery Section --- */
+    .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-bottom: 5rem;
+      gap: 1.5rem;
     }
 
-    .tech-category h4 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: 1rem;
+    .gallery-item {
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      border: 1px solid var(--border);
     }
 
-    .tech-category p {
-      font-size: 0.95rem;
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s ease;
+      filter: grayscale(20%);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+      filter: grayscale(0%);
+    }
+
+    /* --- Skills Tag Grid --- */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .skill-tag {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      line-height: 1.8;
+      transition: 0.3s ease;
+      background: rgba(255,255,255,0.02);
     }
 
-    /* Editorial Contact Section */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin-bottom: 4rem;
+    .skill-tag:hover {
+      border-color: var(--text-main);
+      color: var(--text-main);
+      background: rgba(255,255,255,0.08);
     }
 
-    .contact-item {
-      text-align: center;
-      padding: 2rem;
-      border: 1px solid transparent;
-      text-decoration: none;
-      transition: 0.4s ease;
-    }
-
-    .contact-item:hover {
-      border: 1px solid var(--card-border);
-      background: rgba(255, 183, 197, 0.02);
-    }
-
-    .contact-item i {
-      font-size: 1.5rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-    
-    .contact-info h4 {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .contact-info p {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.2rem;
-      color: var(--text);
-    }
-
-    /* Poetic Banner */
-    .poetic-banner {
-      text-align: center;
-      padding: 4rem 2rem;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-style: italic;
-      color: var(--text-muted);
-      border-top: 1px solid rgba(255, 183, 197, 0.1);
-      border-bottom: 1px solid rgba(255, 183, 197, 0.1);
-      margin: 4rem 0;
-    }
-
+    /* --- Footer / Contact --- */
     footer {
-      text-align: center;
-      padding: 3rem 0;
+      padding: 4rem 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      background: var(--bg);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
       color: var(--text-muted);
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
     }
 
     @media (max-width: 768px) {
-      .hero-title { font-size: 2.5rem; }
-      nav { flex-direction: column; gap: 1rem; padding: 1rem; }
-      .nav-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
-      .glass-card { padding: 2rem 1.5rem; }
+      .hero h1 { font-size: 3rem; }
+      nav { flex-direction: column; gap: 1.5rem; padding: 2rem 0; }
+      .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+      .card { padding: 1.5rem; }
+      .hero-ambient-blur { height: 100vh; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Floating Sakura Petals -->
-  <div id="particles-js"></div>
-
-  <nav>
-    <a href="#" class="logo">Aviral <span>Nigam</span></a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#research">Experience</a></li>
-      <li><a href="#gallery">Vision</a></li>
-      <li><a href="#projects">Work</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+  <!-- The Top-Tier Ambient Glow -->
+  <div class="hero-ambient-blur"></div>
 
   <div class="container">
     
-    <!-- Hero Section (Pure Typography) -->
-    <section class="hero reveal active">
-      <h1 class="hero-title">Engineering Spatial Intelligence.</h1>
-      <div class="typing-text" id="typewriter"></div>
-      
+    <!-- Ultra Minimal Navigation -->
+    <nav class="fade-up">
+      <a href="#" class="logo">Aviral Nigam.</a>
+      <ul class="nav-links">
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <!-- First Look: Typography on glowing blurred background -->
+    <header class="hero fade-up">
+      <h1>Engineering<br>Spatial Intelligence.</h1>
       <p class="hero-bio">
-        Data Science & Engineering student at <strong>MIT Manipal</strong> and Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>. I focus on the elegant intersection of <span class="highlight-text">Computer Vision and Machine Learning</span>, designing architectures for instance retrieval, spatial understanding, and high-resolution <span class="highlight-text">Vision-Language Models</span>.
+        Data Science & Engineering student at <strong>MIT Manipal</strong> and Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>. I focus on the intersection of Computer Vision and Machine Learning, designing architectures for instance retrieval and high-resolution Vision-Language Models.
       </p>
+    </header>
 
-      <div class="badge-bar">
-        <span class="badge">Computer Vision</span>
-        <span class="badge">Machine Learning</span>
-        <span class="badge">Vision-Language Models</span>
-        <span class="badge">Spatial AI</span>
+    <!-- Experience Section with Interactive Slider -->
+    <section id="experience" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Professional Experience</h2>
       </div>
-    </section>
 
-    <!-- Live Stats -->
-    <div class="stats-container reveal">
-      <div class="stat-box">
-        <div class="stat-number" data-target="96.98" data-suffix="%">0</div>
-        <div class="stat-label">EuroSAT Accuracy</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-number" data-target="78" data-suffix="K+">0</div>
-        <div class="stat-label">Samples Curated</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-number" data-target="23" data-prefix="+" data-suffix="%">0</div>
-        <div class="stat-label">Canopy Model Gain</div>
-      </div>
-    </div>
-
-    <!-- Minimalist Code Execution -->
-    <section id="about" class="reveal">
-      <div class="terminal" id="terminal-window" onclick="retypeTerminal()">
-        <div class="terminal-header">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
-        </div>
-        <div class="terminal-body" id="terminal-body">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Experience -->
-    <section id="research" class="reveal">
-      <h2 class="section-title">Professional Experience</h2>
-      
-      <div class="glass-card">
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 0.3rem;">Research Intern</h3>
-        <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;">
-          Robotics Research Center, IIIT Hyderabad | Advised by Dr. Sourav Garg
-        </p>
-        <ul style="color: var(--text-muted); padding-left: 1rem; list-style-type: square;">
-          <li style="margin-bottom: 0.8rem;">Conducting research on instance retrieval in high-resolution aerial and satellite imagery.</li>
-          <li style="margin-bottom: 0.8rem;">Exploring deep visual feature representations and similarity learning for object-centric retrieval.</li>
-          <li>Engineered spatial data preprocessing and normalization pipelines for deep feature matching models.</li>
+      <div class="card">
+        <h3 class="card-title">Research Intern</h3>
+        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad | Advised by Dr. Sourav Garg</div>
+        <ul>
+          <li>Conducting research on instance retrieval in high-resolution aerial and satellite imagery.</li>
+          <li>Exploring deep visual feature representations and similarity learning for object-centric retrieval.</li>
+          <li>Engineered spatial data preprocessing pipelines for deep feature matching models.</li>
         </ul>
+
+        <!-- MINI SLIDER (Acts as a smart button linking to the gallery) -->
+        <a href="#gallery" class="mini-slider" title="Click to view full gallery">
+          <!-- Real photos integrated here -->
+          <img src="20260521_104944.jpg" class="slide active" alt="RRC Workstation">
+          <img src="20260521_115516.jpg" class="slide" alt="Robotics Hardware Lab">
+          
+          <!-- Hover Overlay -->
+          <div class="slider-overlay">
+            <span>View Vision Gallery <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
       </div>
     </section>
 
-    <!-- Curated Vision Gallery -->
-    <section id="gallery" class="reveal">
-      <h2 class="section-title">Aesthetic & Vision</h2>
+    <!-- Dedicated Gallery Section -->
+    <section id="gallery" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Vision Gallery</h2>
+      </div>
       
       <div class="gallery-grid">
-        <!-- Abstract Optics / Tech -->
-        <div class="gallery-img-container">
-          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Optics and Vision" class="gallery-img">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-text">Visual Perception</div>
-          </div>
+        <div class="gallery-item">
+          <img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad">
         </div>
-        
-        <!-- Sakura / Japanese Element -->
-        <div class="gallery-img-container">
-          <img src="https://images.unsplash.com/photo-1522283692459-028eb2e12487?auto=format&fit=crop&w=800&q=80" alt="Sakura Branches" class="gallery-img">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-text">Organic Complexity</div>
-          </div>
+        <div class="gallery-item">
+          <img src="20260521_115547.jpg" alt="RRC Robotics Lab View">
         </div>
-
-        <!-- Clean Abstract Data -->
-        <div class="gallery-img-container">
-          <img src="https://images.unsplash.com/photo-1507146153593-592472b52478?auto=format&fit=crop&w=800&q=80" alt="Abstract Geometry" class="gallery-img">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-text">Architectural AI</div>
-          </div>
+        <div class="gallery-item">
+          <img src="20260520_174144.jpg" alt="Campus Mural">
+        </div>
+        <div class="gallery-item">
+          <img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus">
+        </div>
+        <div class="gallery-item">
+          <img src="20260521_104944.jpg" alt="Workstation Setup">
+        </div>
+        <div class="gallery-item">
+          <img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue">
         </div>
       </div>
     </section>
 
-    <!-- Projects -->
-    <section id="projects" class="reveal">
-      <h2 class="section-title">Engineering Projects</h2>
-      <div class="projects-grid">
-        <div class="glass-card project-card">
-          <h3>Learned Vegetation Index (LVI)</h3>
-          <div class="tech-stack">PyTorch • XGBoost • Sentinel-2 • GEDI LiDAR</div>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">
-            Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation.
-          </p>
-        </div>
+    <!-- Projects Section -->
+    <section id="projects" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Selected Projects</h2>
+      </div>
 
-        <div class="glass-card project-card">
-          <h3>Land Cover Classification</h3>
-          <div class="tech-stack">PyTorch • ResNet-18 • Transfer Learning • EuroSAT</div>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">
-            End-to-end classification pipeline across 27,000 satellite images mapped to 10 land classes. Achieved a highly robust 96.98% classification accuracy.
-          </p>
-        </div>
+      <div class="card">
+        <h3 class="card-title">Learned Vegetation Index (LVI)</h3>
+        <div class="card-subtitle">PyTorch • XGBoost • Sentinel-2 • GEDI LiDAR</div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Land Cover Classification</h3>
+        <div class="card-subtitle">PyTorch • ResNet-18 • Transfer Learning • EuroSAT</div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          End-to-end classification pipeline across 27,000 images mapped to 10 land classes. Achieved a highly robust 96.98% classification accuracy.
+        </p>
       </div>
     </section>
 
-    <!-- Tech Stack -->
-    <section id="skills" class="reveal">
-      <h2 class="section-title">Technical Competencies</h2>
-      
-      <div class="tech-grid">
-        <div class="tech-category glass-card" style="padding: 2rem;">
-          <h4>Vision & Deep Learning</h4>
-          <p>PyTorch, Torchvision, OpenCV, YOLO, ROS, CNNs, Vision-Language Models (VLMs)</p>
-        </div>
-        
-        <div class="tech-category glass-card" style="padding: 2rem;">
-          <h4>Data Science</h4>
-          <p>NumPy, Pandas, Scikit-Learn, Matplotlib, Seaborn, XGBoost</p>
-        </div>
-
-        <div class="tech-category glass-card" style="padding: 2rem;">
-          <h4>Languages & Systems</h4>
-          <p>Python, Java, Linux (Ubuntu/Debian), Git, GitHub, VS Code, Jupyter</p>
-        </div>
+    <!-- Skills Section -->
+    <section id="skills" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Technical Competencies</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-tag">PyTorch</div>
+        <div class="skill-tag">OpenCV</div>
+        <div class="skill-tag">Vision-Language Models (VLMs)</div>
+        <div class="skill-tag">Python</div>
+        <div class="skill-tag">Scikit-Learn</div>
+        <div class="skill-tag">Instance Retrieval</div>
+        <div class="skill-tag">Spatial AI</div>
+        <div class="skill-tag">XGBoost</div>
       </div>
     </section>
 
-    <!-- Poetic Banner / Quote -->
-    <div class="poetic-banner reveal">
-      "Extracting signal from noise; finding the delicate patterns hidden within the data."
+  </div> <!-- End Container -->
+
+  <!-- Footer / Contact (Full Width Background) -->
+  <footer class="fade-up">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 2rem;">
+      <div style="color: var(--text-muted); font-size: 0.9rem;">
+        &copy; 2026 Aviral Nigam.
+      </div>
+      <div class="footer-links">
+        <a href="mailto:nigamaviral21@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/aviral0gHub" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      </div>
     </div>
+  </footer>
 
-    <!-- Contact Section -->
-    <section id="contact" class="reveal">
-      <h2 class="section-title">Establish Connection</h2>
-      
-      <div class="contact-grid">
-        <a href="tel:+918869918400" class="contact-item">
-          <i class="fas fa-phone-alt"></i>
-          <div class="contact-info">
-            <h4>Phone</h4>
-            <p>(+91) 8869918400</p>
-          </div>
-        </a>
-
-        <a href="mailto:nigamaviral21@gmail.com" class="contact-item">
-          <i class="fas fa-envelope"></i>
-          <div class="contact-info">
-            <h4>Email</h4>
-            <p>nigamaviral21@gmail.com</p>
-          </div>
-        </a>
-
-        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" class="contact-item">
-          <i class="fab fa-linkedin-in"></i>
-          <div class="contact-info">
-            <h4>LinkedIn</h4>
-            <p>aviral-nigam</p>
-          </div>
-        </a>
-
-        <a href="https://github.com/aviral0gHub" target="_blank" class="contact-item">
-          <i class="fab fa-github"></i>
-          <div class="contact-info">
-            <h4>GitHub</h4>
-            <p>aviral0gHub</p>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-      Aviral Nigam &copy; 2026 • Curated for the Future
-    </footer>
-
-  </div>
-
-  <!-- Interactive Scripts -->
   <script>
-    // 1. Particle Background Configuration (Sakura Petals Drifting)
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 35, density: { enable: true, value_area: 1000 } },
-        color: { value: ['#ffb7c5', '#ffffff', '#e88c9f'] },
-        shape: { type: 'circle' },
-        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } },
-        size: { value: 4, random: true, anim: { enable: true, speed: 1, size_min: 1, sync: false } },
-        line_linked: { enable: false },
-        move: { 
-          enable: true, 
-          speed: 1.2, 
-          direction: 'bottom-left', 
-          random: true, 
-          straight: false, 
-          out_mode: 'out', 
-          bounce: false 
-        }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: { onhover: { enable: false }, resize: true }
-      }
-    });
+    /* 1. Smooth Fade-in on Scroll (Intersection Observer) */
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15
+    };
 
-    // 2. Dynamic Typewriter Effect
-    const phrases = [
-      "Bridging Computer Vision & Machine Learning", 
-      "Exploring Vision-Language Architectures", 
-      "Mapping the physical world through Spatial AI"
-    ];
-    let i = 0, j = 0, currentPhrase = [], isDeleting = false;
-
-    function loopTypewriter() {
-      document.getElementById('typewriter').innerHTML = currentPhrase.join('') + "<span style='color:var(--text-muted); animation: blink 1s infinite;'>|</span>";
-      if (i < phrases.length) {
-        if (!isDeleting && j <= phrases[i].length) {
-          currentPhrase.push(phrases[i][j]);
-          j++;
-        }
-        if (isDeleting && j <= phrases[i].length) {
-          currentPhrase.pop();
-          j--;
-        }
-        if (j == phrases[i].length) {
-          isDeleting = true;
-          setTimeout(loopTypewriter, 2000); 
-          return;
-        }
-        if (isDeleting && j === 0) {
-          currentPhrase = [];
-          isDeleting = false;
-          i = (i + 1) % phrases.length; 
-        }
-      }
-      setTimeout(loopTypewriter, isDeleting ? 20 : 50);
-    }
-    const style = document.createElement('style');
-    style.innerHTML = `@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }`;
-    document.head.appendChild(style);
-    loopTypewriter();
-
-    // 3. Scroll Reveal & Number Counter Observer
-    const revealElements = document.querySelectorAll('.reveal');
-    let countersStarted = false;
-
-    const revealObserver = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-          if (entry.target.classList.contains('stats-container') && !countersStarted) {
-            startCounters();
-            countersStarted = true;
-          }
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 });
-    revealElements.forEach(el => revealObserver.observe(el));
+    }, observerOptions);
 
-    function startCounters() {
-      const counters = document.querySelectorAll('.stat-number');
-      const speed = 80;
-      counters.forEach(counter => {
-        const updateCount = () => {
-          const target = +counter.getAttribute('data-target');
-          let count = +counter.innerText.replace(/[^0-9.]/g, '');
-          const isFloat = counter.getAttribute('data-target').includes('.');
-          const inc = target / speed;
-          if (count < target) {
-            let nextVal = count + inc;
-            if(!isFloat) nextVal = Math.ceil(nextVal);
-            else nextVal = parseFloat(nextVal.toFixed(2));
-            if(nextVal > target) nextVal = target;
-            const prefix = counter.getAttribute('data-prefix') || '';
-            const suffix = counter.getAttribute('data-suffix') || '';
-            counter.innerText = prefix + nextVal + suffix;
-            setTimeout(updateCount, 20);
-          } else {
-            const prefix = counter.getAttribute('data-prefix') || '';
-            const suffix = counter.getAttribute('data-suffix') || '';
-            counter.innerText = prefix + target + suffix;
-          }
-        };
-        updateCount();
+    document.querySelectorAll('.fade-up').forEach((el) => {
+      observer.observe(el);
+    });
+
+    // Fade in top elements immediately
+    setTimeout(() => {
+      document.querySelectorAll('.fade-up').forEach((el, index) => {
+        if(index < 2) el.classList.add('visible');
       });
-    }
+    }, 100);
 
-    // 4. Interactive Terminal
-    const terminalContent = `
-<span style="color: var(--primary);">~/aviral</span> $ cat system_focus.txt
-<br><br>
-<span style="color: var(--text);">[INITIATING QUERY...]</span><br>
-> Domain: Computer Vision & Machine Learning<br>
-> Sub-Domains: [<br>
-&nbsp;&nbsp;&nbsp;&nbsp;"Vision-Language Models (VLMs)",<br>
-&nbsp;&nbsp;&nbsp;&nbsp;"High-Resolution Spatial AI",<br>
-&nbsp;&nbsp;&nbsp;&nbsp;"Instance Retrieval Architectures"<br>
-&nbsp;&nbsp;]<br>
-> Status: Optimizing visual retrieval pipelines.<br>
-<span style="color: var(--text-muted);">Process finished with exit code 0</span>
-`;
+    /* 2. Mini Photo Slider Logic */
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
 
-    let terminalTyping = false;
-    function retypeTerminal() {
-      if(terminalTyping) return;
-      terminalTyping = true;
-      const termBody = document.getElementById('terminal-body');
-      termBody.innerHTML = '';
-      
-      let charIndex = 0;
-      function typeChar() {
-        if(charIndex < terminalContent.length) {
-          termBody.innerHTML = terminalContent.substring(0, charIndex) + "<span style='background:var(--primary); width:8px; height:15px; display:inline-block;'></span>";
-          charIndex += 4; 
-          setTimeout(typeChar, 5);
-        } else {
-          termBody.innerHTML = terminalContent;
-          terminalTyping = false;
-        }
-      }
-      typeChar();
+    if (slides.length > 1) {
+      setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }, 3500); // Fades to the next image every 3.5 seconds
     }
-    setTimeout(retypeTerminal, 800);
   </script>
 </body>
 </html>

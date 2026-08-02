@@ -17,15 +17,15 @@
   <style>
     :root {
       /* Neo-Temple Color Palette */
-      --bg: #0a0404; /* Very dark warm black/red */
-      --card-bg: rgba(26, 9, 9, 0.65); /* Dark crimson glass */
-      --card-border: rgba(212, 175, 55, 0.3); /* Gold border */
-      --primary: #d4af37; /* Metallic Gold */
-      --secondary: #e63946; /* Temple Red */
-      --accent: #ff7b54; /* Ember Orange */
-      --text: #fdfbf7; /* Off-white for readability */
-      --text-muted: #bdaea5; /* Warm muted text */
-      --glow: 0 0 25px rgba(230, 57, 70, 0.5); /* Crimson glow */
+      --bg: #0a0404; 
+      --card-bg: rgba(26, 9, 9, 0.65); 
+      --card-border: rgba(212, 175, 55, 0.3); 
+      --primary: #d4af37; 
+      --secondary: #e63946; 
+      --accent: #ff7b54; 
+      --text: #fdfbf7; 
+      --text-muted: #bdaea5; 
+      --glow: 0 0 25px rgba(230, 57, 70, 0.5); 
     }
 
     * {
@@ -41,7 +41,6 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
       position: relative;
-      /* Subtle temple-like textured gradient background */
       background-image: radial-gradient(circle at 50% 0%, #2b0b0b 0%, #0a0404 60%);
     }
 
@@ -54,7 +53,6 @@
       pointer-events: none;
     }
 
-    /* Mouse tracking lantern glow */
     .glow-sphere {
       position: fixed;
       width: 500px;
@@ -207,7 +205,7 @@
       border: 1px solid var(--card-border);
       color: var(--primary);
       padding: 0.5rem 1rem;
-      border-radius: 4px; /* Sharper corners for traditional feel */
+      border-radius: 4px;
       font-size: 0.85rem;
       font-family: 'Fira Code', monospace;
       transition: 0.3s;
@@ -227,7 +225,7 @@
       background: var(--card-bg);
       backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
-      border-radius: 8px; /* Sharper edges */
+      border-radius: 8px;
       padding: 2rem;
       margin-bottom: 2rem;
       transition: box-shadow 0.4s ease, border-color 0.4s ease;
@@ -236,7 +234,6 @@
       overflow: hidden;
     }
 
-    /* Decorative corners for cards */
     .glass-card::before, .glass-card::after {
       content: '';
       position: absolute;
@@ -310,7 +307,7 @@
       letter-spacing: 1px;
     }
 
-    /* Interactive Terminal (Styled as an Ancient Scroll / Cyber Deck) */
+    /* Interactive Terminal */
     .terminal {
       background: rgba(5, 2, 2, 0.9);
       border: 1px solid var(--card-border);
@@ -577,8 +574,8 @@
 
         <!-- IIIT Hyderabad Photos -->
         <div class="photo-gallery">
-          <img src="https://via.placeholder.com/600x400/2b0b0b/d4af37?text=IIIT+Hyderabad+Research+1" alt="IIIT H Lab Work" class="gallery-img tilt-element">
-          <img src="https://via.placeholder.com/600x400/1a0909/e63946?text=IIIT+Hyderabad+Research+2" alt="IIIT H Team/Campus" class="gallery-img tilt-element">
+          <img src="iiit-lab.jpg" alt="IIIT H Lab Work" class="gallery-img tilt-element">
+          <img src="iiit-team.jpg" alt="IIIT H Team/Campus" class="gallery-img tilt-element">
         </div>
       </div>
 

@@ -3,28 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviral Nigam | AI & Computer Vision</title>
+  <title>Aviral Nigam | Spatial AI & Vision</title>
   
-  <!-- Fonts & Icons (Sleek Tech Fonts) -->
+  <!-- High-End Editorial & Tech Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Particle.js for Neural Network Effects -->
+  <!-- Particle.js for Sakura Petal Effects -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
   <style>
     :root {
-      /* Cool Tech Color Palette */
-      --card-bg: rgba(10, 15, 30, 0.45); /* Deep blue frosted glass */
-      --card-border: rgba(56, 189, 248, 0.3); /* Cyan border */
-      --primary: #38bdf8; /* Electric Cyan */
-      --secondary: #818cf8; /* Deep Indigo / Purple */
-      --accent: #2dd4bf; /* Teal / Mint */
-      --text: #f8fafc; 
-      --text-muted: #94a3b8; 
-      --glow: 0 0 30px rgba(56, 189, 248, 0.5); 
+      /* Sakura x Tech Color Palette (Curated & Minimalist) */
+      --bg: #0d0a0b; /* Deep obsidian with a warm tint */
+      --card-bg: rgba(22, 17, 19, 0.6); /* Smoked glass */
+      --card-border: rgba(255, 183, 197, 0.15); /* Subtle petal pink border */
+      --primary: #ffb7c5; /* Sakura Pink */
+      --secondary: #e88c9f; /* Deep Blossom */
+      --accent: #ffffff; /* Crisp White */
+      --text: #f4f0f1; /* Off-white for reading comfort */
+      --text-muted: #a3999b; /* Elegant gray */
+      --glow: 0 4px 30px rgba(255, 183, 197, 0.1); /* Soft, non-aggressive glow */
     }
 
     * {
@@ -35,20 +36,16 @@
     }
 
     body {
-      background-color: #030712;
-      /* Sleek Data/Spatial Background with Dark Blue Overlay */
-      background-image: linear-gradient(to bottom, rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.95)), 
-                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-attachment: fixed;
-      background-position: center;
+      background-color: var(--bg);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       overflow-x: hidden;
       position: relative;
+      background-image: radial-gradient(circle at 50% 0%, rgba(30, 20, 22, 1) 0%, var(--bg) 70%);
+      line-height: 1.7;
     }
 
-    /* Ambient Neural Network Effects */
+    /* Ambient Sakura Falling Effects */
     #particles-js {
       position: fixed;
       width: 100%;
@@ -57,20 +54,8 @@
       pointer-events: none;
     }
 
-    /* Ambient Cursor Glow */
-    .glow-sphere {
-      position: fixed;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(129, 140, 248, 0.1) 40%, rgba(0, 0, 0, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
-      transition: transform 0.1s ease-out;
-    }
-
     .container {
-      max-width: 1100px;
+      max-width: 1000px; /* Tighter width for editorial feel */
       margin: 0 auto;
       padding: 2rem 1.5rem;
       position: relative;
@@ -80,499 +65,438 @@
     /* Scroll Reveal Classes */
     .reveal {
       opacity: 0;
-      transform: translateY(40px);
-      transition: all 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateY(30px);
+      transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .reveal.active {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* Navigation */
+    /* Minimalist Navigation */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 2rem;
-      background: rgba(3, 7, 18, 0.6);
+      padding: 1.2rem 2rem;
+      background: rgba(13, 10, 11, 0.7);
       backdrop-filter: blur(20px); 
-      border: 1px solid var(--card-border);
-      border-radius: 50px;
-      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--card-border);
       position: sticky;
-      top: 1rem;
+      top: 0;
       z-index: 100;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 1.4rem;
-      color: var(--primary);
-      text-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
-      cursor: pointer;
-      transition: 0.3s;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--text);
       letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
     }
-    .logo:hover { transform: scale(1.05); color: #fff; }
+    .logo span {
+      color: var(--primary);
+      font-style: italic;
+    }
 
     .nav-links {
       display: flex;
-      gap: 1.5rem;
+      gap: 2rem;
       list-style: none;
     }
 
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: 0.3s;
+      transition: 0.4s ease;
     }
 
     .nav-links a:hover {
       color: var(--primary);
-      text-shadow: 0 0 10px var(--primary);
-      transform: translateY(-2px);
-      display: inline-block;
     }
 
-    /* Hero Section */
+    /* Focused Typographic Hero Section */
     .hero {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 3rem;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      padding: 4rem 0;
+      text-align: center;
+      padding: 8rem 0 6rem;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .hero-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 900;
-      background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-      letter-spacing: 1px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
     }
 
     .typing-text {
       font-family: 'Fira Code', monospace;
-      color: var(--accent);
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-      min-height: 30px;
+      color: var(--primary);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      min-height: 24px;
+      letter-spacing: 0.5px;
     }
 
     .hero-bio {
       color: var(--text-muted);
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      font-weight: 300;
       line-height: 1.8;
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
     }
     
     .highlight-text {
       color: var(--text);
-      font-weight: 700;
-      border-bottom: 1px dashed var(--primary);
-    }
-
-    .hero-image-container {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      perspective: 1000px;
-    }
-
-    .hero-img {
-      width: 100%;
-      max-width: 380px;
-      border-radius: 20px;
-      border: 2px solid var(--primary);
-      box-shadow: var(--glow);
-      transition: transform 0.1s ease, box-shadow 0.4s ease;
+      font-weight: 400;
+      border-bottom: 1px solid var(--primary);
+      padding-bottom: 2px;
     }
 
     .badge-bar {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 2rem;
+      gap: 1rem;
+      justify-content: center;
     }
 
     .badge {
-      background: rgba(56, 189, 248, 0.1);
-      backdrop-filter: blur(5px);
+      background: transparent;
       border: 1px solid var(--card-border);
-      color: var(--primary);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-family: 'Fira Code', monospace;
-      transition: 0.3s;
+      color: var(--text-muted);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: 0.4s ease;
       cursor: default;
     }
 
     .badge:hover {
-      background: var(--primary);
-      color: #000;
       border-color: var(--primary);
-      box-shadow: var(--glow);
-      transform: scale(1.05) translateY(-2px);
+      color: var(--primary);
+      background: rgba(255, 183, 197, 0.05);
     }
 
-    /* Top Tier Glass Cards */
+    /* Refined Glass Cards */
     .glass-card {
       background: var(--card-bg);
       backdrop-filter: blur(25px); 
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 2rem;
+      border-radius: 2px; /* Sharp editorial corners */
+      padding: 3rem 2.5rem;
       margin-bottom: 2rem;
-      transition: box-shadow 0.4s ease, border-color 0.4s ease;
-      transform-style: preserve-3d;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      transition: all 0.5s ease;
     }
-
-    /* High-tech corner accents */
-    .glass-card::before, .glass-card::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--primary);
-      opacity: 0.4;
-      transition: 0.3s;
-      border-radius: 2px;
-    }
-    .glass-card::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-    .glass-card::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
     .glass-card:hover {
-      border-color: var(--primary);
+      border-color: rgba(255, 183, 197, 0.3);
       box-shadow: var(--glow);
-    }
-    .glass-card:hover::before, .glass-card:hover::after {
-      opacity: 1;
-      width: 25px;
-      height: 25px;
-      border-color: var(--accent);
     }
 
     .section-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
       color: var(--text);
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+      margin-bottom: 2.5rem;
       letter-spacing: 1px;
+      text-align: center;
     }
-    .section-title i { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+    .section-title i { 
+      color: var(--primary); 
+      font-size: 1.5rem; 
+      margin-right: 0.8rem;
+      vertical-align: middle;
+    }
 
     /* Stats */
     .stats-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1.5rem;
-      margin: 3rem 0;
+      margin: 2rem 0 5rem;
     }
 
     .stat-box {
       text-align: center;
-      padding: 1.5rem;
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      transition: 0.3s;
-    }
-    
-    .stat-box:hover {
-      transform: translateY(-5px);
-      border-color: var(--secondary);
-      box-shadow: 0 0 25px rgba(129, 140, 248, 0.4);
+      padding: 2rem;
+      background: transparent;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
     }
 
     .stat-number {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
       color: var(--primary);
-      font-weight: 900;
+      font-weight: 600;
+      line-height: 1;
     }
 
     .stat-label {
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      margin-top: 1rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
 
-    /* Interactive Terminal */
-    .terminal {
-      background: rgba(3, 7, 18, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      overflow: hidden;
-      font-family: 'Fira Code', monospace;
-      margin: 3rem 0;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    
-    .terminal:hover {
-      box-shadow: var(--glow);
-      border-color: var(--primary);
-    }
-
-    .terminal-header {
-      background: rgba(15, 23, 42, 0.9);
-      padding: 0.8rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-    .red { background: #ef4444; }
-    .yellow { background: #f59e0b; }
-    .green { background: #10b981; }
-
-    .terminal-body {
-      padding: 1.5rem;
-      color: var(--primary);
-      font-size: 0.95rem;
-      line-height: 1.7;
-      min-height: 180px;
-    }
-
-    /* High-End Gallery Grid */
+    /* Curated Vision Gallery */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
+      gap: 2rem;
+      margin-bottom: 5rem;
     }
 
     .gallery-img-container {
       position: relative;
       overflow: hidden;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-      transform-style: preserve-3d;
+      border-radius: 2px;
+      aspect-ratio: 4/3;
     }
 
     .gallery-img {
       width: 100%;
-      height: 250px;
+      height: 100%;
       object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: block;
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+      filter: grayscale(20%) contrast(110%);
     }
 
     .gallery-overlay {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 1.5rem 1rem;
-      background: linear-gradient(to top, rgba(3, 7, 18, 0.95), transparent);
-      color: var(--primary);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      transform: translateY(100%);
-      transition: 0.4s ease;
+      inset: 0;
+      background: rgba(13, 10, 11, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: 0.6s ease;
+    }
+
+    .gallery-overlay-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: var(--text);
+      letter-spacing: 2px;
+      transform: translateY(20px);
+      transition: 0.6s ease;
     }
 
     .gallery-img-container:hover .gallery-img {
-      transform: scale(1.1);
+      transform: scale(1.05);
+      filter: grayscale(0%) contrast(100%);
     }
     
     .gallery-img-container:hover .gallery-overlay {
-      transform: translateY(0);
-    }
-    
-    .gallery-img-container:hover {
-      border-color: var(--primary);
-      box-shadow: var(--glow);
+      opacity: 1;
     }
 
-    /* Projects & Tech Grids */
+    .gallery-img-container:hover .gallery-overlay-text {
+      transform: translateY(0);
+    }
+
+    /* Minimalist Terminal / Code Block */
+    .terminal {
+      background: rgba(10, 8, 9, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      margin: 0 auto 5rem;
+      max-width: 800px;
+    }
+
+    .terminal-header {
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 183, 197, 0.1);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .red { background: #4a3b3d; }
+    .yellow { background: #5c4b4d; }
+    .green { background: #735d60; }
+
+    .terminal-body {
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      min-height: 150px;
+    }
+
+    /* Projects & Tech */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 2rem;
+      margin-bottom: 5rem;
+    }
+
+    .project-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-card .tech-stack {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
     }
 
     .tech-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      gap: 2rem;
+      margin-bottom: 5rem;
     }
 
-    .tech-category {
-      background: rgba(10, 15, 30, 0.3);
-      padding: 1.5rem;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
+    .tech-category h4 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 1rem;
     }
 
-    /* Contact Section Styling */
+    .tech-category p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* Editorial Contact Section */
     .contact-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
     }
 
     .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.5rem;
-      background: rgba(10, 15, 30, 0.5);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      text-align: center;
+      padding: 2rem;
+      border: 1px solid transparent;
       text-decoration: none;
-      color: var(--text);
-      transition: 0.3s;
+      transition: 0.4s ease;
     }
 
     .contact-item:hover {
-      background: rgba(56, 189, 248, 0.15);
-      color: #fff;
-      box-shadow: var(--glow);
-      transform: translateY(-3px);
-      border-color: var(--primary);
+      border: 1px solid var(--card-border);
+      background: rgba(255, 183, 197, 0.02);
     }
 
     .contact-item i {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       color: var(--primary);
-      transition: 0.3s;
+      margin-bottom: 1rem;
     }
-    .contact-item:hover i { color: var(--text); text-shadow: 0 0 10px var(--primary); }
     
     .contact-info h4 {
-      font-size: 0.9rem;
-      margin-bottom: 0.2rem;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
     }
 
     .contact-info p {
-      font-size: 0.95rem;
-      font-family: 'Fira Code', monospace;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: var(--text);
     }
 
-    /* Modern Lofi Bar */
-    .lofi-bar {
-      margin: 4rem 0 2rem;
-      padding: 1.5rem;
-      background: linear-gradient(90deg, rgba(56, 189, 248, 0.1) 0%, rgba(129, 140, 248, 0.1) 100%);
-      border: 1px solid var(--primary);
-      border-radius: 10px;
+    /* Poetic Banner */
+    .poetic-banner {
       text-align: center;
-      font-family: 'Fira Code', monospace;
-      color: var(--primary);
-      font-size: 1.1rem;
-      letter-spacing: 1px;
-      animation: pulseCyan 3s infinite;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    
-    .lofi-bar:hover {
-      transform: scale(1.02);
-      background: linear-gradient(90deg, rgba(56, 189, 248, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%);
-    }
-
-    @keyframes pulseCyan {
-      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+      padding: 4rem 2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 183, 197, 0.1);
+      border-bottom: 1px solid rgba(255, 183, 197, 0.1);
+      margin: 4rem 0;
     }
 
     footer {
       text-align: center;
-      padding: 2rem 0;
+      padding: 3rem 0;
       color: var(--text-muted);
-      font-size: 0.9rem;
-      border-top: 1px solid rgba(56, 189, 248, 0.2);
-      margin-top: 2rem;
-      font-family: 'Orbitron', sans-serif;
-      background: rgba(3, 7, 18, 0.8);
-      backdrop-filter: blur(10px);
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
-      .hero-image-container { grid-row: 1; }
-      .badge-bar { justify-content: center; }
-      nav { flex-direction: column; gap: 1rem; border-radius: 20px; }
-      .nav-links { flex-wrap: wrap; justify-content: center; }
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.5rem; }
+      nav { flex-direction: column; gap: 1rem; padding: 1rem; }
+      .nav-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+      .glass-card { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Floating Neural Network Particles -->
+  <!-- Floating Sakura Petals -->
   <div id="particles-js"></div>
-  
-  <!-- Ambient Mouse Glow -->
-  <div class="glow-sphere" id="cursor-glow"></div>
+
+  <nav>
+    <a href="#" class="logo">Aviral <span>Nigam</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#research">Experience</a></li>
+      <li><a href="#gallery">Vision</a></li>
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
 
   <div class="container">
     
-    <nav class="reveal active">
-      <div class="logo">AVIRAL</div>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#research">Experience</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#skills">Skills</a></li>
-      </ul>
-    </nav>
+    <!-- Hero Section (Pure Typography) -->
+    <section class="hero reveal active">
+      <h1 class="hero-title">Engineering Spatial Intelligence.</h1>
+      <div class="typing-text" id="typewriter"></div>
+      
+      <p class="hero-bio">
+        Data Science & Engineering student at <strong>MIT Manipal</strong> and Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>. I focus on the elegant intersection of <span class="highlight-text">Computer Vision and Machine Learning</span>, designing architectures for instance retrieval, spatial understanding, and high-resolution <span class="highlight-text">Vision-Language Models</span>.
+      </p>
 
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-content reveal">
-        <h1 class="hero-title">Aviral Nigam</h1>
-        <div class="typing-text" id="typewriter"></div>
-        
-        <p class="hero-bio">
-          Data Science & Engineering student at <strong>MIT Manipal</strong> and Research Intern at <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>. Passionate about the intersection of <span class="highlight-text">Computer Vision and Machine Learning</span>, with a strong focus on building and exploring <span class="highlight-text">Vision-Language Models (VLMs)</span> and spatial intelligence.
-        </p>
-
-        <div class="badge-bar">
-          <span class="badge"><i class="fas fa-eye"></i> Computer Vision</span>
-          <span class="badge"><i class="fas fa-brain"></i> Machine Learning</span>
-          <span class="badge"><i class="fas fa-language"></i> VLMs</span>
-          <span class="badge"><i class="fas fa-satellite"></i> Spatial AI</span>
-        </div>
-      </div>
-
-      <!-- Hero Profile Asset -->
-      <div class="hero-image-container reveal">
-        <img src="https://github.com/user-attachments/assets/033db43a-6153-47bd-b2d9-2f05fa6cd46f" alt="Aviral Profile Animation" class="hero-img tilt-element">
+      <div class="badge-bar">
+        <span class="badge">Computer Vision</span>
+        <span class="badge">Machine Learning</span>
+        <span class="badge">Vision-Language Models</span>
+        <span class="badge">Spatial AI</span>
       </div>
     </section>
 
-    <!-- Live Stats Counters -->
+    <!-- Live Stats -->
     <div class="stats-container reveal">
       <div class="stat-box">
         <div class="stat-number" data-target="96.98" data-suffix="%">0</div>
@@ -580,7 +504,7 @@
       </div>
       <div class="stat-box">
         <div class="stat-number" data-target="78" data-suffix="K+">0</div>
-        <div class="stat-label">Geo-Samples Curated</div>
+        <div class="stat-label">Samples Curated</div>
       </div>
       <div class="stat-box">
         <div class="stat-number" data-target="23" data-prefix="+" data-suffix="%">0</div>
@@ -588,14 +512,13 @@
       </div>
     </div>
 
-    <!-- Terminal Window -->
+    <!-- Minimalist Code Execution -->
     <section id="about" class="reveal">
       <div class="terminal" id="terminal-window" onclick="retypeTerminal()">
         <div class="terminal-header">
           <span class="dot red"></span>
           <span class="dot yellow"></span>
           <span class="dot green"></span>
-          <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 0.5rem; font-family: sans-serif;">Click to execute script</span>
         </div>
         <div class="terminal-body" id="terminal-body">
           <!-- Populated by JS -->
@@ -605,73 +528,69 @@
 
     <!-- Experience -->
     <section id="research" class="reveal">
-      <h2 class="section-title"><i class="fas fa-microchip"></i> Experience</h2>
+      <h2 class="section-title">Professional Experience</h2>
       
-      <div class="glass-card tilt-element">
-        <h3 style="color: var(--text); font-size: 1.5rem; font-family: 'Orbitron', sans-serif;">Research Intern</h3>
-        <p style="color: var(--primary); font-family: 'Fira Code', monospace; margin-bottom: 1.2rem; font-size: 0.95rem;">
-          Robotics Research Center (RRC), IIIT Hyderabad | Advised by Dr. Sourav Garg
+      <div class="glass-card">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 0.3rem;">Research Intern</h3>
+        <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;">
+          Robotics Research Center, IIIT Hyderabad | Advised by Dr. Sourav Garg
         </p>
-        <ul style="color: var(--text-muted); padding-left: 1.2rem; line-height: 1.8;">
-          <li>Conducting research on instance retrieval in high-resolution aerial and satellite imagery.</li>
-          <li>Exploring deep visual feature representations and similarity learning for object-centric retrieval.</li>
+        <ul style="color: var(--text-muted); padding-left: 1rem; list-style-type: square;">
+          <li style="margin-bottom: 0.8rem;">Conducting research on instance retrieval in high-resolution aerial and satellite imagery.</li>
+          <li style="margin-bottom: 0.8rem;">Exploring deep visual feature representations and similarity learning for object-centric retrieval.</li>
           <li>Engineered spatial data preprocessing and normalization pipelines for deep feature matching models.</li>
         </ul>
       </div>
     </section>
 
-    <!-- NEW: Sleek Vision & AI Gallery -->
+    <!-- Curated Vision Gallery -->
     <section id="gallery" class="reveal">
-      <h2 class="section-title"><i class="fas fa-border-all"></i> Vision Gallery</h2>
+      <h2 class="section-title">Aesthetic & Vision</h2>
       
       <div class="gallery-grid">
-        <!-- Abstract AI Fluid (Cool tones) -->
-        <div class="gallery-img-container tilt-element">
-          <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" alt="AI Neural Net" class="gallery-img">
-          <div class="gallery-overlay">Neural Architectures</div>
+        <!-- Abstract Optics / Tech -->
+        <div class="gallery-img-container">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Optics and Vision" class="gallery-img">
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">Visual Perception</div>
+          </div>
         </div>
         
-        <!-- Computer Vision Grid / Data -->
-        <div class="gallery-img-container tilt-element">
-          <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=800&q=80" alt="Computer Vision" class="gallery-img">
-          <div class="gallery-overlay">Visual Processing</div>
+        <!-- Sakura / Japanese Element -->
+        <div class="gallery-img-container">
+          <img src="https://images.unsplash.com/photo-1522283692459-028eb2e12487?auto=format&fit=crop&w=800&q=80" alt="Sakura Branches" class="gallery-img">
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">Organic Complexity</div>
+          </div>
         </div>
 
-        <!-- Cyber Server Room / Cool Tech -->
-        <div class="gallery-img-container tilt-element">
-          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="Cyber Tech Core" class="gallery-img">
-          <div class="gallery-overlay">System Architecture</div>
-        </div>
-
-        <!-- Spatial / Circuit Board Data -->
-        <div class="gallery-img-container tilt-element">
-          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Spatial AI Grid" class="gallery-img">
-          <div class="gallery-overlay">Spatial Intelligence</div>
+        <!-- Clean Abstract Data -->
+        <div class="gallery-img-container">
+          <img src="https://images.unsplash.com/photo-1507146153593-592472b52478?auto=format&fit=crop&w=800&q=80" alt="Abstract Geometry" class="gallery-img">
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">Architectural AI</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Projects -->
     <section id="projects" class="reveal">
-      <h2 class="section-title"><i class="fas fa-code-branch"></i> Engineering Projects</h2>
+      <h2 class="section-title">Engineering Projects</h2>
       <div class="projects-grid">
-        <div class="glass-card project-card tilt-element">
-          <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; font-family: 'Orbitron', sans-serif;">Learned Vegetation Index (LVI)</h3>
-          <p style="color: var(--accent); font-size: 0.85rem; margin-bottom: 1rem; font-family: 'Fira Code', monospace;">
-            PyTorch • XGBoost • Sentinel-2 • NASA GEDI LiDAR
-          </p>
-          <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">
+        <div class="glass-card project-card">
+          <h3>Learned Vegetation Index (LVI)</h3>
+          <div class="tech-stack">PyTorch • XGBoost • Sentinel-2 • GEDI LiDAR</div>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
             Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation.
           </p>
         </div>
 
-        <div class="glass-card project-card tilt-element">
-          <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; font-family: 'Orbitron', sans-serif;">Land Cover Classification</h3>
-          <p style="color: var(--accent); font-size: 0.85rem; margin-bottom: 1rem; font-family: 'Fira Code', monospace;">
-            PyTorch • ResNet-18 • Transfer Learning • EuroSAT
-          </p>
-          <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">
-            End-to-end classification pipeline across 27,000 images and 10 land classes. Achieved 96.98% classification accuracy with a Macro F1 score of 0.97.
+        <div class="glass-card project-card">
+          <h3>Land Cover Classification</h3>
+          <div class="tech-stack">PyTorch • ResNet-18 • Transfer Learning • EuroSAT</div>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            End-to-end classification pipeline across 27,000 satellite images mapped to 10 land classes. Achieved a highly robust 96.98% classification accuracy.
           </p>
         </div>
       </div>
@@ -679,40 +598,40 @@
 
     <!-- Tech Stack -->
     <section id="skills" class="reveal">
-      <h2 class="section-title"><i class="fas fa-layer-group"></i> Technical Arsenal</h2>
+      <h2 class="section-title">Technical Competencies</h2>
       
       <div class="tech-grid">
-        <div class="tech-category glass-card tilt-element" style="margin-bottom: 0;">
-          <h4 style="color: var(--text); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">Vision & Deep Learning</h4>
-          <p style="color: var(--text-muted); line-height: 1.8;">PyTorch, Torchvision, OpenCV, YOLO, ROS, CNNs, Vision-Language Models (VLMs)</p>
+        <div class="tech-category glass-card" style="padding: 2rem;">
+          <h4>Vision & Deep Learning</h4>
+          <p>PyTorch, Torchvision, OpenCV, YOLO, ROS, CNNs, Vision-Language Models (VLMs)</p>
         </div>
         
-        <div class="tech-category glass-card tilt-element" style="margin-bottom: 0;">
-          <h4 style="color: var(--text); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">Data Science & Libraries</h4>
-          <p style="color: var(--text-muted); line-height: 1.8;">NumPy, Pandas, Scikit-Learn, Matplotlib, Seaborn, XGBoost</p>
+        <div class="tech-category glass-card" style="padding: 2rem;">
+          <h4>Data Science</h4>
+          <p>NumPy, Pandas, Scikit-Learn, Matplotlib, Seaborn, XGBoost</p>
         </div>
 
-        <div class="tech-category glass-card tilt-element" style="margin-bottom: 0;">
-          <h4 style="color: var(--text); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">Languages & Environment</h4>
-          <p style="color: var(--text-muted); line-height: 1.8;">Python, Java, Linux (Ubuntu/Debian), Git, GitHub, VS Code, Jupyter</p>
+        <div class="tech-category glass-card" style="padding: 2rem;">
+          <h4>Languages & Systems</h4>
+          <p>Python, Java, Linux (Ubuntu/Debian), Git, GitHub, VS Code, Jupyter</p>
         </div>
       </div>
     </section>
 
-    <!-- Lofi Easter Egg -->
-    <div class="lofi-bar reveal" onclick="alert('Booting audio sub-system... Playing Lo-Fi Bollywood vibes in your mind 🎧🌧️')">
-      <i class="fas fa-headphones-alt"></i> "My therapy? Bollywood classics on a lofi beat while it rains" 🌧️
+    <!-- Poetic Banner / Quote -->
+    <div class="poetic-banner reveal">
+      "Extracting signal from noise; finding the delicate patterns hidden within the data."
     </div>
 
     <!-- Contact Section -->
     <section id="contact" class="reveal">
-      <h2 class="section-title"><i class="fas fa-satellite-dish"></i> Establish Connection</h2>
+      <h2 class="section-title">Establish Connection</h2>
       
       <div class="contact-grid">
         <a href="tel:+918869918400" class="contact-item">
           <i class="fas fa-phone-alt"></i>
           <div class="contact-info">
-            <h4>PHONE</h4>
+            <h4>Phone</h4>
             <p>(+91) 8869918400</p>
           </div>
         </a>
@@ -720,7 +639,7 @@
         <a href="mailto:nigamaviral21@gmail.com" class="contact-item">
           <i class="fas fa-envelope"></i>
           <div class="contact-info">
-            <h4>EMAIL</h4>
+            <h4>Email</h4>
             <p>nigamaviral21@gmail.com</p>
           </div>
         </a>
@@ -728,7 +647,7 @@
         <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" class="contact-item">
           <i class="fab fa-linkedin-in"></i>
           <div class="contact-info">
-            <h4>LINKEDIN</h4>
+            <h4>LinkedIn</h4>
             <p>aviral-nigam</p>
           </div>
         </a>
@@ -736,7 +655,7 @@
         <a href="https://github.com/aviral0gHub" target="_blank" class="contact-item">
           <i class="fab fa-github"></i>
           <div class="contact-info">
-            <h4>GITHUB</h4>
+            <h4>GitHub</h4>
             <p>aviral0gHub</p>
           </div>
         </a>
@@ -745,53 +664,48 @@
 
     <!-- Footer -->
     <footer>
-      <p>EST. 2026 • Aviral Nigam • Built with ❤️ on GitHub Pages</p>
+      Aviral Nigam &copy; 2026 • Curated for the Future
     </footer>
 
   </div>
 
   <!-- Interactive Scripts -->
   <script>
-    // 1. Particle Background Configuration (Neural Network Web)
+    // 1. Particle Background Configuration (Sakura Petals Drifting)
     particlesJS('particles-js', {
       particles: {
-        number: { value: 70, density: { enable: true, value_area: 800 } },
-        color: { value: ['#38bdf8', '#818cf8', '#2dd4bf'] },
+        number: { value: 35, density: { enable: true, value_area: 1000 } },
+        color: { value: ['#ffb7c5', '#ffffff', '#e88c9f'] },
         shape: { type: 'circle' },
-        opacity: { value: 0.6, random: true },
-        size: { value: 3, random: true },
-        line_linked: { 
+        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } },
+        size: { value: 4, random: true, anim: { enable: true, speed: 1, size_min: 1, sync: false } },
+        line_linked: { enable: false },
+        move: { 
           enable: true, 
-          distance: 150, 
-          color: '#38bdf8', 
-          opacity: 0.3, 
-          width: 1 
-        },
-        move: { enable: true, speed: 1.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+          speed: 1.2, 
+          direction: 'bottom-left', 
+          random: true, 
+          straight: false, 
+          out_mode: 'out', 
+          bounce: false 
+        }
       },
       interactivity: {
         detect_on: "canvas",
-        events: { onhover: { enable: true, mode: "grab" }, resize: true },
-        modes: { grab: { distance: 180, line_linked: { opacity: 0.8 } } }
+        events: { onhover: { enable: false }, resize: true }
       }
     });
 
-    // 2. Mouse Tracking Ambient Glow
-    const glow = document.getElementById('cursor-glow');
-    document.addEventListener('mousemove', (e) => {
-      glow.style.transform = `translate(${e.clientX - 250}px, ${e.clientY - 250}px)`;
-    });
-
-    // 3. Dynamic Typewriter Effect
+    // 2. Dynamic Typewriter Effect
     const phrases = [
-      "Bridging Computer Vision & ML", 
-      "Exploring Vision-Language Models", 
-      "Building Spatial Intelligence Pipelines"
+      "Bridging Computer Vision & Machine Learning", 
+      "Exploring Vision-Language Architectures", 
+      "Mapping the physical world through Spatial AI"
     ];
     let i = 0, j = 0, currentPhrase = [], isDeleting = false;
 
     function loopTypewriter() {
-      document.getElementById('typewriter').innerHTML = currentPhrase.join('') + "<span style='color:var(--primary); animation: blink 1s infinite;'>_</span>";
+      document.getElementById('typewriter').innerHTML = currentPhrase.join('') + "<span style='color:var(--text-muted); animation: blink 1s infinite;'>|</span>";
       if (i < phrases.length) {
         if (!isDeleting && j <= phrases[i].length) {
           currentPhrase.push(phrases[i][j]);
@@ -803,7 +717,7 @@
         }
         if (j == phrases[i].length) {
           isDeleting = true;
-          setTimeout(loopTypewriter, 1500); 
+          setTimeout(loopTypewriter, 2000); 
           return;
         }
         if (isDeleting && j === 0) {
@@ -812,14 +726,14 @@
           i = (i + 1) % phrases.length; 
         }
       }
-      setTimeout(loopTypewriter, isDeleting ? 30 : 60);
+      setTimeout(loopTypewriter, isDeleting ? 20 : 50);
     }
     const style = document.createElement('style');
     style.innerHTML = `@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }`;
     document.head.appendChild(style);
     loopTypewriter();
 
-    // 4. Scroll Reveal & Number Counter Observer
+    // 3. Scroll Reveal & Number Counter Observer
     const revealElements = document.querySelectorAll('.reveal');
     let countersStarted = false;
 
@@ -833,12 +747,12 @@
           }
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.15 });
     revealElements.forEach(el => revealObserver.observe(el));
 
     function startCounters() {
       const counters = document.querySelectorAll('.stat-number');
-      const speed = 100;
+      const speed = 80;
       counters.forEach(counter => {
         const updateCount = () => {
           const target = +counter.getAttribute('data-target');
@@ -853,7 +767,7 @@
             const prefix = counter.getAttribute('data-prefix') || '';
             const suffix = counter.getAttribute('data-suffix') || '';
             counter.innerText = prefix + nextVal + suffix;
-            setTimeout(updateCount, 15);
+            setTimeout(updateCount, 20);
           } else {
             const prefix = counter.getAttribute('data-prefix') || '';
             const suffix = counter.getAttribute('data-suffix') || '';
@@ -864,20 +778,20 @@
       });
     }
 
-    // 5. Interactive Terminal
+    // 4. Interactive Terminal
     const terminalContent = `
-<p><span style="color: var(--accent);">❯</span> cat focus_areas.json</p>
-<p style="color: var(--text-muted); padding-left: 1.5rem; margin-top: 0.5rem;">
-  {<br>
-  &nbsp;&nbsp;"name": "Aviral Nigam",<br>
-  &nbsp;&nbsp;"core_focus": "Intersection of Computer Vision & Machine Learning",<br>
-  &nbsp;&nbsp;"specialties": [<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;"Vision-Language Models (VLMs)",<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;"Instance Retrieval",<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;"High-Resolution Spatial AI"<br>
-  &nbsp;&nbsp;]<br>
-  }
-</p>`;
+<span style="color: var(--primary);">~/aviral</span> $ cat system_focus.txt
+<br><br>
+<span style="color: var(--text);">[INITIATING QUERY...]</span><br>
+> Domain: Computer Vision & Machine Learning<br>
+> Sub-Domains: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Vision-Language Models (VLMs)",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"High-Resolution Spatial AI",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Instance Retrieval Architectures"<br>
+&nbsp;&nbsp;]<br>
+> Status: Optimizing visual retrieval pipelines.<br>
+<span style="color: var(--text-muted);">Process finished with exit code 0</span>
+`;
 
     let terminalTyping = false;
     function retypeTerminal() {
@@ -890,8 +804,8 @@
       function typeChar() {
         if(charIndex < terminalContent.length) {
           termBody.innerHTML = terminalContent.substring(0, charIndex) + "<span style='background:var(--primary); width:8px; height:15px; display:inline-block;'></span>";
-          charIndex += 5; 
-          setTimeout(typeChar, 10);
+          charIndex += 4; 
+          setTimeout(typeChar, 5);
         } else {
           termBody.innerHTML = terminalContent;
           terminalTyping = false;
@@ -899,23 +813,7 @@
       }
       typeChar();
     }
-    setTimeout(retypeTerminal, 1000);
-
-    // 6. 3D Tilt Effect on Cards & Images
-    const tiltElements = document.querySelectorAll('.tilt-element');
-    tiltElements.forEach(el => {
-      el.addEventListener('mousemove', e => {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left; 
-        const y = e.clientY - rect.top; 
-        const xPercent = (x / rect.width - 0.5) * 15;
-        const yPercent = (y / rect.height - 0.5) * -15;
-        el.style.transform = `perspective(1000px) rotateX(${yPercent}deg) rotateY(${xPercent}deg) scale3d(1.02, 1.02, 1.02)`;
-      });
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-      });
-    });
+    setTimeout(retypeTerminal, 800);
   </script>
 </body>
 </html>

@@ -59,29 +59,29 @@
       transform: translateY(0);
     }
 
-    /* --- Ambient Blurred Hero Graphic --- */
+    /* --- Pure CSS Moving Neon Aurora --- */
     .hero-ambient-blur {
       position: absolute;
-      top: -10%;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 0;
+      left: 0;
       width: 100vw;
-      height: 80vh;
-      /* Curated Tech/Cherry Blossom Vibe Image */
-      background-image: url('https://images.unsplash.com/photo-1522283692459-028eb2e12487?auto=format&fit=crop&w=1200&q=80');
-      background-size: cover;
-      background-position: center;
-      /* Extreme blur to create a glowing color mesh */
-      filter: blur(90px) saturate(150%) opacity(0.35);
-      border-radius: 50%;
+      height: 100vh;
+      /* Cyan, Indigo, and a hint of Rose */
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.25) 0%, transparent 50%),
+        radial-gradient(circle at 80% 40%, rgba(129, 140, 248, 0.25) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(226, 54, 112, 0.15) 0%, transparent 50%);
+      filter: blur(80px);
       z-index: 0;
       pointer-events: none;
-      animation: ambientShift 15s ease-in-out infinite alternate;
+      animation: neonPulse 15s ease-in-out infinite alternate;
     }
 
-    @keyframes ambientShift {
-      0% { transform: translateX(-50%) scale(1); filter: blur(90px) saturate(150%) opacity(0.35); }
-      100% { transform: translateX(-45%) scale(1.1); filter: blur(120px) saturate(200%) opacity(0.45); }
+    @keyframes neonPulse {
+      0% { transform: scale(1) translate(0px, 0px); }
+      33% { transform: scale(1.1) translate(3vw, 2vh); }
+      66% { transform: scale(0.9) translate(-2vw, 4vh); }
+      100% { transform: scale(1.15) translate(-3vw, -2vh); }
     }
 
     /* --- Navigation --- */
@@ -192,11 +192,27 @@
       background: rgba(25, 25, 25, 0.8);
     }
 
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
     .card-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: 2rem;
       font-weight: 500;
-      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .project-link {
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      transition: color 0.3s ease;
+    }
+
+    .project-link:hover {
       color: var(--accent);
     }
 
@@ -397,7 +413,9 @@
       </div>
 
       <div class="card">
-        <h3 class="card-title">Research Intern</h3>
+        <div class="card-header">
+          <h3 class="card-title">Research Intern</h3>
+        </div>
         <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad | Advised by Dr. Sourav Garg</div>
         <ul>
           <li>Conducting research on instance retrieval in high-resolution aerial and satellite imagery.</li>
@@ -407,11 +425,9 @@
 
         <!-- MINI SLIDER (Acts as a smart button linking to the gallery) -->
         <a href="#gallery" class="mini-slider" title="Click to view full gallery">
-          <!-- Real photos integrated here -->
           <img src="20260521_104944.jpg" class="slide active" alt="RRC Workstation">
           <img src="20260521_115516.jpg" class="slide" alt="Robotics Hardware Lab">
           
-          <!-- Hover Overlay -->
           <div class="slider-overlay">
             <span>View Vision Gallery <i class="fas fa-arrow-right"></i></span>
           </div>
@@ -454,7 +470,13 @@
       </div>
 
       <div class="card">
-        <h3 class="card-title">Learned Vegetation Index (LVI)</h3>
+        <div class="card-header">
+          <h3 class="card-title">Learned Vegetation Index (LVI)</h3>
+          <!-- GitHub Repo Link added here -->
+          <a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank" class="project-link" title="View Source Code">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
         <div class="card-subtitle">PyTorch • XGBoost • Sentinel-2 • GEDI LiDAR</div>
         <p style="color: var(--text-muted); font-size: 0.95rem;">
           Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation.
@@ -462,7 +484,13 @@
       </div>
 
       <div class="card">
-        <h3 class="card-title">Land Cover Classification</h3>
+        <div class="card-header">
+          <h3 class="card-title">Land Cover Classification</h3>
+          <!-- GitHub Repo Link added here -->
+          <a href="https://github.com/Aviral0gHub/eurosat-landcover-classification" target="_blank" class="project-link" title="View Source Code">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
         <div class="card-subtitle">PyTorch • ResNet-18 • Transfer Learning • EuroSAT</div>
         <p style="color: var(--text-muted); font-size: 0.95rem;">
           End-to-end classification pipeline across 27,000 images mapped to 10 land classes. Achieved a highly robust 96.98% classification accuracy.

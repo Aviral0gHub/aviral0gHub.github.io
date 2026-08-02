@@ -5,26 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aviral Nigam | AI & Computer Vision</title>
   
-  <!-- Fonts & Icons -->
+  <!-- Fonts & Icons (Sleek Tech Fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Particle.js for Ember Effects -->
+  <!-- Particle.js for Neural Network Effects -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
   <style>
     :root {
-      /* Neo-Temple & Cyber Color Palette */
-      --card-bg: rgba(15, 5, 5, 0.45); /* Highly transparent for glass effect */
-      --card-border: rgba(212, 175, 55, 0.3); /* Metallic Gold border */
-      --primary: #d4af37; /* Gold */
-      --secondary: #e63946; /* Crimson Red */
-      --accent: #ff7b54; /* Ember Orange */
-      --text: #fdfbf7; 
-      --text-muted: #d0c5bd; 
-      --glow: 0 0 30px rgba(230, 57, 70, 0.6); 
+      /* Cool Tech Color Palette */
+      --card-bg: rgba(10, 15, 30, 0.45); /* Deep blue frosted glass */
+      --card-border: rgba(56, 189, 248, 0.3); /* Cyan border */
+      --primary: #38bdf8; /* Electric Cyan */
+      --secondary: #818cf8; /* Deep Indigo / Purple */
+      --accent: #2dd4bf; /* Teal / Mint */
+      --text: #f8fafc; 
+      --text-muted: #94a3b8; 
+      --glow: 0 0 30px rgba(56, 189, 248, 0.5); 
     }
 
     * {
@@ -35,10 +35,10 @@
     }
 
     body {
-      background-color: #050202;
-      /* Chinese Temple Lantern Background with Dark Overlay */
-      background-image: linear-gradient(to bottom, rgba(5, 2, 2, 0.85), rgba(15, 5, 5, 0.95)), 
-                        url('https://images.unsplash.com/photo-1552674404-5d51d45763eb?auto=format&fit=crop&w=1920&q=80');
+      background-color: #030712;
+      /* Sleek Data/Spatial Background with Dark Blue Overlay */
+      background-image: linear-gradient(to bottom, rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.95)), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80');
       background-size: cover;
       background-attachment: fixed;
       background-position: center;
@@ -48,7 +48,7 @@
       position: relative;
     }
 
-    /* Ambient Ember Effects */
+    /* Ambient Neural Network Effects */
     #particles-js {
       position: fixed;
       width: 100%;
@@ -57,12 +57,13 @@
       pointer-events: none;
     }
 
+    /* Ambient Cursor Glow */
     .glow-sphere {
       position: fixed;
       width: 500px;
       height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(230, 57, 70, 0.15) 0%, rgba(212, 175, 55, 0.05) 40%, rgba(0, 0, 0, 0) 70%);
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(129, 140, 248, 0.1) 40%, rgba(0, 0, 0, 0) 70%);
       pointer-events: none;
       z-index: 0;
       transition: transform 0.1s ease-out;
@@ -93,28 +94,28 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
-      background: rgba(5, 2, 2, 0.6);
-      backdrop-filter: blur(20px); /* Heavy blur for modern glass look */
+      background: rgba(3, 7, 18, 0.6);
+      backdrop-filter: blur(20px); 
       border: 1px solid var(--card-border);
       border-radius: 50px;
       margin-bottom: 3rem;
       position: sticky;
       top: 1rem;
       z-index: 100;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .logo {
-      font-family: 'Cinzel', serif;
+      font-family: 'Orbitron', sans-serif;
       font-weight: 900;
       font-size: 1.4rem;
       color: var(--primary);
-      text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+      text-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
       cursor: pointer;
       transition: 0.3s;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
-    .logo:hover { transform: scale(1.05); }
+    .logo:hover { transform: scale(1.05); color: #fff; }
 
     .nav-links {
       display: flex;
@@ -149,14 +150,14 @@
     }
 
     .hero-title {
-      font-family: 'Cinzel', serif;
+      font-family: 'Orbitron', sans-serif;
       font-size: clamp(2.5rem, 5vw, 4rem);
       font-weight: 900;
       background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.5rem;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
     }
 
     .typing-text {
@@ -193,7 +194,7 @@
       max-width: 380px;
       border-radius: 20px;
       border: 2px solid var(--primary);
-      box-shadow: 0 0 40px rgba(230, 57, 70, 0.5);
+      box-shadow: var(--glow);
       transition: transform 0.1s ease, box-shadow 0.4s ease;
     }
 
@@ -205,12 +206,12 @@
     }
 
     .badge {
-      background: rgba(212, 175, 55, 0.15);
+      background: rgba(56, 189, 248, 0.1);
       backdrop-filter: blur(5px);
       border: 1px solid var(--card-border);
       color: var(--primary);
       padding: 0.5rem 1rem;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 0.85rem;
       font-family: 'Fira Code', monospace;
       transition: 0.3s;
@@ -218,9 +219,9 @@
     }
 
     .badge:hover {
-      background: var(--secondary);
-      color: #fff;
-      border-color: var(--secondary);
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
       box-shadow: var(--glow);
       transform: scale(1.05) translateY(-2px);
     }
@@ -228,53 +229,54 @@
     /* Top Tier Glass Cards */
     .glass-card {
       background: var(--card-bg);
-      backdrop-filter: blur(25px); /* Ultra-modern frosted glass */
+      backdrop-filter: blur(25px); 
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 2rem;
       margin-bottom: 2rem;
       transition: box-shadow 0.4s ease, border-color 0.4s ease;
       transform-style: preserve-3d;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
     }
 
+    /* High-tech corner accents */
     .glass-card::before, .glass-card::after {
       content: '';
       position: absolute;
-      width: 15px;
-      height: 15px;
+      width: 20px;
+      height: 20px;
       border: 2px solid var(--primary);
-      opacity: 0.5;
+      opacity: 0.4;
       transition: 0.3s;
+      border-radius: 2px;
     }
     .glass-card::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
     .glass-card::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
     .glass-card:hover {
-      border-color: var(--secondary);
+      border-color: var(--primary);
       box-shadow: var(--glow);
     }
     .glass-card:hover::before, .glass-card:hover::after {
       opacity: 1;
-      width: 20px;
-      height: 20px;
+      width: 25px;
+      height: 25px;
       border-color: var(--accent);
     }
 
     .section-title {
-      font-family: 'Cinzel', serif;
+      font-family: 'Orbitron', sans-serif;
       font-size: 2rem;
-      color: var(--primary);
+      color: var(--text);
       margin-bottom: 2rem;
       display: flex;
       align-items: center;
       gap: 1rem;
       letter-spacing: 1px;
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
     }
-    .section-title i { color: var(--secondary); }
+    .section-title i { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
 
     /* Stats */
     .stats-container {
@@ -290,18 +292,18 @@
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 12px;
       transition: 0.3s;
     }
     
     .stat-box:hover {
       transform: translateY(-5px);
-      border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+      border-color: var(--secondary);
+      box-shadow: 0 0 25px rgba(129, 140, 248, 0.4);
     }
 
     .stat-number {
-      font-family: 'Cinzel', serif;
+      font-family: 'Orbitron', sans-serif;
       font-size: 2.5rem;
       color: var(--primary);
       font-weight: 900;
@@ -317,25 +319,25 @@
 
     /* Interactive Terminal */
     .terminal {
-      background: rgba(2, 0, 0, 0.7);
+      background: rgba(3, 7, 18, 0.8);
       backdrop-filter: blur(10px);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       font-family: 'Fira Code', monospace;
       margin: 3rem 0;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       cursor: pointer;
       transition: 0.3s;
     }
     
     .terminal:hover {
       box-shadow: var(--glow);
-      border-color: var(--secondary);
+      border-color: var(--primary);
     }
 
     .terminal-header {
-      background: rgba(20, 5, 5, 0.8);
+      background: rgba(15, 23, 42, 0.9);
       padding: 0.8rem 1rem;
       display: flex;
       align-items: center;
@@ -344,9 +346,9 @@
     }
 
     .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-    .red { background: #e63946; }
-    .yellow { background: #d4af37; }
-    .green { background: #4caf50; }
+    .red { background: #ef4444; }
+    .yellow { background: #f59e0b; }
+    .green { background: #10b981; }
 
     .terminal-body {
       padding: 1.5rem;
@@ -366,9 +368,9 @@
     .gallery-img-container {
       position: relative;
       overflow: hidden;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid var(--card-border);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
       transform-style: preserve-3d;
     }
 
@@ -386,9 +388,9 @@
       left: 0;
       width: 100%;
       padding: 1.5rem 1rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      background: linear-gradient(to top, rgba(3, 7, 18, 0.95), transparent);
       color: var(--primary);
-      font-family: 'Cinzel', serif;
+      font-family: 'Orbitron', sans-serif;
       font-size: 1.2rem;
       font-weight: 700;
       transform: translateY(100%);
@@ -404,7 +406,7 @@
     }
     
     .gallery-img-container:hover {
-      border-color: var(--secondary);
+      border-color: var(--primary);
       box-shadow: var(--glow);
     }
 
@@ -422,9 +424,9 @@
     }
 
     .tech-category {
-      background: rgba(15, 5, 5, 0.3);
+      background: rgba(10, 15, 30, 0.3);
       padding: 1.5rem;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid var(--card-border);
     }
 
@@ -440,21 +442,21 @@
       align-items: center;
       gap: 1rem;
       padding: 1.5rem;
-      background: rgba(15, 5, 5, 0.5);
+      background: rgba(10, 15, 30, 0.5);
       backdrop-filter: blur(10px);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 12px;
       text-decoration: none;
       color: var(--text);
       transition: 0.3s;
     }
 
     .contact-item:hover {
-      background: rgba(230, 57, 70, 0.8);
+      background: rgba(56, 189, 248, 0.15);
       color: #fff;
       box-shadow: var(--glow);
       transform: translateY(-3px);
-      border-color: var(--secondary);
+      border-color: var(--primary);
     }
 
     .contact-item i {
@@ -462,12 +464,12 @@
       color: var(--primary);
       transition: 0.3s;
     }
-    .contact-item:hover i { color: #fff; }
+    .contact-item:hover i { color: var(--text); text-shadow: 0 0 10px var(--primary); }
     
     .contact-info h4 {
       font-size: 0.9rem;
       margin-bottom: 0.2rem;
-      font-family: 'Cinzel', serif;
+      font-family: 'Orbitron', sans-serif;
       letter-spacing: 1px;
     }
 
@@ -476,15 +478,43 @@
       font-family: 'Fira Code', monospace;
     }
 
+    /* Modern Lofi Bar */
+    .lofi-bar {
+      margin: 4rem 0 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.1) 0%, rgba(129, 140, 248, 0.1) 100%);
+      border: 1px solid var(--primary);
+      border-radius: 10px;
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+      color: var(--primary);
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      animation: pulseCyan 3s infinite;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    .lofi-bar:hover {
+      transform: scale(1.02);
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%);
+    }
+
+    @keyframes pulseCyan {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+
     footer {
       text-align: center;
       padding: 2rem 0;
       color: var(--text-muted);
       font-size: 0.9rem;
-      border-top: 1px solid rgba(212, 175, 55, 0.2);
+      border-top: 1px solid rgba(56, 189, 248, 0.2);
       margin-top: 2rem;
-      font-family: 'Cinzel', serif;
-      background: rgba(0,0,0,0.5);
+      font-family: 'Orbitron', sans-serif;
+      background: rgba(3, 7, 18, 0.8);
       backdrop-filter: blur(10px);
     }
 
@@ -499,7 +529,7 @@
 </head>
 <body>
 
-  <!-- Floating Embers -->
+  <!-- Floating Neural Network Particles -->
   <div id="particles-js"></div>
   
   <!-- Ambient Mouse Glow -->
@@ -565,7 +595,7 @@
           <span class="dot red"></span>
           <span class="dot yellow"></span>
           <span class="dot green"></span>
-          <span style="color: #d0c5bd; font-size: 0.85rem; margin-left: 0.5rem; font-family: sans-serif;">Click to rerun script</span>
+          <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 0.5rem; font-family: sans-serif;">Click to execute script</span>
         </div>
         <div class="terminal-body" id="terminal-body">
           <!-- Populated by JS -->
@@ -573,12 +603,12 @@
       </div>
     </section>
 
-    <!-- Experience (Only IIIT-H) -->
+    <!-- Experience -->
     <section id="research" class="reveal">
-      <h2 class="section-title"><i class="fab fa-d-and-d"></i> Experience</h2>
+      <h2 class="section-title"><i class="fas fa-microchip"></i> Experience</h2>
       
       <div class="glass-card tilt-element">
-        <h3 style="color: var(--text); font-size: 1.5rem; font-family: 'Cinzel', serif;">Research Intern</h3>
+        <h3 style="color: var(--text); font-size: 1.5rem; font-family: 'Orbitron', sans-serif;">Research Intern</h3>
         <p style="color: var(--primary); font-family: 'Fira Code', monospace; margin-bottom: 1.2rem; font-size: 0.95rem;">
           Robotics Research Center (RRC), IIIT Hyderabad | Advised by Dr. Sourav Garg
         </p>
@@ -590,32 +620,32 @@
       </div>
     </section>
 
-    <!-- NEW: Dedicated Vision & AI Gallery -->
+    <!-- NEW: Sleek Vision & AI Gallery -->
     <section id="gallery" class="reveal">
-      <h2 class="section-title"><i class="fas fa-camera-retro"></i> Vision Gallery</h2>
+      <h2 class="section-title"><i class="fas fa-border-all"></i> Vision Gallery</h2>
       
       <div class="gallery-grid">
-        <!-- AI / Neural Network -->
+        <!-- Abstract AI Fluid (Cool tones) -->
         <div class="gallery-img-container tilt-element">
           <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" alt="AI Neural Net" class="gallery-img">
           <div class="gallery-overlay">Neural Architectures</div>
         </div>
         
-        <!-- Computer Vision Grid -->
+        <!-- Computer Vision Grid / Data -->
         <div class="gallery-img-container tilt-element">
           <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=800&q=80" alt="Computer Vision" class="gallery-img">
           <div class="gallery-overlay">Visual Processing</div>
         </div>
 
-        <!-- Chinese Temple Lanterns -->
+        <!-- Cyber Server Room / Cool Tech -->
         <div class="gallery-img-container tilt-element">
-          <img src="https://images.unsplash.com/photo-1565439399-231cb2f43bb2?auto=format&fit=crop&w=800&q=80" alt="Temple Lights" class="gallery-img">
-          <div class="gallery-overlay">Temple Illumination</div>
+          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="Cyber Tech Core" class="gallery-img">
+          <div class="gallery-overlay">System Architecture</div>
         </div>
 
-        <!-- Spatial / Aerial Data -->
+        <!-- Spatial / Circuit Board Data -->
         <div class="gallery-img-container tilt-element">
-          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Spatial AI" class="gallery-img">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Spatial AI Grid" class="gallery-img">
           <div class="gallery-overlay">Spatial Intelligence</div>
         </div>
       </div>
@@ -623,10 +653,10 @@
 
     <!-- Projects -->
     <section id="projects" class="reveal">
-      <h2 class="section-title"><i class="fas fa-scroll"></i> Engineering Projects</h2>
+      <h2 class="section-title"><i class="fas fa-code-branch"></i> Engineering Projects</h2>
       <div class="projects-grid">
         <div class="glass-card project-card tilt-element">
-          <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; font-family: 'Cinzel', serif;">Learned Vegetation Index (LVI)</h3>
+          <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; font-family: 'Orbitron', sans-serif;">Learned Vegetation Index (LVI)</h3>
           <p style="color: var(--accent); font-size: 0.85rem; margin-bottom: 1rem; font-family: 'Fira Code', monospace;">
             PyTorch • XGBoost • Sentinel-2 • NASA GEDI LiDAR
           </p>
@@ -636,7 +666,7 @@
         </div>
 
         <div class="glass-card project-card tilt-element">
-          <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; font-family: 'Cinzel', serif;">Land Cover Classification</h3>
+          <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.3rem; font-family: 'Orbitron', sans-serif;">Land Cover Classification</h3>
           <p style="color: var(--accent); font-size: 0.85rem; margin-bottom: 1rem; font-family: 'Fira Code', monospace;">
             PyTorch • ResNet-18 • Transfer Learning • EuroSAT
           </p>
@@ -649,29 +679,34 @@
 
     <!-- Tech Stack -->
     <section id="skills" class="reveal">
-      <h2 class="section-title"><i class="fas fa-fire-flame-curved"></i> Technical Arsenal</h2>
+      <h2 class="section-title"><i class="fas fa-layer-group"></i> Technical Arsenal</h2>
       
       <div class="tech-grid">
         <div class="tech-category glass-card tilt-element" style="margin-bottom: 0;">
-          <h4 style="color: var(--primary); margin-bottom: 1rem; font-family: 'Cinzel', serif;">Vision & Deep Learning</h4>
+          <h4 style="color: var(--text); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">Vision & Deep Learning</h4>
           <p style="color: var(--text-muted); line-height: 1.8;">PyTorch, Torchvision, OpenCV, YOLO, ROS, CNNs, Vision-Language Models (VLMs)</p>
         </div>
         
         <div class="tech-category glass-card tilt-element" style="margin-bottom: 0;">
-          <h4 style="color: var(--primary); margin-bottom: 1rem; font-family: 'Cinzel', serif;">Data Science & Libraries</h4>
+          <h4 style="color: var(--text); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">Data Science & Libraries</h4>
           <p style="color: var(--text-muted); line-height: 1.8;">NumPy, Pandas, Scikit-Learn, Matplotlib, Seaborn, XGBoost</p>
         </div>
 
         <div class="tech-category glass-card tilt-element" style="margin-bottom: 0;">
-          <h4 style="color: var(--primary); margin-bottom: 1rem; font-family: 'Cinzel', serif;">Languages & Environment</h4>
+          <h4 style="color: var(--text); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">Languages & Environment</h4>
           <p style="color: var(--text-muted); line-height: 1.8;">Python, Java, Linux (Ubuntu/Debian), Git, GitHub, VS Code, Jupyter</p>
         </div>
       </div>
     </section>
 
+    <!-- Lofi Easter Egg -->
+    <div class="lofi-bar reveal" onclick="alert('Booting audio sub-system... Playing Lo-Fi Bollywood vibes in your mind 🎧🌧️')">
+      <i class="fas fa-headphones-alt"></i> "My therapy? Bollywood classics on a lofi beat while it rains" 🌧️
+    </div>
+
     <!-- Contact Section -->
     <section id="contact" class="reveal">
-      <h2 class="section-title"><i class="fas fa-dragon"></i> Transmit Message</h2>
+      <h2 class="section-title"><i class="fas fa-satellite-dish"></i> Establish Connection</h2>
       
       <div class="contact-grid">
         <a href="tel:+918869918400" class="contact-item">
@@ -717,21 +752,27 @@
 
   <!-- Interactive Scripts -->
   <script>
-    // 1. Particle Background Configuration (Floating Embers)
+    // 1. Particle Background Configuration (Neural Network Web)
     particlesJS('particles-js', {
       particles: {
-        number: { value: 60, density: { enable: true, value_area: 800 } },
-        color: { value: ['#ff4500', '#ff8c00', '#d4af37'] },
+        number: { value: 70, density: { enable: true, value_area: 800 } },
+        color: { value: ['#38bdf8', '#818cf8', '#2dd4bf'] },
         shape: { type: 'circle' },
-        opacity: { value: 0.8, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
-        size: { value: 3, random: true, anim: { enable: true, speed: 2, size_min: 0.1, sync: false } },
-        line_linked: { enable: false },
-        move: { enable: true, speed: 1.5, direction: 'top', random: true, straight: false, out_mode: 'out', bounce: false }
+        opacity: { value: 0.6, random: true },
+        size: { value: 3, random: true },
+        line_linked: { 
+          enable: true, 
+          distance: 150, 
+          color: '#38bdf8', 
+          opacity: 0.3, 
+          width: 1 
+        },
+        move: { enable: true, speed: 1.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
       },
       interactivity: {
         detect_on: "canvas",
-        events: { onhover: { enable: true, mode: "bubble" }, resize: true },
-        modes: { bubble: { distance: 150, size: 6, duration: 2, opacity: 1, speed: 3 } }
+        events: { onhover: { enable: true, mode: "grab" }, resize: true },
+        modes: { grab: { distance: 180, line_linked: { opacity: 0.8 } } }
       }
     });
 
@@ -750,7 +791,7 @@
     let i = 0, j = 0, currentPhrase = [], isDeleting = false;
 
     function loopTypewriter() {
-      document.getElementById('typewriter').innerHTML = currentPhrase.join('') + "<span style='color:var(--primary); animation: blink 1s infinite;'>|</span>";
+      document.getElementById('typewriter').innerHTML = currentPhrase.join('') + "<span style='color:var(--primary); animation: blink 1s infinite;'>_</span>";
       if (i < phrases.length) {
         if (!isDeleting && j <= phrases[i].length) {
           currentPhrase.push(phrases[i][j]);
@@ -825,7 +866,7 @@
 
     // 5. Interactive Terminal
     const terminalContent = `
-<p><span style="color: var(--secondary);">❯</span> cat focus_areas.json</p>
+<p><span style="color: var(--accent);">❯</span> cat focus_areas.json</p>
 <p style="color: var(--text-muted); padding-left: 1.5rem; margin-top: 0.5rem;">
   {<br>
   &nbsp;&nbsp;"name": "Aviral Nigam",<br>

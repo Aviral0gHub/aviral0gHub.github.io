@@ -3,32 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviral Nigam | Spatial AI</title>
-  
-  <!-- High-End Tech Fonts -->
+  <title>Aviral Nigam</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --bg: #030305;
-      --card-bg: rgba(15, 15, 20, 0.4); /* Highly transparent for glass effect */
-      --card-border: rgba(255, 255, 255, 0.1);
-      --text-main: #f5f5f7;
-      --text-muted: #9ca3af;
-      --accent: #00ffff; /* Neon Cyan */
-      --accent-secondary: #ff007f; /* Neon Pink */
-      --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      --bg: #07090a;
+      --surface: rgba(255, 255, 255, 0.035);
+      --surface-hover: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --text-main: #f2f4f1;
+      --text-muted: #92a099;
+      --text-faint: #545e58;
+      --accent: #5eead4;
+      --accent-dim: rgba(94, 234, 212, 0.12);
+      --accent-warm: #e8a33d;
+      --accent-violet: #a191f2;
+      --accent-bloom: #ffa8c5;
+      --mx: 50vw;
+      --my: 50vh;
+      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
 
     body {
       background-color: var(--bg);
@@ -37,390 +39,362 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-    }
-
-    /* --- Pure CSS Ambient Neon Background --- */
-    .ambient-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      overflow: hidden;
-      background: var(--bg);
-    }
-
-    .neon-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      animation: float 20s infinite alternate ease-in-out;
-      opacity: 0.45;
-    }
-
-    .orb-1 {
-      top: -10%; left: -10%; width: 50vw; height: 50vw;
-      background: #8a2be2; /* Blue Violet */
-    }
-
-    .orb-2 {
-      bottom: -20%; right: -10%; width: 60vw; height: 60vw;
-      background: #00ffff; /* Cyan */
-      animation-delay: -5s;
-    }
-
-    .orb-3 {
-      top: 40%; left: 30%; width: 45vw; height: 45vw;
-      background: #ff007f; /* Neon Pink */
-      animation-delay: -10s;
-      opacity: 0.3;
-    }
-
-    @keyframes float {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(10vw, 10vh) scale(1.2); }
-    }
-
-    /* Layout Containers */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 2rem;
       position: relative;
-      z-index: 2;
     }
 
-    /* Scroll Fade Animation */
-    .fade-up {
+    body.has-reticle, body.has-reticle a, body.has-reticle button, body.has-reticle .skill-tag { cursor: none; }
+
+    /* film grain */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      pointer-events: none;
+      opacity: 0.035;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* cursor-follow spotlight */
+    .cursor-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 48;
+      pointer-events: none;
+      background: radial-gradient(360px circle at var(--mx) var(--my), rgba(94, 234, 212, 0.07), transparent 70%);
+    }
+
+    /* custom reticle cursor */
+    .reticle {
+      position: fixed;
+      top: 0; left: 0;
+      width: 24px; height: 24px;
+      margin-left: -12px; margin-top: -12px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 60;
       opacity: 0;
-      transform: translateY(30px);
-      transition: var(--transition);
+      transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease, background 0.25s ease, opacity 0.3s ease;
     }
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .reticle::after {
+      content: "";
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 3px; height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
     }
-
-    /* --- Navigation --- */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      margin-bottom: 5rem;
-    }
-
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: var(--text-main);
-      text-decoration: none;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    body.has-reticle .reticle { opacity: 0.9; }
+    .reticle.active {
+      width: 46px; height: 46px;
+      margin-left: -23px; margin-top: -23px;
+      border-color: var(--accent-bloom);
+      background: rgba(255, 168, 197, 0.08);
     }
 
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
+    /* scroll progress */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2.5px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bloom));
+      z-index: 70;
+      transition: width 0.1s linear;
     }
+
+    /* falling sakura petals */
+    .petal-layer { position: fixed; inset: 0; z-index: 40; pointer-events: none; overflow: hidden; }
+
+    .petal { position: absolute; top: 0; will-change: transform, opacity; animation-name: petal-fall; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+
+    .petal-inner {
+      display: block; width: 100%; height: 100%;
+      border-radius: 0% 70% 70% 70%;
+      background: linear-gradient(135deg, var(--p-color-a), var(--p-color-b));
+      animation: petal-spin linear infinite;
+      box-shadow: 0 0 6px rgba(255, 168, 197, 0.15);
+    }
+
+    @keyframes petal-fall {
+      0%   { transform: translateY(-10vh) translateX(0); opacity: 0; }
+      8%   { opacity: 0.8; }
+      50%  { transform: translateY(50vh) translateX(var(--sway)); }
+      92%  { opacity: 0.75; }
+      100% { transform: translateY(110vh) translateX(calc(var(--sway) * -1)); opacity: 0; }
+    }
+
+    @keyframes petal-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ---------- Bokeh backdrop ---------- */
+    .ambient-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
+
+    .bokeh { position: absolute; border-radius: 50%; filter: blur(50px); animation: bokeh-float 26s ease-in-out infinite alternate; }
+
+    .bokeh.b1 { top: 6%;  left: 8%;  width: 260px; height: 260px; background: radial-gradient(circle, rgba(94,234,212,0.28), transparent 70%); animation-duration: 30s; }
+    .bokeh.b2 { top: 55%; left: 78%; width: 340px; height: 340px; background: radial-gradient(circle, rgba(255,168,197,0.22), transparent 70%); animation-duration: 34s; animation-delay: -6s; }
+    .bokeh.b3 { top: 78%; left: 20%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(161,145,242,0.2), transparent 70%); animation-duration: 24s; animation-delay: -12s; }
+    .bokeh.b4 { top: 18%; left: 60%; width: 160px; height: 160px; background: radial-gradient(circle, rgba(232,163,61,0.16), transparent 70%); animation-duration: 20s; animation-delay: -4s; }
+    .bokeh.b5 { top: 40%; left: 40%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%); animation-duration: 40s; }
+
+    @keyframes bokeh-float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(3vw, -4vh) scale(1.12); } }
+
+    /* ---------- Layout ---------- */
+    .container { max-width: 920px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+
+    .fade-up { opacity: 0; transform: translateY(24px); transition: var(--transition); }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ---------- Nav ---------- */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+
+    .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .logo svg { width: 20px; height: 20px; opacity: 0.9; }
+    .logo svg circle, .logo svg path { stroke: var(--accent); }
+    .logo-text { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.05rem; color: var(--text-main); letter-spacing: 0.5px; }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
 
     .nav-links a {
+      display: inline-block;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--accent);
-      text-shadow: 0 0 8px var(--accent);
-    }
-
-    /* --- Hero Section --- */
-    .hero {
-      padding: 4rem 0 8rem;
-    }
-
-    .hero h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(3rem, 7vw, 5rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -1px;
-      margin-bottom: 2rem;
-      background: linear-gradient(135deg, #ffffff, var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
-    }
-
-    .hero-bio {
-      font-size: 1.15rem;
-      color: #d1d5db;
-      max-width: 650px;
-      font-weight: 300;
-      line-height: 1.8;
-    }
-
-    .hero-bio strong {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    /* --- Sections --- */
-    section {
-      padding: 5rem 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .section-header {
-      margin-bottom: 3rem;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: var(--accent);
-      font-weight: 500;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    }
-
-    /* --- Frosted Glass Cards --- */
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 2.5rem;
-      margin-bottom: 2rem;
-      transition: var(--transition);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    .card:hover {
-      border-color: var(--accent);
-      transform: translateY(-5px);
-      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.15);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .project-link {
-      color: var(--text-muted);
-      font-size: 1.5rem;
-      transition: color 0.3s ease;
-    }
-
-    .project-link:hover {
-      color: var(--accent);
-      text-shadow: 0 0 10px var(--accent);
-    }
-
-    .card-subtitle {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.85rem;
-      color: var(--accent-secondary);
-      margin-bottom: 1.5rem;
-    }
-
-    .card ul {
-      padding-left: 1.2rem;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    .card ul li {
-      margin-bottom: 0.8rem;
-    }
-
-    /* --- Mini Slider --- */
-    .mini-slider {
-      display: block;
+      letter-spacing: 1.5px;
+      transition: color 0.3s ease, transform 0.2s ease;
       position: relative;
-      width: 100%;
-      max-width: 400px;
-      height: 250px;
-      margin-top: 2rem;
-      border-radius: 8px;
+    }
+
+    .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background: var(--accent); transition: width 0.3s ease; }
+    .nav-links a:hover { color: var(--text-main); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      margin-top: 2.5rem;
+      border-radius: 10px;
       overflow: hidden;
-      border: 1px solid var(--card-border);
-      text-decoration: none;
-      cursor: pointer;
+      border: 1px solid var(--border);
+      min-height: 560px;
+      display: flex;
+      align-items: flex-end;
     }
 
-    .slide {
+    .hero-photo {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
+      inset: -3%;
+      background-image: url('20260520_161154.jpg');
+      background-size: cover;
+      background-position: center 60%;
+      filter: grayscale(35%) brightness(0.55) saturate(1.1);
+      transition: transform 0.2s ease-out;
     }
 
-    .slide.active {
-      opacity: 1;
-    }
-
-    .slider-overlay {
+    .hero-photo::after {
+      content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      backdrop-filter: blur(4px);
+      background:
+        linear-gradient(0deg, rgba(4,6,6,0.96) 5%, rgba(4,6,6,0.55) 45%, rgba(4,6,6,0.25) 75%),
+        linear-gradient(100deg, rgba(4,6,6,0.6), transparent 55%);
     }
 
-    .slider-overlay span {
-      color: var(--accent);
-      font-size: 1rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      transform: translateY(10px);
-      transition: transform 0.4s ease;
-    }
+    .af-corner { position: absolute; width: 22px; height: 22px; border-color: var(--accent); opacity: 0.85; z-index: 3; }
+    .af-corner.tl { top: 20px; left: 20px; border-top: 1.5px solid; border-left: 1.5px solid; }
+    .af-corner.tr { top: 20px; right: 20px; border-top: 1.5px solid; border-right: 1.5px solid; }
+    .af-corner.bl { bottom: 20px; left: 20px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+    .af-corner.br { bottom: 20px; right: 20px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
 
-    .mini-slider:hover .slider-overlay {
-      opacity: 1;
+    .det-tag {
+      position: absolute; top: 20px; right: 52px; z-index: 3;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.5px;
+      color: var(--accent); background: rgba(7, 9, 10, 0.55);
+      border: 1px solid var(--border-strong); padding: 0.35rem 0.65rem; border-radius: 3px;
+      backdrop-filter: blur(6px);
     }
-    
-    .mini-slider:hover .slider-overlay span {
-      transform: translateY(0);
-    }
+    .det-tag b { color: var(--text-main); font-weight: 500; }
 
-    /* --- Dedicated Gallery Section --- */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
+    .hero-inner { position: relative; z-index: 2; padding: 3rem 3rem 3.2rem; width: 100%; }
 
-    .gallery-item {
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 2px;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 1.4rem;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .hero-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.2rem, 5.4vw, 3.4rem);
+      font-weight: 600; line-height: 1.15; letter-spacing: -0.5px;
+      margin-bottom: 1.5rem; max-width: 640px;
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+
+    .hero-bio { font-size: 1.02rem; color: #cdd6d0; max-width: 580px; font-weight: 300; line-height: 1.85; margin-bottom: 2.2rem; }
+    .hero-bio strong { color: var(--text-main); font-weight: 500; }
+
+    .coord-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .coord-tag {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.5px;
+      color: #b7c0ba; border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(7, 9, 10, 0.4); backdrop-filter: blur(6px);
+      padding: 0.45rem 0.8rem; border-radius: 3px;
+    }
+    .coord-tag b { color: var(--text-main); font-weight: 500; }
+    .coord-tag.bloom { color: var(--accent-bloom); border-color: rgba(255,168,197,0.3); }
+    .coord-tag.bloom b { color: #ffd6e5; }
+
+    /* ---------- Sections ---------- */
+    section { padding: 4.5rem 0; border-top: 1px solid var(--border); }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2.5rem; }
+    .section-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-main); font-weight: 500; }
+    .section-index { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2.2rem 2.4rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.2s ease, background 0.3s ease, border-color 0.3s ease;
       position: relative;
-      border-radius: 8px;
-      overflow: hidden;
-      aspect-ratio: 4/3;
-      border: 1px solid var(--card-border);
-      background: rgba(0,0,0,0.5);
+      transform-style: preserve-3d;
     }
 
-    .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.8s ease, filter 0.5s ease;
-      filter: grayscale(40%) brightness(0.8);
-    }
+    .card .af-corner { width: 14px; height: 14px; opacity: 0; transition: var(--transition); }
+    .card .af-corner.tl { top: -1px; left: -1px; }
+    .card .af-corner.tr { top: -1px; right: -1px; }
+    .card .af-corner.bl { bottom: -1px; left: -1px; }
+    .card .af-corner.br { bottom: -1px; right: -1px; }
 
-    .gallery-item:hover img {
-      transform: scale(1.05);
-      filter: grayscale(0%) brightness(1.1);
-    }
+    .card:hover { background: var(--surface-hover); border-color: var(--border-strong); }
+    .card:hover .af-corner { opacity: 1; }
 
-    /* --- Skills Tag Grid --- */
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.4rem; }
+    .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem; font-weight: 600; color: var(--text-main); }
+    .project-link { color: var(--text-muted); font-size: 1.2rem; transition: color 0.3s ease; flex-shrink: 0; }
+    .project-link:hover { color: var(--accent); }
+    .card-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--accent); margin-bottom: 1.4rem; letter-spacing: 0.3px; }
+    .card ul { list-style: none; color: var(--text-muted); font-size: 0.93rem; }
+    .card ul li { margin-bottom: 0.75rem; padding-left: 1.1rem; position: relative; }
+    .card ul li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 5px; height: 1px; background: var(--text-faint); }
+    .card p { color: var(--text-muted); font-size: 0.93rem; }
 
+    /* ---------- Mini Slider ---------- */
+    .mini-slider {
+      display: block; position: relative; width: 100%; max-width: 380px; height: 220px;
+      margin-top: 1.8rem; border-radius: 5px; overflow: hidden; border: 1px solid var(--border);
+      text-decoration: none; cursor: pointer;
+    }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: grayscale(60%) contrast(1.05) brightness(0.85); transition: opacity 1s ease-in-out, filter 0.6s ease; }
+    .slide.active { opacity: 1; }
+    .slider-overlay { position: absolute; inset: 0; background: rgba(7, 9, 10, 0.72); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.35s ease; }
+    .slider-overlay span { color: var(--accent); font-size: 0.85rem; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 0.7rem; transform: translateY(8px); transition: transform 0.35s ease; }
+    .mini-slider:hover .slider-overlay { opacity: 1; }
+    .mini-slider:hover .slider-overlay span { transform: translateY(0); }
+    .mini-slider:hover .slide.active { filter: grayscale(0%) contrast(1) brightness(1); }
+
+    /* ---------- Gallery with CV detection overlay ---------- */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .gallery-item { position: relative; aspect-ratio: 4/3; background: var(--bg); overflow: hidden; transition: transform 0.2s ease; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease, filter 0.5s ease; filter: grayscale(60%) brightness(0.72) contrast(1.05); }
+    .gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(0.95) contrast(1.02); }
+
+    .cv-overlay { position: absolute; inset: 0; pointer-events: none; }
+    .cv-overlay svg { width: 100%; height: 100%; }
+    .det-box { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 220; stroke-dashoffset: 220; opacity: 0; transition: stroke-dashoffset 0.7s ease, opacity 0.2s ease; }
+    .kp { fill: var(--accent); opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; transform: scale(0.4); transform-box: fill-box; transform-origin: center; }
+    .kp-line { stroke: var(--accent); stroke-width: 0.4; opacity: 0; transition: opacity 0.4s ease 0.15s; }
+    .gallery-item:hover .det-box { opacity: 0.9; stroke-dashoffset: 0; }
+    .gallery-item:hover .kp-line { opacity: 0.55; }
+    .gallery-item:hover .kp { opacity: 1; transform: scale(1); }
+    .gallery-item:hover .kp:nth-of-type(1) { transition-delay: 0.05s; }
+    .gallery-item:hover .kp:nth-of-type(2) { transition-delay: 0.12s; }
+    .gallery-item:hover .kp:nth-of-type(3) { transition-delay: 0.19s; }
+    .gallery-item:hover .kp:nth-of-type(4) { transition-delay: 0.26s; }
+    .gallery-item:hover .kp:nth-of-type(5) { transition-delay: 0.33s; }
+
+    .cv-label {
+      position: absolute; left: 0.5rem; bottom: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.3px;
+      color: var(--bg); background: var(--accent); padding: 0.22rem 0.5rem; border-radius: 2px;
+      opacity: 0; transform: translateY(6px); transition: var(--transition); text-transform: uppercase; z-index: 2;
+    }
+    .gallery-item:hover .cv-label { opacity: 1; transform: translateY(0); }
+
+    /* ---------- Skills ---------- */
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.7rem; }
     .skill-tag {
-      padding: 0.6rem 1.2rem;
-      border: 1px solid var(--card-border);
-      border-radius: 50px;
-      font-size: 0.85rem;
-      font-family: 'Fira Code', monospace;
-      color: var(--text-muted);
-      transition: 0.3s ease;
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(10px);
+      display: inline-block;
+      padding: 0.55rem 1.05rem; border: 1px solid var(--border); border-radius: 3px;
+      font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; color: var(--text-muted);
+      transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+      background: var(--surface);
     }
+    .skill-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
-    .skill-tag:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(0, 255, 255, 0.05);
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-    }
+    /* ---------- Footer ---------- */
+    footer { padding: 3.5rem 0; border-top: 1px solid var(--border); }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-meta { color: var(--text-faint); font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; }
+    .footer-links { display: flex; gap: 1.4rem; }
+    .footer-links a { color: var(--text-muted); font-size: 1.05rem; transition: all 0.3s ease; }
+    .footer-links a:hover { color: var(--accent); transform: translateY(-2px); }
 
-    /* --- Footer / Contact --- */
-    footer {
-      padding: 4rem 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-    }
+    a:focus-visible, .skill-tag:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
 
-    .footer-links {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent-secondary);
-      text-shadow: 0 0 10px var(--accent-secondary);
-      transform: translateY(-2px);
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up, .bokeh, .hero-eyebrow::before, .petal, .petal-inner { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .petal-layer, .cursor-glow, .reticle { display: none !important; }
     }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2.8rem; }
-      nav { flex-direction: column; gap: 1.5rem; padding: 2rem 0; }
+      .hero { min-height: 460px; }
+      .hero-inner { padding: 2.2rem 1.6rem 2.4rem; }
+      .hero h1 { font-size: 2rem; }
+      .det-tag { display: none; }
+      nav { flex-direction: column; gap: 1.25rem; padding: 1.75rem 0; }
       .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
       .card { padding: 1.5rem; }
+      .card-header { flex-direction: column; }
+      .cursor-glow, .reticle { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- The Ambient Neon Background -->
+  <div class="scroll-progress"></div>
+  <div class="cursor-glow"></div>
+  <div class="reticle"></div>
+  <div class="petal-layer"></div>
+
   <div class="ambient-background">
-    <div class="neon-orb orb-1"></div>
-    <div class="neon-orb orb-2"></div>
-    <div class="neon-orb orb-3"></div>
+    <div class="bokeh b1"></div>
+    <div class="bokeh b2"></div>
+    <div class="bokeh b3"></div>
+    <div class="bokeh b4"></div>
+    <div class="bokeh b5"></div>
   </div>
 
   <div class="container">
-    
-    <!-- Navigation -->
+
     <nav class="fade-up">
-      <a href="#" class="logo">AVIRAL NIGAM</a>
+      <a href="#" class="logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9.2" stroke-width="1.2"/>
+          <path d="M12 2.8 L14 9 L20.5 9.5 L15.3 13.6 L17 20 L12 16.2 L7 20 L8.7 13.6 L3.5 9.5 L10 9 Z" stroke-width="0.9" opacity="0.55"/>
+        </svg>
+        <span class="logo-text">AVIRAL NIGAM</span>
+      </a>
       <ul class="nav-links">
         <li><a href="#experience">Experience</a></li>
         <li><a href="#projects">Projects</a></li>
@@ -428,137 +402,278 @@
       </ul>
     </nav>
 
-    <!-- Hero Section -->
     <header class="hero fade-up">
-      <h1>Engineering<br>Spatial Intelligence.</h1>
-      <p class="hero-bio">
-        Data Science & Engineering student at <strong>MIT Manipal</strong> and Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>. I focus on the intersection of Computer Vision and Machine Learning, designing architectures for instance retrieval and high-resolution Vision-Language Models.
-      </p>
+      <div class="hero-photo"></div>
+      <div class="af-corner tl"></div>
+      <div class="af-corner tr"></div>
+      <div class="af-corner bl"></div>
+      <div class="af-corner br"></div>
+      <div class="det-tag">ID 0xA9F3 · <b>AVIRAL_NIGAM</b> · conf 0.99</div>
+
+      <div class="hero-inner">
+        <h1>Building <em>intelligent systems</em> that see, read, and reason.</h1>
+        <p class="hero-bio">
+          Data Science &amp; Engineering student at <strong>MIT Manipal</strong> and Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>. I work at the intersection of computer vision and machine learning — designing architectures for instance retrieval and high-resolution Vision-Language Models.
+        </p>
+        <div class="coord-row">
+          <div class="coord-tag"><b>BASE</b> · MIT Manipal · 13.3467°N 74.7869°E</div>
+          <div class="coord-tag"><b>FIELD</b> · RRC, IIIT Hyderabad · 17.4467°N 78.3499°E</div>
+          <div class="coord-tag bloom"><b>SAKURA BLOOM</b> · phenology model, live-tracked</div>
+        </div>
+      </div>
     </header>
 
-    <!-- Experience Section with Interactive Slider -->
     <section id="experience" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Professional Experience</h2>
+        <span class="section-index">/ 01</span>
       </div>
 
       <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
         <div class="card-header">
           <h3 class="card-title">Research Intern</h3>
         </div>
-        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad | Advised by Dr. Sourav Garg</div>
+        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad — advised by Dr. Sourav Garg</div>
         <ul>
-          <li>Conducting research on instance retrieval in high-resolution aerial and satellite imagery.</li>
+          <li>Researching instance retrieval in high-resolution aerial and satellite imagery.</li>
           <li>Exploring deep visual feature representations and similarity learning for object-centric retrieval.</li>
-          <li>Engineered spatial data preprocessing pipelines for deep feature matching models.</li>
+          <li>Engineering spatial data preprocessing pipelines for deep feature matching models.</li>
         </ul>
 
-        <!-- MINI SLIDER (Acts as a smart button linking to the gallery) -->
-        <a href="#gallery" class="mini-slider" title="Click to view full gallery">
+        <a href="#gallery" class="mini-slider" title="View the full gallery">
           <img src="20260521_115503.jpg" class="slide active" alt="RRC Workstation">
           <img src="20260520_174244.jpg" class="slide" alt="Kohli Research Block">
-          
           <div class="slider-overlay">
-            <span>View Vision Gallery <i class="fas fa-camera"></i></span>
+            <span>View gallery <i class="fas fa-arrow-right"></i></span>
           </div>
         </a>
       </div>
     </section>
 
-    <!-- Dedicated Gallery Section -->
     <section id="gallery" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Vision Gallery</h2>
+        <span class="section-index">/ 02</span>
       </div>
-      
+
       <div class="gallery-grid">
+
         <div class="gallery-item">
           <img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="14" y="10" width="72" height="55" rx="1.5"/>
+              <line class="kp-line" x1="24" y1="22" x2="46" y2="18"/>
+              <line class="kp-line" x1="46" y1="18" x2="68" y2="30"/>
+              <line class="kp-line" x1="24" y1="22" x2="38" y2="48"/>
+              <line class="kp-line" x1="38" y1="48" x2="68" y2="30"/>
+              <circle class="kp" cx="24" cy="22" r="1.4"/>
+              <circle class="kp" cx="46" cy="18" r="1.4"/>
+              <circle class="kp" cx="68" cy="30" r="1.4"/>
+              <circle class="kp" cx="38" cy="48" r="1.4"/>
+              <circle class="kp" cx="60" cy="52" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">structure · 0.94</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260521_115547.jpg" alt="RRC Robotics Lab View">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="10" y="14" width="66" height="50" rx="1.5"/>
+              <line class="kp-line" x1="20" y1="26" x2="42" y2="20"/>
+              <line class="kp-line" x1="42" y1="20" x2="60" y2="34"/>
+              <line class="kp-line" x1="20" y1="26" x2="34" y2="50"/>
+              <line class="kp-line" x1="34" y1="50" x2="60" y2="34"/>
+              <circle class="kp" cx="20" cy="26" r="1.4"/>
+              <circle class="kp" cx="42" cy="20" r="1.4"/>
+              <circle class="kp" cx="60" cy="34" r="1.4"/>
+              <circle class="kp" cx="34" cy="50" r="1.4"/>
+              <circle class="kp" cx="55" cy="55" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">lab / interior · 0.91</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260520_174144.jpg" alt="Campus Mural">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="18" y="8" width="64" height="58" rx="1.5"/>
+              <line class="kp-line" x1="28" y1="20" x2="50" y2="14"/>
+              <line class="kp-line" x1="50" y1="14" x2="70" y2="28"/>
+              <line class="kp-line" x1="28" y1="20" x2="40" y2="46"/>
+              <line class="kp-line" x1="40" y1="46" x2="70" y2="28"/>
+              <circle class="kp" cx="28" cy="20" r="1.4"/>
+              <circle class="kp" cx="50" cy="14" r="1.4"/>
+              <circle class="kp" cx="70" cy="28" r="1.4"/>
+              <circle class="kp" cx="40" cy="46" r="1.4"/>
+              <circle class="kp" cx="58" cy="54" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">mural / art · 0.87</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="8" y="18" width="70" height="46" rx="1.5"/>
+              <line class="kp-line" x1="18" y1="30" x2="40" y2="24"/>
+              <line class="kp-line" x1="40" y1="24" x2="62" y2="36"/>
+              <line class="kp-line" x1="18" y1="30" x2="30" y2="52"/>
+              <line class="kp-line" x1="30" y1="52" x2="62" y2="36"/>
+              <circle class="kp" cx="18" cy="30" r="1.4"/>
+              <circle class="kp" cx="40" cy="24" r="1.4"/>
+              <circle class="kp" cx="62" cy="36" r="1.4"/>
+              <circle class="kp" cx="30" cy="52" r="1.4"/>
+              <circle class="kp" cx="52" cy="56" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">landscape · 0.96</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260520_174209.jpg" alt="Campus Greenery">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="16" y="12" width="68" height="52" rx="1.5"/>
+              <line class="kp-line" x1="26" y1="24" x2="48" y2="18"/>
+              <line class="kp-line" x1="48" y1="18" x2="66" y2="32"/>
+              <line class="kp-line" x1="26" y1="24" x2="38" y2="48"/>
+              <line class="kp-line" x1="38" y1="48" x2="66" y2="32"/>
+              <circle class="kp" cx="26" cy="24" r="1.4"/>
+              <circle class="kp" cx="48" cy="18" r="1.4"/>
+              <circle class="kp" cx="66" cy="32" r="1.4"/>
+              <circle class="kp" cx="38" cy="48" r="1.4"/>
+              <circle class="kp" cx="56" cy="52" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">vegetation · 0.90</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260520_174244.jpg" alt="Kohli Research Block Entrance">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="12" y="10" width="70" height="54" rx="1.5"/>
+              <line class="kp-line" x1="22" y1="22" x2="44" y2="16"/>
+              <line class="kp-line" x1="44" y1="16" x2="64" y2="30"/>
+              <line class="kp-line" x1="22" y1="22" x2="36" y2="48"/>
+              <line class="kp-line" x1="36" y1="48" x2="64" y2="30"/>
+              <circle class="kp" cx="22" cy="22" r="1.4"/>
+              <circle class="kp" cx="44" cy="16" r="1.4"/>
+              <circle class="kp" cx="64" cy="30" r="1.4"/>
+              <circle class="kp" cx="36" cy="48" r="1.4"/>
+              <circle class="kp" cx="58" cy="50" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">entrance · 0.93</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260521_115503.jpg" alt="RRC Workspace">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="10" y="16" width="68" height="48" rx="1.5"/>
+              <line class="kp-line" x1="20" y1="28" x2="42" y2="22"/>
+              <line class="kp-line" x1="42" y1="22" x2="62" y2="34"/>
+              <line class="kp-line" x1="20" y1="28" x2="32" y2="50"/>
+              <line class="kp-line" x1="32" y1="50" x2="62" y2="34"/>
+              <circle class="kp" cx="20" cy="28" r="1.4"/>
+              <circle class="kp" cx="42" cy="22" r="1.4"/>
+              <circle class="kp" cx="62" cy="34" r="1.4"/>
+              <circle class="kp" cx="32" cy="50" r="1.4"/>
+              <circle class="kp" cx="54" cy="54" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">workspace · 0.95</div>
         </div>
+
         <div class="gallery-item">
           <img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue">
+          <div class="cv-overlay">
+            <svg viewBox="0 0 100 75">
+              <rect class="det-box" x="15" y="9" width="70" height="56" rx="1.5"/>
+              <line class="kp-line" x1="25" y1="21" x2="47" y2="15"/>
+              <line class="kp-line" x1="47" y1="15" x2="67" y2="29"/>
+              <line class="kp-line" x1="25" y1="21" x2="37" y2="47"/>
+              <line class="kp-line" x1="37" y1="47" x2="67" y2="29"/>
+              <circle class="kp" cx="25" cy="21" r="1.4"/>
+              <circle class="kp" cx="47" cy="15" r="1.4"/>
+              <circle class="kp" cx="67" cy="29" r="1.4"/>
+              <circle class="kp" cx="37" cy="47" r="1.4"/>
+              <circle class="kp" cx="57" cy="53" r="1.4"/>
+            </svg>
+          </div>
+          <div class="cv-label">avenue · 0.89</div>
         </div>
+
       </div>
     </section>
 
-    <!-- Projects Section -->
     <section id="projects" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Selected Projects</h2>
+        <span class="section-index">/ 03</span>
       </div>
 
       <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
         <div class="card-header">
           <h3 class="card-title">Learned Vegetation Index (LVI)</h3>
-          <!-- GitHub Repo Link -->
-          <a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank" class="project-link" title="View Source Code">
+          <a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank" class="project-link" title="View source code">
             <i class="fab fa-github"></i>
           </a>
         </div>
-        <div class="card-subtitle">PyTorch • XGBoost • Sentinel-2 • GEDI LiDAR</div>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation.
-        </p>
+        <div class="card-subtitle">PyTorch · XGBoost · Sentinel-2 · GEDI LiDAR</div>
+        <p>Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation.</p>
       </div>
 
       <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
         <div class="card-header">
           <h3 class="card-title">Land Cover Classification</h3>
-          <!-- GitHub Repo Link -->
-          <a href="https://github.com/Aviral0gHub/eurosat-landcover-classification" target="_blank" class="project-link" title="View Source Code">
+          <a href="https://github.com/Aviral0gHub/eurosat-landcover-classification" target="_blank" class="project-link" title="View source code">
             <i class="fab fa-github"></i>
           </a>
         </div>
-        <div class="card-subtitle">PyTorch • ResNet-18 • Transfer Learning • EuroSAT</div>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          End-to-end classification pipeline across 27,000 images mapped to 10 land classes. Achieved a highly robust 96.98% classification accuracy.
-        </p>
+        <div class="card-subtitle">PyTorch · ResNet-18 · Transfer Learning · EuroSAT</div>
+        <p>End-to-end classification pipeline across 27,000 images mapped to 10 land classes, reaching 96.98% classification accuracy.</p>
       </div>
     </section>
 
-    <!-- Skills Section -->
     <section id="skills" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Technical Competencies</h2>
+        <span class="section-index">/ 04</span>
       </div>
       <div class="skills-grid">
-        <div class="skill-tag">PyTorch</div>
-        <div class="skill-tag">OpenCV</div>
-        <div class="skill-tag">Vision-Language Models (VLMs)</div>
         <div class="skill-tag">Python</div>
-        <div class="skill-tag">Scikit-Learn</div>
-        <div class="skill-tag">Instance Retrieval</div>
-        <div class="skill-tag">Spatial AI</div>
-        <div class="skill-tag">XGBoost</div>
+        <div class="skill-tag">PyTorch</div>
+        <div class="skill-tag">Torchvision</div>
+        <div class="skill-tag">Transfer Learning</div>
+        <div class="skill-tag">Prompt Optimization</div>
+        <div class="skill-tag">Self-Supervised Learning</div>
       </div>
     </section>
 
-  </div> <!-- End Container -->
+  </div>
 
-  <!-- Footer / Contact -->
   <footer class="fade-up">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 2rem;">
-      <div style="color: var(--text-muted); font-size: 0.9rem; font-family: 'Fira Code', monospace;">
-        &copy; 2026 Aviral Nigam.
-      </div>
+    <div class="container">
+      <div class="footer-meta">&copy; 2026 Aviral Nigam</div>
       <div class="footer-links">
         <a href="mailto:nigamaviral21@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
         <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
@@ -568,43 +683,143 @@
   </footer>
 
   <script>
-    /* 1. Smooth Fade-in on Scroll (Intersection Observer) */
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.15
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
+    /* fade-up on scroll */
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+    const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+          obs.unobserve(entry.target);
         }
       });
     }, observerOptions);
-
-    document.querySelectorAll('.fade-up').forEach((el) => {
-      observer.observe(el);
-    });
-
-    // Fade in top elements immediately
+    document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
     setTimeout(() => {
-      document.querySelectorAll('.fade-up').forEach((el, index) => {
-        if(index < 2) el.classList.add('visible');
-      });
+      document.querySelectorAll('.fade-up').forEach((el, index) => { if (index < 2) el.classList.add('visible'); });
     }, 100);
 
-    /* 2. Mini Photo Slider Logic */
+    /* experience mini-slider */
     const slides = document.querySelectorAll('.slide');
     let currentSlide = 0;
-
     if (slides.length > 1) {
       setInterval(() => {
         slides[currentSlide].classList.remove('active');
         currentSlide = (currentSlide + 1) % slides.length;
         slides[currentSlide].classList.add('active');
-      }, 3500); // Fades to the next image every 3.5 seconds
+      }, 3500);
+    }
+
+    /* scroll progress bar */
+    const progressBar = document.querySelector('.scroll-progress');
+    function updateProgress() {
+      const h = document.documentElement;
+      const scrollable = h.scrollHeight - h.clientHeight;
+      const pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+
+    /* cursor-follow spotlight */
+    if (!reduceMotion) {
+      window.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+        document.documentElement.style.setProperty('--my', e.clientY + 'px');
+      }, { passive: true });
+    }
+
+    /* custom reticle cursor, desktop only */
+    if (finePointer && !reduceMotion) {
+      document.body.classList.add('has-reticle');
+      const reticle = document.querySelector('.reticle');
+      let tx = window.innerWidth / 2, ty = window.innerHeight / 2, rx = tx, ry = ty;
+      window.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; });
+      (function loop() {
+        rx += (tx - rx) * 0.2;
+        ry += (ty - ry) * 0.2;
+        reticle.style.left = rx + 'px';
+        reticle.style.top = ry + 'px';
+        requestAnimationFrame(loop);
+      })();
+      document.querySelectorAll('a, .skill-tag, .gallery-item, .card, .mini-slider').forEach((el) => {
+        el.addEventListener('mouseenter', () => reticle.classList.add('active'));
+        el.addEventListener('mouseleave', () => reticle.classList.remove('active'));
+      });
+
+      /* card / gallery tilt */
+      document.querySelectorAll('.card, .gallery-item').forEach((el) => {
+        el.addEventListener('mousemove', (e) => {
+          const r = el.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          el.style.transform = `perspective(700px) translateY(-3px) rotateX(${(-py * 3.5).toFixed(2)}deg) rotateY(${(px * 3.5).toFixed(2)}deg)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+      });
+
+      /* magnetic nav links + skill tags */
+      document.querySelectorAll('.nav-links a, .skill-tag').forEach((el) => {
+        el.addEventListener('mousemove', (e) => {
+          const r = el.getBoundingClientRect();
+          const mx = e.clientX - r.left - r.width / 2;
+          const my = e.clientY - r.top - r.height / 2;
+          el.style.transform = `translate(${(mx * 0.25).toFixed(1)}px, ${(my * 0.25).toFixed(1)}px)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+      });
+
+      /* subtle hero photo parallax */
+      const heroPhoto = document.querySelector('.hero-photo');
+      const hero = document.querySelector('.hero');
+      if (heroPhoto && hero) {
+        hero.addEventListener('mousemove', (e) => {
+          const r = hero.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          heroPhoto.style.transform = `translate(${(-px * 12).toFixed(1)}px, ${(-py * 10).toFixed(1)}px) scale(1.05)`;
+        });
+        hero.addEventListener('mouseleave', () => { heroPhoto.style.transform = ''; });
+      }
+    } else {
+      document.querySelector('.cursor-glow')?.remove();
+      document.querySelector('.reticle')?.remove();
+    }
+
+    /* falling sakura petals */
+    if (!reduceMotion) {
+      const petalLayer = document.querySelector('.petal-layer');
+      const petalColors = [['#ffd6e0', '#ffb6c9'], ['#ffc2d1', '#ff8fab'], ['#ffe5ec', '#ffb3c6']];
+      const count = window.innerWidth < 640 ? 9 : 18;
+      for (let i = 0; i < count; i++) {
+        const outer = document.createElement('div');
+        outer.className = 'petal';
+        const size = 8 + Math.random() * 8;
+        const duration = 9 + Math.random() * 8;
+        const delay = -Math.random() * duration;
+        const sway = Math.round(Math.random() * 90 - 45) + 'px';
+        outer.style.left = (Math.random() * 100).toFixed(1) + '%';
+        outer.style.width = size.toFixed(1) + 'px';
+        outer.style.height = (size * 0.8).toFixed(1) + 'px';
+        outer.style.setProperty('--sway', sway);
+        outer.style.animationDuration = duration.toFixed(1) + 's';
+        outer.style.animationDelay = delay.toFixed(1) + 's';
+        outer.style.opacity = (0.35 + Math.random() * 0.5).toFixed(2);
+
+        const inner = document.createElement('span');
+        inner.className = 'petal-inner';
+        const c = petalColors[Math.floor(Math.random() * petalColors.length)];
+        inner.style.setProperty('--p-color-a', c[0]);
+        inner.style.setProperty('--p-color-b', c[1]);
+        inner.style.animationDuration = (4 + Math.random() * 4).toFixed(1) + 's';
+
+        outer.appendChild(inner);
+        petalLayer.appendChild(outer);
+      }
+    } else {
+      document.querySelector('.petal-layer')?.remove();
     }
   </script>
 </body>

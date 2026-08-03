@@ -295,19 +295,18 @@
       margin-top: 1.8rem; border-radius: 5px; overflow: hidden; border: 1px solid var(--border);
       text-decoration: none; cursor: pointer;
     }
-    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: grayscale(60%) contrast(1.05) brightness(0.85); transition: opacity 1s ease-in-out, filter 0.6s ease; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: none; transition: opacity 1s ease-in-out; }
     .slide.active { opacity: 1; }
     .slider-overlay { position: absolute; inset: 0; background: rgba(7, 9, 10, 0.72); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.35s ease; }
     .slider-overlay span { color: var(--accent); font-size: 0.85rem; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 0.7rem; transform: translateY(8px); transition: transform 0.35s ease; }
     .mini-slider:hover .slider-overlay { opacity: 1; }
     .mini-slider:hover .slider-overlay span { transform: translateY(0); }
-    .mini-slider:hover .slide.active { filter: grayscale(0%) contrast(1) brightness(1); }
 
     /* ---------- Gallery Grid ---------- */
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
     .gallery-item { position: relative; aspect-ratio: 4/3; background: var(--bg); overflow: hidden; transition: transform 0.2s ease; }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease, filter 0.5s ease; filter: grayscale(60%) brightness(0.72) contrast(1.05); }
-    .gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(0.95) contrast(1.02); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; filter: none; }
+    .gallery-item:hover img { transform: scale(1.05); filter: none; }
 
     /* ---------- Skills ---------- */
     .skills-grid { display: flex; flex-wrap: wrap; gap: 0.7rem; }
@@ -587,26 +586,23 @@
       }, { passive: true });
     }
 
-    /* custom reticle cursor, desktop only */
+    /* custom reticle cursor (instant speed), desktop only */
     if (finePointer && !reduceMotion) {
       document.body.classList.add('has-reticle');
       const reticle = document.querySelector('.reticle');
-      let tx = window.innerWidth / 2, ty = window.innerHeight / 2, rx = tx, ry = ty;
-      window.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; });
-      (function loop() {
-        rx += (tx - rx) * 0.2;
-        ry += (ty - ry) * 0.2;
-        reticle.style.left = rx + 'px';
-        reticle.style.top = ry + 'px';
-        requestAnimationFrame(loop);
-      })();
-      document.querySelectorAll('a, .skill-tag, .gallery-item, .card, .mini-slider').forEach((el) => {
+      
+      window.addEventListener('mousemove', (e) => {
+        reticle.style.left = e.clientX + 'px';
+        reticle.style.top = e.clientY + 'px';
+      }, { passive: true });
+
+      document.querySelectorAll('a, .skill-tag, .card, .mini-slider').forEach((el) => {
         el.addEventListener('mouseenter', () => reticle.classList.add('active'));
         el.addEventListener('mouseleave', () => reticle.classList.remove('active'));
       });
 
-      /* card / gallery tilt */
-      document.querySelectorAll('.card, .gallery-item').forEach((el) => {
+      /* card tilt */
+      document.querySelectorAll('.card').forEach((el) => {
         el.addEventListener('mousemove', (e) => {
           const r = el.getBoundingClientRect();
           const px = (e.clientX - r.left) / r.width - 0.5;

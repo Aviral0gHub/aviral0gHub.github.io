@@ -20,11 +20,17 @@
       --text-main: #f2f4f1;
       --text-muted: #92a099;
       --text-faint: #545e58;
+
+      /* semantic verdict palette: mint = verified/success, amber = pending, coral = contradiction */
       --accent: #5eead4;
       --accent-dim: rgba(94, 234, 212, 0.12);
-      --accent-warm: #e8a33d;
+      --accent-amber: #e8a33d;
+      --accent-amber-dim: rgba(232, 163, 61, 0.12);
+      --accent-coral: #ff7a5c;
+      --accent-coral-dim: rgba(255, 122, 92, 0.12);
       --accent-violet: #a191f2;
-      --accent-bloom: #ffa8c5;
+      --accent-violet-dim: rgba(161, 145, 242, 0.12);
+
       --mx: 50vw;
       --my: 50vh;
       --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -65,7 +71,7 @@
       background: radial-gradient(360px circle at var(--mx) var(--my), rgba(94, 234, 212, 0.07), transparent 70%);
     }
 
-    /* custom reticle cursor */
+    /* custom reticle cursor — doubles as a "targeting" motif for the detection theme */
     .reticle {
       position: fixed;
       top: 0; left: 0;
@@ -91,9 +97,10 @@
     .reticle.active {
       width: 46px; height: 46px;
       margin-left: -23px; margin-top: -23px;
-      border-color: var(--accent-bloom);
-      background: rgba(255, 168, 197, 0.08);
+      border-color: var(--accent-amber);
+      background: rgba(232, 163, 61, 0.08);
     }
+    .reticle.active::after { background: var(--accent-amber); }
 
     /* scroll progress */
     .scroll-progress {
@@ -101,43 +108,47 @@
       top: 0; left: 0;
       height: 2.5px;
       width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-bloom));
+      background: linear-gradient(90deg, var(--accent), var(--accent-amber));
       z-index: 70;
       transition: width 0.1s linear;
     }
 
-    /* falling sakura petals — sits BEHIND the content, above the ambient bg only */
-    .petal-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    /* ---------- Telemetry tokens ---------- */
+    /* small monospace readouts drifting upward, standing in for the "confidence
+       score" / "retrieved evidence" vocabulary of both CV detection and NLI
+       verification work — replaces decorative motion with subject-grounded motion */
+    .telemetry-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 
-    .petal { position: absolute; top: 0; will-change: transform, opacity; animation-name: petal-fall; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
-
-    .petal-inner {
-      display: block; width: 100%; height: 100%;
-      border-radius: 0% 70% 70% 70%;
-      background: linear-gradient(135deg, var(--p-color-a), var(--p-color-b));
-      animation: petal-spin linear infinite;
-      opacity: 0.4;
+    .telemetry-chip {
+      position: absolute;
+      bottom: -6%;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      white-space: nowrap;
+      will-change: transform, opacity;
+      animation-name: token-rise;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      letter-spacing: 0.4px;
     }
 
-    @keyframes petal-fall {
-      0%   { transform: translateY(-10vh) translateX(0); opacity: 0; }
-      8%   { opacity: 0.35; }
-      50%  { transform: translateY(50vh) translateX(var(--sway)); }
-      92%  { opacity: 0.3; }
-      100% { transform: translateY(110vh) translateX(calc(var(--sway) * -1)); opacity: 0; }
+    @keyframes token-rise {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: var(--chip-op, 0.4); }
+      50%  { transform: translateY(-55vh) translateX(var(--sway)); }
+      88%  { opacity: var(--chip-op, 0.35); }
+      100% { transform: translateY(-115vh) translateX(calc(var(--sway) * -1)); opacity: 0; }
     }
-
-    @keyframes petal-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     /* ---------- Bokeh backdrop ---------- */
     .ambient-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
 
     .bokeh { position: absolute; border-radius: 50%; filter: blur(50px); animation: bokeh-float 26s ease-in-out infinite alternate; }
 
-    .bokeh.b1 { top: 6%;  left: 8%;  width: 260px; height: 260px; background: radial-gradient(circle, rgba(94,234,212,0.28), transparent 70%); animation-duration: 30s; }
-    .bokeh.b2 { top: 55%; left: 78%; width: 340px; height: 340px; background: radial-gradient(circle, rgba(255,168,197,0.22), transparent 70%); animation-duration: 34s; animation-delay: -6s; }
-    .bokeh.b3 { top: 78%; left: 20%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(161,145,242,0.2), transparent 70%); animation-duration: 24s; animation-delay: -12s; }
-    .bokeh.b4 { top: 18%; left: 60%; width: 160px; height: 160px; background: radial-gradient(circle, rgba(232,163,61,0.16), transparent 70%); animation-duration: 20s; animation-delay: -4s; }
+    .bokeh.b1 { top: 6%;  left: 8%;  width: 260px; height: 260px; background: radial-gradient(circle, rgba(94,234,212,0.26), transparent 70%); animation-duration: 30s; }
+    .bokeh.b2 { top: 55%; left: 78%; width: 340px; height: 340px; background: radial-gradient(circle, rgba(232,163,61,0.18), transparent 70%); animation-duration: 34s; animation-delay: -6s; }
+    .bokeh.b3 { top: 78%; left: 20%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(161,145,242,0.18), transparent 70%); animation-duration: 24s; animation-delay: -12s; }
+    .bokeh.b4 { top: 18%; left: 60%; width: 160px; height: 160px; background: radial-gradient(circle, rgba(255,122,92,0.12), transparent 70%); animation-duration: 20s; animation-delay: -4s; }
     .bokeh.b5 { top: 40%; left: 40%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%); animation-duration: 40s; }
 
     @keyframes bokeh-float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(3vw, -4vh) scale(1.12); } }
@@ -205,6 +216,25 @@
         linear-gradient(100deg, rgba(4,6,6,0.6), transparent 55%);
     }
 
+    /* one-time detection scan sweep on load — reinforces the "confidence tag
+       locking on" moment right before .det-tag appears */
+    .scan-line {
+      position: absolute;
+      left: 0; right: 0; top: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      box-shadow: 0 0 14px 1px rgba(94, 234, 212, 0.6);
+      z-index: 3;
+      opacity: 0;
+      animation: scan-sweep 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s 1 both;
+      pointer-events: none;
+    }
+    @keyframes scan-sweep {
+      0%   { top: 0%;   opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 0.7; }
+      100% { top: 100%; opacity: 0; }
+    }
+
     .af-corner { position: absolute; width: 22px; height: 22px; border-color: var(--accent); opacity: 0.85; z-index: 3; }
     .af-corner.tl { top: 20px; left: 20px; border-top: 1.5px solid; border-left: 1.5px solid; }
     .af-corner.tr { top: 20px; right: 20px; border-top: 1.5px solid; border-right: 1.5px solid; }
@@ -217,18 +247,13 @@
       color: var(--accent); background: rgba(7, 9, 10, 0.55);
       border: 1px solid var(--border-strong); padding: 0.35rem 0.65rem; border-radius: 3px;
       backdrop-filter: blur(6px);
+      opacity: 0;
+      animation: det-tag-in 0.5s ease 1.85s 1 forwards;
     }
     .det-tag b { color: var(--text-main); font-weight: 500; }
+    @keyframes det-tag-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
     .hero-inner { position: relative; z-index: 2; padding: 3rem 3rem 3.2rem; width: 100%; }
-
-    .hero-eyebrow {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 2px;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 1.4rem;
-      display: flex; align-items: center; gap: 0.6rem;
-    }
-    .hero-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2.4s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
     .hero h1 {
       font-family: 'Space Grotesk', sans-serif;
@@ -249,8 +274,8 @@
       padding: 0.45rem 0.8rem; border-radius: 3px;
     }
     .coord-tag b { color: var(--text-main); font-weight: 500; }
-    .coord-tag.bloom { color: var(--accent-bloom); border-color: rgba(255,168,197,0.3); }
-    .coord-tag.bloom b { color: #ffd6e5; }
+    .coord-tag.violet { color: #e3ddff; border-color: rgba(161,145,242,0.35); }
+    .coord-tag.violet b { color: #f0ecff; }
 
     /* ---------- Sections ---------- */
     section { padding: 4.5rem 0; border-top: 1px solid var(--border); }
@@ -271,10 +296,10 @@
     }
 
     .card.featured {
-      border-color: rgba(255,168,197,0.35);
-      background: linear-gradient(160deg, rgba(255,168,197,0.06), rgba(94,234,212,0.03));
+      border-color: rgba(232,163,61,0.35);
+      background: linear-gradient(160deg, rgba(232,163,61,0.06), rgba(94,234,212,0.03));
     }
-    .card.featured:hover { border-color: rgba(255,168,197,0.55); }
+    .card.featured:hover { border-color: rgba(232,163,61,0.55); }
 
     .card .af-corner { width: 14px; height: 14px; opacity: 0; transition: var(--transition); }
     .card .af-corner.tl { top: -1px; left: -1px; }
@@ -298,11 +323,31 @@
     .badge {
       display: inline-flex; align-items: center; gap: 0.4rem;
       font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.8px;
-      text-transform: uppercase; color: #ffd6e5;
-      border: 1px solid rgba(255,168,197,0.4); background: rgba(255,168,197,0.08);
+      text-transform: uppercase; color: #ffe8c2;
+      border: 1px solid rgba(232,163,61,0.4); background: rgba(232,163,61,0.08);
       padding: 0.3rem 0.65rem; border-radius: 20px; margin-bottom: 1rem;
     }
-    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-bloom); box-shadow: 0 0 6px var(--accent-bloom); }
+    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-amber); box-shadow: 0 0 6px var(--accent-amber); }
+
+    .badge.mint { color: #d6fff7; border-color: rgba(94,234,212,0.4); background: rgba(94,234,212,0.08); }
+    .badge.mint::before { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+    /* ---------- Verdict strip ---------- */
+    /* signature element: FactTrace's own SUPPORTED / UNVERIFIABLE / CONTRADICTED
+       vocabulary, rendered with the real confusion-matrix counts from run_eval.py */
+    .verdict-strip { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
+    .verdict-chip {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.3px;
+      padding: 0.4rem 0.75rem; border-radius: 4px;
+      border: 1px solid var(--chip-border); background: var(--chip-bg); color: var(--chip-text);
+    }
+    .verdict-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--chip-dot); box-shadow: 0 0 6px var(--chip-dot); flex-shrink: 0; }
+    .verdict-chip .count { color: var(--text-main); font-weight: 500; }
+    .verdict-chip.supported { --chip-border: rgba(94,234,212,0.35); --chip-bg: rgba(94,234,212,0.07); --chip-text: #b9f5e9; --chip-dot: var(--accent); }
+    .verdict-chip.unverifiable { --chip-border: rgba(232,163,61,0.35); --chip-bg: rgba(232,163,61,0.07); --chip-text: #f5dcae; --chip-dot: var(--accent-amber); }
+    .verdict-chip.contradicted { --chip-border: rgba(255,122,92,0.35); --chip-bg: rgba(255,122,92,0.07); --chip-text: #ffc9bb; --chip-dot: var(--accent-coral); }
+    .verdict-caption { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); margin-top: 0.7rem; letter-spacing: 0.3px; }
 
     /* ---------- Mini Slider ---------- */
     .mini-slider {
@@ -333,6 +378,8 @@
       background: var(--surface);
     }
     .skill-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .skill-tag.nlp { border-color: rgba(161,145,242,0.3); color: #cfc8ff; }
+    .skill-tag.nlp:hover { border-color: var(--accent-violet); color: var(--accent-violet); background: var(--accent-violet-dim); }
 
     /* ---------- Footer ---------- */
     footer { padding: 3.5rem 0; border-top: 1px solid var(--border); }
@@ -345,8 +392,8 @@
     a:focus-visible, .skill-tag:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
 
     @media (prefers-reduced-motion: reduce) {
-      .fade-up, .bokeh, .hero-eyebrow::before, .petal, .petal-inner { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
-      .petal-layer, .cursor-glow, .reticle { display: none !important; }
+      .fade-up, .bokeh, .telemetry-chip, .scan-line, .det-tag { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .telemetry-layer, .cursor-glow, .reticle, .scan-line { display: none !important; }
     }
 
     @media (max-width: 768px) {
@@ -359,6 +406,7 @@
       .card { padding: 1.5rem; }
       .card-header { flex-direction: column; }
       .cursor-glow, .reticle { display: none; }
+      .verdict-strip { gap: 0.5rem; }
     }
   </style>
 </head>
@@ -367,7 +415,7 @@
   <div class="scroll-progress"></div>
   <div class="cursor-glow"></div>
   <div class="reticle"></div>
-  <div class="petal-layer"></div>
+  <div class="telemetry-layer"></div>
 
   <div class="ambient-background">
     <div class="bokeh b1"></div>
@@ -398,6 +446,7 @@
 
     <header class="hero fade-up">
       <div class="hero-photo"></div>
+      <div class="scan-line"></div>
       <div class="af-corner tl"></div>
       <div class="af-corner tr"></div>
       <div class="af-corner bl"></div>
@@ -405,13 +454,13 @@
       <div class="det-tag">ID 0xA9F3 · <b>AVIRAL_NIGAM</b> · conf 0.99</div>
 
       <div class="hero-inner">
-        <h1>Vision that <em>reasons</em>, agents that <em>act</em>.</h1>
+        <h1>Claims that get <em>checked</em>, not assumed.</h1>
         <p class="hero-bio">
-          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>, working at the intersection of <strong>computer vision, machine learning, and agentic AI</strong>. I worked as a Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong> through August 2026, and I'm an <strong>author</strong> on an upcoming multimodal benchmark paper, <em>Last Translation Benchmark</em>.
+          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>, working on <strong>LLM factuality and evaluation</strong>, retrieval systems, and computer vision. I'm an <strong>author</strong> on an upcoming multimodal benchmark paper, <em>Last Translation Benchmark</em>, and I built <strong>FactTrace</strong>, a pipeline that verifies claims in agentic reasoning traces against retrieved evidence. I also spent a summer as a Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>.
         </p>
         <div class="coord-row">
+          <div class="coord-tag violet"><b>FOCUS</b> · LLM Factuality · Retrieval Systems · Computer Vision</div>
           <div class="coord-tag"><b>BASE</b> · MIT Manipal · 13.3467°N 74.7869°E</div>
-          <div class="coord-tag bloom"><b>FOCUS</b> · Computer Vision · Machine Learning · Agentic AI</div>
         </div>
       </div>
     </header>
@@ -419,7 +468,7 @@
     <section id="research" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Published / Ongoing Research</h2>
-        <span class="section-index">/ 01</span>
+        <span class="section-index">n=1</span>
       </div>
 
       <div class="card featured">
@@ -427,22 +476,22 @@
         <div class="af-corner tr"></div>
         <div class="af-corner bl"></div>
         <div class="af-corner br"></div>
-        <span class="badge">Author</span>
+        <span class="badge">Co-Author · Expected September 2026</span>
         <div class="card-header">
           <h3 class="card-title">Last Translation Benchmark</h3>
           <a href="https://last-translation-benchmark.vilda.net" target="_blank" class="project-link" title="View project">
             <i class="fas fa-arrow-up-right-from-square"></i>
           </a>
         </div>
-        <div class="card-subtitle">Author · with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
-        <p>Author on <em>"Last Translation Benchmark,"</em> an upcoming multilingual, multimodal benchmark for evaluating state-of-the-art models — contributing adversarial multimodal inputs designed to break current systems. In preparation for release.</p>
+        <div class="card-subtitle">Co-Author · with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
+        <p>Co-authoring <em>"Last Translation Benchmark,"</em> an upcoming multilingual, multimodal benchmark for evaluating state-of-the-art models — contributing adversarial multimodal inputs designed to break current systems. In preparation for release.</p>
       </div>
     </section>
 
     <section id="experience" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Professional Experience</h2>
-        <span class="section-index">/ 02</span>
+        <span class="section-index">4 mo</span>
       </div>
 
       <div class="card">
@@ -453,7 +502,7 @@
         <div class="card-header">
           <h3 class="card-title">Research Intern</h3>
         </div>
-        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad — advised by Dr. Sourav Garg · through August 2026</div>
+        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad — advised by Dr. Sourav Garg · May–August 2026</div>
         <ul>
           <li>Worked as a Research Intern, researching instance retrieval in high-resolution aerial and satellite imagery.</li>
           <li>Explored deep visual feature representations and similarity learning for object-centric retrieval.</li>
@@ -473,7 +522,30 @@
     <section id="projects" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Selected Projects</h2>
-        <span class="section-index">/ 03</span>
+        <span class="section-index">n=3</span>
+      </div>
+
+      <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
+        <span class="badge mint">78.5% → 87.7% Accuracy</span>
+        <div class="card-header">
+          <h3 class="card-title">FactTrace</h3>
+          <a href="https://github.com/Aviral0gHub/facttrace" target="_blank" class="project-link" title="View source code">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="card-subtitle">Python · PyTorch · Sentence-Transformers · HuggingFace Transformers · FAISS</div>
+        <p>Claim-level factuality verification pipeline for agentic LLM reasoning traces — decomposes multi-step reasoning into atomic claims, retrieves evidence via FAISS-based dense retrieval, and classifies each claim as supported, contradicted, or unverifiable using NLI-based entailment scoring. Improved accuracy from 78.5% (lexical baseline) to 87.7% by swapping in dense retrieval and RoBERTa-large-MNLI entailment scoring; failure analysis showed unsupported claims concentrate in later reasoning steps.</p>
+
+        <div class="verdict-strip">
+          <span class="verdict-chip supported"><span class="dot"></span>SUPPORTED <span class="count">41</span></span>
+          <span class="verdict-chip unverifiable"><span class="dot"></span>UNVERIFIABLE <span class="count">5</span></span>
+          <span class="verdict-chip contradicted"><span class="dot"></span>CONTRADICTED <span class="count">19</span></span>
+        </div>
+        <div class="verdict-caption">verdict breakdown — 65 claims, NLI scorer</div>
       </div>
 
       <div class="card">
@@ -510,9 +582,14 @@
     <section id="skills" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Technical Competencies</h2>
-        <span class="section-index">/ 04</span>
+        <span class="section-index">n=23</span>
       </div>
       <div class="skills-grid">
+        <div class="skill-tag nlp">Claim Decomposition</div>
+        <div class="skill-tag nlp">Retrieval-Augmented Verification</div>
+        <div class="skill-tag nlp">NLI / Entailment Scoring</div>
+        <div class="skill-tag nlp">HuggingFace Transformers</div>
+        <div class="skill-tag nlp">Sentence-Transformers</div>
         <div class="skill-tag">Python</div>
         <div class="skill-tag">C++</div>
         <div class="skill-tag">Java</div>
@@ -527,7 +604,6 @@
         <div class="skill-tag">OpenCV</div>
         <div class="skill-tag">Multimodal Evaluation</div>
         <div class="skill-tag">Agentic AI</div>
-        <div class="skill-tag">Prompt Optimization</div>
         <div class="skill-tag">Docker</div>
         <div class="skill-tag">Git / GitHub</div>
         <div class="skill-tag">REST APIs</div>
@@ -538,7 +614,7 @@
     <section id="gallery" class="fade-up">
       <div class="section-header">
         <h2 class="section-title">Vision Gallery</h2>
-        <span class="section-index">/ 05</span>
+        <span class="section-index">n=8</span>
       </div>
 
       <div class="gallery-grid">
@@ -584,7 +660,7 @@
       <div class="footer-links">
         <a href="mailto:nigamaviral21@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
         <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="https://github.com/aviral0gHub" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://github.com/Aviral0gHub" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
       </div>
     </div>
   </footer>
@@ -642,7 +718,7 @@
     if (finePointer && !reduceMotion) {
       document.body.classList.add('has-reticle');
       const reticle = document.querySelector('.reticle');
-      
+
       window.addEventListener('mousemove', (e) => {
         reticle.style.left = e.clientX + 'px';
         reticle.style.top = e.clientY + 'px';
@@ -692,38 +768,43 @@
       document.querySelector('.reticle')?.remove();
     }
 
-    /* falling sakura petals */
+    /* drifting telemetry tokens — replaces the old falling-petal effect with
+       small readouts pulled from the actual detection / verification vocabulary
+       (CV similarity + retrieval scores, NLI entailment labels, project stats) */
     if (!reduceMotion) {
-      const petalLayer = document.querySelector('.petal-layer');
-      const petalColors = [['#ffd6e0', '#ffb6c9'], ['#ffc2d1', '#ff8fab'], ['#ffe5ec', '#ffb3c6']];
-      const count = window.innerWidth < 640 ? 7 : 13;
+      const layer = document.querySelector('.telemetry-layer');
+      const tokens = [
+        'conf 0.91', 'IoU 0.78', 'NLI: ENTAIL', 'sim 0.64', 'MATCH',
+        'k=3', 'R\u00B2=0.59', 'top-1', 'FAISS', 'retrieved',
+        '87.7%', 'evidence', 'SUPPORTED', 'RMSE 6.62m', 'cos 0.82'
+      ];
+      const palette = ['#5eead4', '#e8a33d', '#a191f2'];
+      const count = window.innerWidth < 640 ? 8 : 14;
+
       for (let i = 0; i < count; i++) {
-        const outer = document.createElement('div');
-        outer.className = 'petal';
-        const size = 6 + Math.random() * 6;
-        const duration = 11 + Math.random() * 9;
+        const chip = document.createElement('div');
+        chip.className = 'telemetry-chip';
+        chip.textContent = tokens[Math.floor(Math.random() * tokens.length)];
+
+        const size = 0.62 + Math.random() * 0.22;
+        const duration = 13 + Math.random() * 10;
         const delay = -Math.random() * duration;
-        const sway = Math.round(Math.random() * 90 - 45) + 'px';
-        outer.style.left = (Math.random() * 100).toFixed(1) + '%';
-        outer.style.width = size.toFixed(1) + 'px';
-        outer.style.height = (size * 0.8).toFixed(1) + 'px';
-        outer.style.setProperty('--sway', sway);
-        outer.style.animationDuration = duration.toFixed(1) + 's';
-        outer.style.animationDelay = delay.toFixed(1) + 's';
-        outer.style.opacity = (0.18 + Math.random() * 0.22).toFixed(2);
+        const sway = Math.round(Math.random() * 70 - 35) + 'px';
+        const opacity = (0.22 + Math.random() * 0.2).toFixed(2);
+        const color = palette[Math.floor(Math.random() * palette.length)];
 
-        const inner = document.createElement('span');
-        inner.className = 'petal-inner';
-        const c = petalColors[Math.floor(Math.random() * petalColors.length)];
-        inner.style.setProperty('--p-color-a', c[0]);
-        inner.style.setProperty('--p-color-b', c[1]);
-        inner.style.animationDuration = (4 + Math.random() * 4).toFixed(1) + 's';
+        chip.style.left = (Math.random() * 92).toFixed(1) + '%';
+        chip.style.fontSize = size.toFixed(2) + 'rem';
+        chip.style.color = color;
+        chip.style.setProperty('--sway', sway);
+        chip.style.setProperty('--chip-op', opacity);
+        chip.style.animationDuration = duration.toFixed(1) + 's';
+        chip.style.animationDelay = delay.toFixed(1) + 's';
 
-        outer.appendChild(inner);
-        petalLayer.appendChild(outer);
+        layer.appendChild(chip);
       }
     } else {
-      document.querySelector('.petal-layer')?.remove();
+      document.querySelector('.telemetry-layer')?.remove();
     }
   </script>
 </body>

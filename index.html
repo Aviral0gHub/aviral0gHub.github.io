@@ -3,537 +3,460 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviral Nigam — Case File</title>
+  <title>aviral-nigam — Model Card</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --paper: #e9dfc4;
-      --paper-card: #f3ecd8;
-      --paper-deep: #ddd0a9;
-      --ink: #2a2420;
-      --ink-soft: #6b5f4f;
-      --ink-faint: #9c9078;
-      --line: rgba(42, 36, 32, 0.22);
-      --line-soft: rgba(42, 36, 32, 0.12);
+      --bg: #0c0e12;
+      --surface: #12151b;
+      --surface-alt: #171b22;
+      --border: #262c36;
+      --border-soft: #1c212a;
+      --text-main: #e6e9ef;
+      --text-muted: #8b93a3;
+      --text-faint: #565f6f;
 
-      --stamp-green: #3f6b4f;
-      --stamp-green-dim: rgba(63, 107, 79, 0.1);
-      --stamp-blue: #35516b;
-      --stamp-blue-dim: rgba(53, 81, 107, 0.1);
-      --stamp-red: #8c3a2e;
-      --stamp-red-dim: rgba(140, 58, 46, 0.1);
-      --stamp-ochre: #a67c3d;
-      --stamp-ochre-dim: rgba(166, 124, 61, 0.1);
+      --accent: #5ec9d6;
+      --accent-dim: rgba(94, 201, 214, 0.1);
+      --amber: #d4a72c;
+      --amber-dim: rgba(212, 167, 44, 0.1);
+      --coral: #e8776a;
+      --coral-dim: rgba(232, 119, 106, 0.1);
 
-      --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
 
     body {
-      background-color: var(--paper);
-      color: var(--ink);
-      font-family: 'Lora', serif;
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: var(--sans);
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      position: relative;
     }
 
-    /* paper fiber texture */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      pointer-events: none;
-      opacity: 0.05;
-      mix-blend-mode: multiply;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
-    .stamp-font { font-family: 'Special Elite', cursive; }
-    .mono { font-family: 'IBM Plex Mono', monospace; }
-
-    /* scroll progress — an ink underline instead of a neon bar */
-    .scroll-progress {
-      position: fixed;
-      top: 0; left: 0;
-      height: 3px;
-      width: 0%;
-      background: var(--ink);
-      opacity: 0.55;
-      z-index: 70;
-      transition: width 0.1s linear;
-    }
-
-    .fade-up { opacity: 0; transform: translateY(18px); transition: var(--transition); }
+    .fade-up { opacity: 0; transform: translateY(14px); transition: var(--transition); }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 0 1.75rem; position: relative; z-index: 2; }
+    .container { max-width: 880px; margin: 0 auto; padding: 0 1.75rem; }
 
-    /* ---------- Nav — folder tabs ---------- */
-    nav { padding-top: 2rem; }
-    .tab-row { display: flex; gap: 0.4rem; flex-wrap: wrap; list-style: none; padding: 0 0.5rem; }
-    .tab-row a {
-      display: inline-block;
-      font-family: 'Special Elite', cursive;
-      font-size: 0.7rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--ink-soft);
-      text-decoration: none;
-      background: var(--paper-card);
-      border: 1px solid var(--line);
-      border-bottom: none;
-      padding: 0.5rem 0.9rem 0.6rem;
-      clip-path: polygon(8% 0, 92% 0, 100% 100%, 0% 100%);
-      transition: color 0.25s ease, background 0.25s ease;
-    }
-    .tab-row a:hover { color: var(--ink); background: var(--paper-deep); }
-    .tab-edge { height: 2px; background: var(--line); margin-top: -1px; }
+    a { color: var(--accent); }
 
-    .brand-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0 0.5rem 1rem; }
-    .brand { font-family: 'Special Elite', cursive; font-size: 0.95rem; letter-spacing: 1.5px; color: var(--ink); text-decoration: none; }
-    .brand-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--ink-faint); }
+    /* ---------- Top bar ---------- */
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      padding: 1.1rem 0;
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(12, 14, 18, 0.92);
+      backdrop-filter: blur(8px);
+    }
+    .topbar .container { display: flex; justify-content: space-between; align-items: center; }
+    .repo-id { font-family: var(--mono); font-size: 0.85rem; color: var(--text-muted); }
+    .repo-id b { color: var(--text-main); font-weight: 500; }
+    .topbar nav { display: flex; gap: 1.4rem; }
+    .topbar nav a {
+      font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--text-muted); text-decoration: none; transition: color 0.2s ease;
+      position: relative; padding-bottom: 0.3rem;
+    }
+    .topbar nav a:hover { color: var(--text-main); }
+    .topbar nav a::after {
+      content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 2px;
+      background: var(--accent); transition: width 0.25s ease;
+    }
+    .topbar nav a.active { color: var(--accent); }
+    .topbar nav a.active::after { width: 100%; }
 
-    /* ---------- Hero: case cover sheet ---------- */
-    .hero {
-      display: flex;
-      gap: 2.5rem;
-      align-items: flex-start;
-      padding: 2.5rem 0 3rem;
-      border-bottom: 2px solid var(--line);
+    /* ---------- Header ---------- */
+    .card-header { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); }
+    .eyebrow {
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
     }
-    .hero-main { flex: 1; min-width: 0; }
+    .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
-    .case-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: 'Special Elite', cursive;
-      font-size: 0.7rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--stamp-blue);
-      border: 1.5px solid var(--stamp-blue);
-      padding: 0.4rem 0.8rem;
-      margin-bottom: 1.6rem;
-      transform: scale(1.25);
-      opacity: 0;
-      animation: stamp-thud 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) 0.15s 1 forwards;
+    h1 {
+      font-family: var(--mono); font-weight: 500; font-size: clamp(1.5rem, 4vw, 2.1rem);
+      color: var(--text-main); margin-bottom: 0.3rem;
     }
-    .case-badge::before { content: "\25CF"; font-size: 0.5rem; }
-    @keyframes stamp-thud {
-      0%   { opacity: 0; transform: scale(1.6) rotate(-3deg); }
-      60%  { opacity: 1; transform: scale(0.94) rotate(1deg); }
-      100% { opacity: 1; transform: scale(1) rotate(-1.2deg); }
-    }
+    h1 .cursor-blink { display: inline-block; width: 0.5ch; background: var(--accent); animation: blink 1s step-end infinite; margin-left: 2px; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    .hero h1 {
-      font-family: 'Special Elite', cursive;
-      font-size: clamp(1.7rem, 4.6vw, 2.7rem);
-      line-height: 1.32;
-      letter-spacing: -0.3px;
-      color: var(--ink);
-      max-width: 620px;
-      margin-bottom: 1.5rem;
-    }
-    .type-caret {
-      display: inline-block;
-      width: 0.55ch;
-      background: var(--ink);
-      opacity: 0;
-      animation: caret-blink 0.9s step-end infinite;
-    }
-    @keyframes caret-blink { 0%, 100% { opacity: 0; } 50% { opacity: 0.75; } }
+    .subtitle { color: var(--text-muted); font-size: 0.98rem; max-width: 620px; margin: 0.9rem 0 1.5rem; }
+    .subtitle strong { color: var(--text-main); font-weight: 600; }
 
-    .hero-bio { font-size: 1rem; color: var(--ink-soft); max-width: 560px; margin-bottom: 1.8rem; }
-    .hero-bio strong { color: var(--ink); font-weight: 600; }
-
-    .field-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-    .field-tag {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-      color: var(--ink-soft); border: 1px solid var(--line);
-      background: var(--paper-card);
-      padding: 0.4rem 0.7rem;
+    .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .badge2 {
+      display: inline-flex; font-family: var(--mono); font-size: 0.68rem; border-radius: 3px; overflow: hidden;
+      border: 1px solid var(--border);
     }
-    .field-tag b { font-family: 'Special Elite', cursive; color: var(--ink); font-weight: normal; letter-spacing: 0.5px; }
-
-    /* pinned polaroid photo */
-    .polaroid {
-      flex-shrink: 0;
-      width: 200px;
-      background: #fdfaf0;
-      border: 1px solid var(--line);
-      padding: 0.6rem 0.6rem 1.6rem;
-      box-shadow: 3px 4px 10px rgba(42,36,32,0.18);
-      transform: rotate(3.5deg);
-      position: relative;
-    }
-    .polaroid img { width: 100%; height: 190px; object-fit: cover; filter: sepia(0.15) contrast(1.02); display: block; }
-    .polaroid .pin {
-      position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
-      width: 16px; height: 16px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #d9857a, var(--stamp-red));
-      box-shadow: 0 2px 3px rgba(0,0,0,0.35);
-    }
-    .polaroid figcaption {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--ink-faint);
-      text-align: center; margin-top: 0.55rem; letter-spacing: 0.3px;
-    }
+    .badge2 .label { background: var(--surface-alt); color: var(--text-muted); padding: 0.3rem 0.6rem; }
+    .badge2 .value { padding: 0.3rem 0.6rem; font-weight: 500; }
+    .badge2.mint .value { background: var(--accent-dim); color: var(--accent); }
+    .badge2.amber .value { background: var(--amber-dim); color: var(--amber); }
+    .badge2.coral .value { background: var(--coral-dim); color: var(--coral); }
 
     /* ---------- Sections ---------- */
-    section { padding: 3.2rem 0; border-bottom: 1px solid var(--line-soft); }
-    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.8rem; }
-    .section-title {
-      font-family: 'Special Elite', cursive; font-size: 0.85rem;
-      text-transform: uppercase; letter-spacing: 2px; color: var(--ink);
+    section { padding: 3rem 0; border-bottom: 1px solid var(--border-soft); }
+    .section-label {
+      font-family: var(--mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--text-main); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.6rem;
     }
-    .section-title::before { content: "\2014\2014 "; color: var(--ink-faint); }
-    .section-count { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--ink-faint); }
+    .section-label::before { content: "##"; color: var(--text-faint); font-weight: 500; }
+    .section-sub { color: var(--text-faint); font-size: 0.82rem; margin-bottom: 1.8rem; font-style: italic; }
 
-    /* ---------- Exhibit cards ---------- */
-    .exhibit {
-      background: var(--paper-card);
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--stamp-blue);
-      padding: 1.8rem 2rem;
-      margin-bottom: 1.4rem;
-      position: relative;
-      box-shadow: 2px 3px 0 rgba(42,36,32,0.05);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    /* ---------- Key-value blocks (Model Details) ---------- */
+    .kv-grid { display: grid; grid-template-columns: 160px 1fr; gap: 0.7rem 1.2rem; font-size: 0.92rem; }
+    .kv-grid dt { font-family: var(--mono); color: var(--text-faint); font-size: 0.8rem; padding-top: 0.1rem; }
+    .kv-grid dd { color: var(--text-main); }
+
+    /* ---------- Evaluation table ---------- */
+    .eval-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 1rem; }
+    .eval-table th {
+      font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+      text-align: left; color: var(--text-faint); padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border);
     }
-    .exhibit:nth-child(odd)  { transform: rotate(-0.35deg); }
-    .exhibit:nth-child(even) { transform: rotate(0.35deg); }
-    .exhibit:hover { transform: rotate(0deg) translateY(-2px); box-shadow: 3px 6px 14px rgba(42,36,32,0.14); }
-    .exhibit.featured { border-left-color: var(--stamp-ochre); }
+    .eval-table td { padding: 0.9rem 0.8rem; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+    .eval-table tr:last-child td { border-bottom: none; }
+    .eval-table .name { color: var(--text-main); font-weight: 500; }
+    .eval-table .name a { color: inherit; text-decoration: none; }
+    .eval-table .name a:hover { color: var(--accent); }
+    .eval-table .sub { color: var(--text-faint); font-size: 0.78rem; font-family: var(--mono); margin-top: 0.2rem; }
+    .eval-table .metric { font-family: var(--mono); color: var(--text-muted); font-size: 0.82rem; }
+    .eval-table .result { font-family: var(--mono); font-weight: 500; }
+    .result.good { color: var(--accent); }
+    .result.pending { color: var(--amber); }
 
-    .exhibit-clip {
-      position: absolute; top: -10px; left: 22px;
-      font-family: 'Special Elite', cursive; font-size: 0.62rem;
-      letter-spacing: 1px; color: var(--ink-faint);
-      background: var(--paper); padding: 0.15rem 0.5rem;
-      border: 1px solid var(--line);
+    /* ---------- Verdict inline ---------- */
+    .verdict-inline { display: flex; flex-wrap: wrap; gap: 1.2rem; font-family: var(--mono); font-size: 0.8rem; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px dashed var(--border); }
+    .verdict-inline span b { color: var(--text-main); }
+    .verdict-inline .supported b { color: var(--accent); }
+    .verdict-inline .unverifiable b { color: var(--amber); }
+    .verdict-inline .contradicted b { color: var(--coral); }
+
+    /* ---------- Prose entries (Training / research write-ups) ---------- */
+    .entry { margin-bottom: 1.8rem; }
+    .entry:last-child { margin-bottom: 0; }
+    .entry-title { font-weight: 600; font-size: 1.02rem; color: var(--text-main); margin-bottom: 0.15rem; }
+    .entry-meta { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); margin-bottom: 0.6rem; }
+    .entry p, .entry ul { color: var(--text-muted); font-size: 0.92rem; }
+    .entry ul { padding-left: 1.1rem; margin-top: 0.4rem; }
+    .entry li { margin-bottom: 0.4rem; }
+    .entry.flash { animation: flash-highlight 1.4s ease; }
+    @keyframes flash-highlight {
+      0% { background: var(--accent-dim); }
+      100% { background: transparent; }
     }
 
-    .exhibit-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.3rem; }
-    .exhibit-title { font-family: 'Lora', serif; font-weight: 600; font-size: 1.3rem; color: var(--ink); }
-    .exhibit-link { color: var(--ink-soft); font-size: 1.05rem; transition: color 0.25s ease; flex-shrink: 0; }
-    .exhibit-link:hover { color: var(--stamp-blue); }
-    .exhibit-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--stamp-blue); margin-bottom: 1rem; }
-    .exhibit ul { list-style: none; color: var(--ink-soft); font-size: 0.92rem; }
-    .exhibit ul li { margin-bottom: 0.6rem; padding-left: 1rem; position: relative; }
-    .exhibit ul li::before { content: "\2013"; position: absolute; left: 0; color: var(--ink-faint); }
-    .exhibit p { color: var(--ink-soft); font-size: 0.92rem; }
-
-    .status-tag {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-family: 'Special Elite', cursive; font-size: 0.66rem; letter-spacing: 0.8px;
-      text-transform: uppercase; color: var(--stamp-blue);
-      border: 1px solid var(--stamp-blue); background: var(--stamp-blue-dim);
-      padding: 0.28rem 0.6rem; margin-bottom: 0.9rem;
+    /* ---------- Limitations ---------- */
+    .limitations-list { list-style: none; }
+    .limitations-list li {
+      display: flex; gap: 0.7rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border-soft);
+      font-size: 0.9rem; color: var(--text-muted);
     }
+    .limitations-list li:last-child { border-bottom: none; }
+    .limitations-list li::before { content: "!"; font-family: var(--mono); color: var(--amber); font-weight: 600; flex-shrink: 0; }
 
-    /* rubber stamp seal on the FactTrace exhibit */
-    .seal {
-      position: absolute; top: -14px; right: 18px;
-      width: 96px; height: 96px; border-radius: 50%;
-      border: 2.5px solid var(--stamp-green);
-      box-shadow: 0 0 0 3px var(--paper-card), 0 0 0 4px var(--stamp-green);
-      display: flex; align-items: center; justify-content: center;
-      transform: rotate(-11deg);
-      mix-blend-mode: multiply;
-      opacity: 0.88;
-      pointer-events: none;
-    }
-    .seal-text {
-      font-family: 'Special Elite', cursive; color: var(--stamp-green);
-      text-align: center; line-height: 1.15;
-    }
-    .seal-text .top { font-size: 0.62rem; letter-spacing: 1px; display: block; }
-    .seal-text .num { font-size: 1rem; font-weight: bold; display: block; }
-
-    /* verdict tags — index-card style */
-    .verdict-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
-    .verdict-tag {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-      padding: 0.35rem 0.65rem; border: 1px dashed var(--tag-color);
-      color: var(--tag-color); background: var(--tag-bg);
-    }
-    .verdict-tag b { color: var(--ink); }
-    .verdict-tag.supported     { --tag-color: var(--stamp-green); --tag-bg: var(--stamp-green-dim); }
-    .verdict-tag.unverifiable  { --tag-color: var(--stamp-ochre); --tag-bg: var(--stamp-ochre-dim); }
-    .verdict-tag.contradicted  { --tag-color: var(--stamp-red);   --tag-bg: var(--stamp-red-dim); }
-    .verdict-caption { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--ink-faint); margin-top: 0.6rem; }
-
-    /* mini photo strip inside experience exhibit */
-    .mini-strip { display: flex; gap: 0.7rem; margin-top: 1.4rem; }
-    .mini-strip img {
-      width: 92px; height: 70px; object-fit: cover;
-      border: 3px solid #fdfaf0; box-shadow: 1px 2px 5px rgba(42,36,32,0.2);
-      filter: sepia(0.12);
-    }
-    .mini-strip img:nth-child(1) { transform: rotate(-3deg); }
-    .mini-strip img:nth-child(2) { transform: rotate(2deg); }
-
-    /* ---------- Skills — index tabs ---------- */
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.55rem; }
-    .skill-tag {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
-      padding: 0.45rem 0.85rem; border: 1px solid var(--line);
-      background: var(--paper-card); color: var(--ink-soft);
+    /* ---------- Skills as tags ---------- */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-family: var(--mono); font-size: 0.76rem; padding: 0.4rem 0.7rem; border-radius: 3px;
+      border: 1px solid var(--border); color: var(--text-muted); background: var(--surface);
       transition: var(--transition);
     }
-    .skill-tag:hover { border-color: var(--stamp-blue); color: var(--stamp-blue); background: var(--stamp-blue-dim); }
-    .skill-tag.nlp { border-color: rgba(63,107,79,0.4); color: var(--stamp-green); }
-    .skill-tag.nlp:hover { background: var(--stamp-green-dim); }
+    .tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .tag.core { border-color: rgba(94,201,214,0.3); color: var(--accent); }
 
-    /* ---------- Gallery: exhibit photos ---------- */
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.3rem; }
-    .gallery-item {
-      background: #fdfaf0; padding: 0.5rem 0.5rem 1.3rem; border: 1px solid var(--line);
-      box-shadow: 2px 3px 8px rgba(42,36,32,0.14); transition: transform 0.25s ease;
+    /* ---------- Appendix gallery ---------- */
+    .appendix-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; }
+    .appendix-item { border-radius: 5px; overflow: hidden; border: 1px solid var(--border); aspect-ratio: 4/3; }
+    .appendix-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) contrast(1.02); transition: transform 0.4s ease; }
+    .appendix-item:hover img { transform: scale(1.04); }
+
+    /* ---------- Citation block ---------- */
+    .citation-block {
+      font-family: var(--mono); font-size: 0.82rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.2rem 1.4rem; color: var(--text-muted); overflow-x: auto; white-space: pre;
     }
-    .gallery-item:nth-child(odd)  { transform: rotate(-1.4deg); }
-    .gallery-item:nth-child(even) { transform: rotate(1.4deg); }
-    .gallery-item:hover { transform: rotate(0deg) scale(1.02); }
-    .gallery-item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: sepia(0.15) contrast(1.02); display: block; }
-    .gallery-item figcaption { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--ink-faint); text-align: center; margin-top: 0.5rem; }
+    .contact-row { display: flex; gap: 1.2rem; margin-top: 1.3rem; }
+    .contact-row a {
+      display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.82rem;
+      color: var(--text-muted); text-decoration: none; border: 1px solid var(--border); padding: 0.5rem 0.9rem;
+      border-radius: 4px; transition: var(--transition);
+    }
+    .contact-row a:hover { color: var(--accent); border-color: var(--accent); }
 
-    /* ---------- Footer ---------- */
-    footer { padding: 2.6rem 0 3.5rem; }
-    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.2rem; }
-    .footer-meta { color: var(--ink-faint); font-size: 0.75rem; font-family: 'IBM Plex Mono', monospace; }
-    .footer-links { display: flex; gap: 1.1rem; }
-    .footer-links a { color: var(--ink-soft); font-size: 1rem; transition: color 0.25s ease; }
-    .footer-links a:hover { color: var(--stamp-blue); }
+    footer { padding: 2.5rem 0; text-align: center; }
+    footer p { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); }
 
-    a:focus-visible, .skill-tag:focus-visible { outline: 1.5px solid var(--stamp-blue); outline-offset: 3px; }
+    /* ---------- Interactivity additions ---------- */
+
+    /* tabbed sections (JS-driven; only active on wide viewports, see script) */
+    body.tabs-active section[data-tab] { display: none; }
+    body.tabs-active section[data-tab].active-tab { display: block; }
+
+    /* result rows are clickable to reveal a bit more detail */
+    .eval-table tr.evaluable { cursor: pointer; }
+    .eval-table tr.evaluable:hover { background: var(--surface); }
+    .eval-detail-row td { padding: 0 0.8rem 1rem; border-bottom: 1px solid var(--border-soft); }
+    .eval-detail-row { display: none; }
+    .eval-detail-row.open { display: table-row; }
+    .eval-detail-row p { color: var(--text-muted); font-size: 0.85rem; max-width: 560px; }
+    .expand-hint { font-family: var(--mono); font-size: 0.68rem; color: var(--text-faint); margin-left: 0.5rem; }
+
+    /* pending pulse dot */
+    .result.pending::before {
+      content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--amber); margin-right: 0.4rem; animation: pulse-dot 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* copy button on citation block */
+    .citation-wrap { position: relative; }
+    .copy-btn {
+      position: absolute; top: 0.7rem; right: 0.7rem;
+      font-family: var(--mono); font-size: 0.68rem; color: var(--text-muted);
+      background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.35rem 0.6rem; cursor: pointer; transition: var(--transition);
+    }
+    .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .copy-btn.copied { color: var(--accent); border-color: var(--accent); }
+
+    /* tag filter input */
+    .tag-filter {
+      font-family: var(--mono); font-size: 0.82rem; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 4px; color: var(--text-main);
+      padding: 0.55rem 0.8rem; width: 100%; max-width: 280px; margin-bottom: 1rem;
+    }
+    .tag-filter:focus { outline: none; border-color: var(--accent); }
+    .tag-filter::placeholder { color: var(--text-faint); }
+    .tag.hidden-tag { display: none; }
+    .tag-count { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); margin-bottom: 0.8rem; }
 
     @media (prefers-reduced-motion: reduce) {
-      .fade-up, .case-badge, .type-caret { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .fade-up, .cursor-blink { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
     }
 
-    @media (max-width: 720px) {
-      .hero { flex-direction: column-reverse; }
-      .polaroid { width: 150px; align-self: center; }
-      .exhibit { padding: 1.4rem 1.3rem; }
-      .exhibit-header { flex-direction: column; }
-      .tab-row { justify-content: center; }
+    @media (max-width: 700px) {
+      .topbar nav { display: none; }
+      .kv-grid { grid-template-columns: 1fr; }
+      .kv-grid dt { padding-top: 0.6rem; }
+      .eval-table { font-size: 0.8rem; }
+      .eval-table th:nth-child(2), .eval-table td:nth-child(2) { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="scroll-progress"></div>
+  <div class="topbar fade-up">
+    <div class="container">
+      <span class="repo-id"><b>aviral-nigam</b> / trustworthy-ml-researcher</span>
+      <nav>
+        <a href="#details" data-target="details" class="active">Details</a>
+        <a href="#training" data-target="training">Training</a>
+        <a href="#evaluation" data-target="evaluation">Evaluation</a>
+        <a href="#limitations" data-target="limitations">Limitations</a>
+        <a href="#skills" data-target="tags">Tags</a>
+        <a href="#appendix" data-target="appendix">Appendix</a>
+        <a href="#contact" data-target="contact">Contact</a>
+      </nav>
+    </div>
+  </div>
 
   <div class="container">
 
-    <nav class="fade-up">
-      <div class="brand-row">
-        <a href="#" class="brand">AVIRAL NIGAM</a>
-        <span class="brand-sub mono">CASE FILE · MIT MANIPAL</span>
+    <header class="card-header fade-up">
+      <div class="eyebrow">Model Card</div>
+      <h1>aviral-nigam<span class="cursor-blink"></span></h1>
+      <p class="subtitle">
+        <strong>Domain:</strong> Trustworthy ML — LLM evaluation, factuality, and calibration, with a foundation in retrieval systems and computer vision. Currently a Data Science &amp; Engineering undergraduate at MIT Manipal.
+      </p>
+      <div class="badge-row">
+        <span class="badge2 mint"><span class="label">domain</span><span class="value">trustworthy-ml</span></span>
+        <span class="badge2 amber"><span class="label">status</span><span class="value">seeking-internship</span></span>
+        <span class="badge2 mint"><span class="label">stack</span><span class="value">pytorch · huggingface · faiss</span></span>
+        <span class="badge2 coral"><span class="label">license</span><span class="value">open-to-collab</span></span>
       </div>
-      <ul class="tab-row">
-        <li><a href="#research">Research</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-      </ul>
-      <div class="tab-edge"></div>
-    </nav>
-
-    <header class="hero fade-up">
-      <div class="hero-main">
-        <div class="case-badge">Case No. 0xA9F3 &middot; Domain: Trustworthy ML</div>
-        <h1 id="typed-heading"></h1>
-        <p class="hero-bio">
-          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>, working on <strong>trustworthy ML</strong> — LLM evaluation, factuality, and calibration — along with retrieval systems and computer vision. I'm a <strong>co-author</strong> on an upcoming multimodal benchmark, <em>Last Translation Benchmark</em>, and I built <strong>FactTrace</strong> (claim-level factuality verification) and <strong>CalibCheck</strong> (confidence calibration analysis), two projects looking at the same question from different angles: can a model's output actually be trusted. I also spent a summer as a Research Intern at the <strong>Robotics Research Center, IIIT Hyderabad</strong>.
-        </p>
-        <div class="field-row">
-          <div class="field-tag"><b>Focus</b> &middot; Trustworthy ML &middot; LLM evaluation &middot; retrieval &middot; computer vision</div>
-          <div class="field-tag"><b>Filed</b> &middot; Manipal, Karnataka</div>
-        </div>
-      </div>
-      <figure class="polaroid">
-        <div class="pin"></div>
-        <img src="20260520_161154.jpg" alt="Aviral at IIIT Hyderabad">
-        <figcaption>EXHIBIT A — SELF, IIIT-H CAMPUS</figcaption>
-      </figure>
     </header>
 
-    <section id="research" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Published / Ongoing Research</h2>
-        <span class="section-count mono">1 filed</span>
-      </div>
-
-      <div class="exhibit featured">
-        <span class="exhibit-clip">EXHIBIT R-1</span>
-        <span class="status-tag">Co-Author &middot; Expected Sept 2026</span>
-        <div class="exhibit-header">
-          <h3 class="exhibit-title">Last Translation Benchmark</h3>
-          <a href="https://last-translation-benchmark.vilda.net" target="_blank" class="exhibit-link" title="View project">
-            <i class="fas fa-arrow-up-right-from-square"></i>
-          </a>
-        </div>
-        <div class="exhibit-subtitle">with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
-        <p>Co-authoring an upcoming multilingual, multimodal benchmark for evaluating state-of-the-art models — contributing adversarial multimodal inputs designed to break current systems. In preparation for release.</p>
-      </div>
+    <section id="details" data-tab="details" class="fade-up active-tab">
+      <div class="section-label">Model Details</div>
+      <div class="section-sub">Who this is and how it's currently configured</div>
+      <dl class="kv-grid">
+        <dt>Base</dt>
+        <dd>B.Tech, Data Science &amp; Engineering — Manipal Institute of Technology, MAHE (expected July 2028)</dd>
+        <dt>Coursework</dt>
+        <dd>Deep Learning, Data Structures &amp; Algorithms, Linear Algebra &amp; Probability, Statistical Modeling, Database Management Systems</dd>
+        <dt>Location</dt>
+        <dd>Manipal, Karnataka, India</dd>
+        <dt>Contact</dt>
+        <dd><a href="mailto:nigamaviral21@gmail.com">nigamaviral21@gmail.com</a></dd>
+      </dl>
     </section>
 
-    <section id="experience" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Professional Experience</h2>
-        <span class="section-count mono">4 months</span>
-      </div>
+    <section id="training" data-tab="training" class="fade-up">
+      <div class="section-label">Training Data</div>
+      <div class="section-sub">What this profile was shaped by</div>
 
-      <div class="exhibit">
-        <span class="exhibit-clip">EXHIBIT E-1</span>
-        <div class="exhibit-header">
-          <h3 class="exhibit-title">Research Intern</h3>
-        </div>
-        <div class="exhibit-subtitle">Robotics Research Center, IIIT Hyderabad — advised by Dr. Sourav Garg &middot; May–Aug 2026</div>
+      <div class="entry">
+        <div class="entry-title">Research Intern — Robotics Research Center (RRC), IIIT Hyderabad</div>
+        <div class="entry-meta">Advised by Dr. Sourav Garg · May–Aug 2026</div>
         <ul>
-          <li>Researched instance retrieval in high-resolution aerial and satellite imagery.</li>
-          <li>Explored deep visual feature representations and similarity learning for object-centric retrieval.</li>
-          <li>Engineered spatial data preprocessing pipelines for deep feature matching models.</li>
+          <li>Researched fine-grained visual instance retrieval, building neural pipelines using deep visual feature representations and similarity learning across large-scale datasets.</li>
+          <li>Implemented high-throughput vector search (FAISS) for image indexing and feature retrieval.</li>
+          <li>Engineered automated embedding extraction and normalization pipelines for metric learning architectures.</li>
         </ul>
-        <div class="mini-strip">
-          <img src="20260521_115503.jpg" alt="RRC Workstation">
-          <img src="20260520_174244.jpg" alt="Kohli Research Block">
-        </div>
       </div>
     </section>
 
-    <section id="projects" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Selected Projects</h2>
-        <span class="section-count mono">3 filed</span>
+    <section id="evaluation" data-tab="evaluation" class="fade-up">
+      <div class="section-label">Evaluation Results</div>
+      <div class="section-sub">Benchmarks run so far, and what they measured</div>
+
+      <table class="eval-table">
+        <thead>
+          <tr><th>Benchmark</th><th>Metric</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          <tr class="evaluable" data-jump="entry-facttrace">
+            <td class="name"><a href="https://github.com/Aviral0gHub/facttrace" target="_blank" onclick="event.stopPropagation()">FactTrace</a><div class="sub">65-claim curated factuality benchmark</div></td>
+            <td class="metric">Claim-level accuracy</td>
+            <td class="result good">78.5% → <span class="countup" data-from="78.5" data-to="87.7" data-suffix="%">78.5%</span></td>
+          </tr>
+          <tr class="evaluable" data-jump="entry-calibcheck">
+            <td class="name"><a href="https://github.com/Aviral0gHub/calibcheck" target="_blank" onclick="event.stopPropagation()">CalibCheck</a><div class="sub">60-question calibration benchmark, 6 domains</div></td>
+            <td class="metric">Expected Calibration Error</td>
+            <td class="result pending">pending real-model run</td>
+          </tr>
+          <tr class="evaluable" data-jump="entry-ltb">
+            <td class="name">Last Translation Benchmark<div class="sub">adversarial multimodal factuality dataset</div></td>
+            <td class="metric">Release status</td>
+            <td class="result pending">co-authoring, expected Sept 2026</td>
+          </tr>
+          <tr>
+            <td class="name"><a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank">LVI</a><div class="sub">78K-sample vegetation regression (earlier CV work)</div></td>
+            <td class="metric">RMSE (R²)</td>
+            <td class="result good">6.62m (R²=0.592)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="expand-hint">click a row to jump to its full write-up below</div>
+
+      <div class="verdict-inline">
+        <span class="supported">SUPPORTED <b class="countup" data-from="0" data-to="41">0</b></span>
+        <span class="unverifiable">UNVERIFIABLE <b class="countup" data-from="0" data-to="5">0</b></span>
+        <span class="contradicted">CONTRADICTED <b class="countup" data-from="0" data-to="19">0</b></span>
+        <span style="color: var(--text-faint)">— FactTrace verdict breakdown, NLI scorer</span>
       </div>
 
-      <div class="exhibit">
-        <span class="exhibit-clip">EXHIBIT P-1</span>
-        <div class="seal">
-          <span class="seal-text"><span class="top">Verified</span><span class="num">87.7%</span></span>
-        </div>
-        <div class="exhibit-header">
-          <h3 class="exhibit-title">FactTrace</h3>
-          <a href="https://github.com/Aviral0gHub/facttrace" target="_blank" class="exhibit-link" title="View source code">
-            <i class="fab fa-github"></i>
-          </a>
-        </div>
-        <div class="exhibit-subtitle">Python &middot; PyTorch &middot; Sentence-Transformers &middot; HuggingFace Transformers &middot; FAISS</div>
-        <p>Claim-level factuality verification pipeline for agentic LLM reasoning traces — decomposes multi-step reasoning into atomic claims, retrieves evidence via FAISS-based dense retrieval, and classifies each claim as supported, contradicted, or unverifiable using NLI-based entailment scoring. Improved accuracy from 78.5% (lexical baseline) to 87.7% by swapping in dense retrieval and RoBERTa-large-MNLI entailment scoring; failure analysis showed unsupported claims concentrate in later reasoning steps.</p>
-
-        <div class="verdict-row">
-          <span class="verdict-tag supported">SUPPORTED &nbsp;<b>41</b></span>
-          <span class="verdict-tag unverifiable">UNVERIFIABLE &nbsp;<b>5</b></span>
-          <span class="verdict-tag contradicted">CONTRADICTED &nbsp;<b>19</b></span>
-        </div>
-        <div class="verdict-caption">verdict breakdown — 65 claims, NLI scorer</div>
+      <div class="entry" id="entry-facttrace" style="margin-top: 2.2rem;">
+        <div class="entry-title">FactTrace — Claim-level factuality verification</div>
+        <div class="entry-meta">Python · PyTorch · Sentence-Transformers · HuggingFace Transformers · FAISS</div>
+        <p>Decomposes multi-step agentic LLM reasoning into atomic claims, retrieves evidence via FAISS-based dense retrieval, and classifies each claim as supported, contradicted, or unverifiable using NLI-based entailment scoring. Failure analysis showed unsupported claims concentrate in later reasoning steps.</p>
       </div>
 
-      <div class="exhibit">
-        <span class="exhibit-clip">EXHIBIT P-2</span>
-        <span class="status-tag">Trustworthy ML &middot; Calibration</span>
-        <div class="exhibit-header">
-          <h3 class="exhibit-title">CalibCheck</h3>
-          <a href="https://github.com/Aviral0gHub/calibcheck" target="_blank" class="exhibit-link" title="View source code">
-            <i class="fab fa-github"></i>
-          </a>
-        </div>
-        <div class="exhibit-subtitle">Python &middot; HuggingFace Transformers &middot; Anthropic API &middot; Matplotlib</div>
-        <p>Measures whether an LLM's confidence actually tracks whether it's right — comparing verbalized self-reported confidence against raw next-token probability over answer choices, using Expected Calibration Error, Brier score, and reliability diagrams. Results are also broken down by topic domain, since a model can look calibrated in aggregate while being systematically over- or under-confident on one specific subject.</p>
+      <div class="entry" id="entry-calibcheck">
+        <div class="entry-title">CalibCheck — Confidence calibration analysis</div>
+        <div class="entry-meta">Python · HuggingFace Transformers · Anthropic API · Matplotlib</div>
+        <p>Measures whether an LLM's confidence actually tracks whether it's right, comparing verbalized self-reported confidence against raw next-token probability over answer choices. Breaks results down by topic domain, since aggregate calibration can hide systematic over- or under-confidence on specific subjects.</p>
       </div>
 
-      <div class="exhibit">
-        <span class="exhibit-clip">EXHIBIT P-3</span>
-        <div class="exhibit-header">
-          <h3 class="exhibit-title">Learned Vegetation Index (LVI)</h3>
-          <a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank" class="exhibit-link" title="View source code">
-            <i class="fab fa-github"></i>
-          </a>
-        </div>
-        <div class="exhibit-subtitle">PyTorch &middot; XGBoost &middot; Sentinel-2 &middot; GEDI LiDAR</div>
-        <p>Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation. Earlier computer vision work, from before this trustworthy-ML focus.</p>
-      </div>
-    </section>
-
-    <section id="skills" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Technical Competencies</h2>
-        <span class="section-count mono">24 filed</span>
-      </div>
-      <div class="skills-grid">
-        <div class="skill-tag nlp">Claim Decomposition</div>
-        <div class="skill-tag nlp">Retrieval-Augmented Verification</div>
-        <div class="skill-tag nlp">NLI / Entailment Scoring</div>
-        <div class="skill-tag nlp">Calibration Analysis</div>
-        <div class="skill-tag nlp">HuggingFace Transformers</div>
-        <div class="skill-tag nlp">Sentence-Transformers</div>
-        <div class="skill-tag">Python</div>
-        <div class="skill-tag">C++</div>
-        <div class="skill-tag">Java</div>
-        <div class="skill-tag">SQL</div>
-        <div class="skill-tag">PyTorch</div>
-        <div class="skill-tag">Torchvision</div>
-        <div class="skill-tag">Scikit-Learn</div>
-        <div class="skill-tag">Transfer Learning</div>
-        <div class="skill-tag">Metric Learning</div>
-        <div class="skill-tag">Vector Databases (FAISS)</div>
-        <div class="skill-tag">Instance Retrieval</div>
-        <div class="skill-tag">OpenCV</div>
-        <div class="skill-tag">Multimodal Evaluation</div>
-        <div class="skill-tag">Agentic AI</div>
-        <div class="skill-tag">Docker</div>
-        <div class="skill-tag">Git / GitHub</div>
-        <div class="skill-tag">REST APIs</div>
-        <div class="skill-tag">CUDA</div>
+      <div class="entry" id="entry-ltb">
+        <div class="entry-title">Last Translation Benchmark — Co-Author</div>
+        <div class="entry-meta">with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
+        <p>Co-authoring an upcoming multilingual, multimodal factuality benchmark. Contributed adversarial multimodal inputs designed to break state-of-the-art models.</p>
       </div>
     </section>
 
-    <section id="gallery" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Vision Gallery</h2>
-        <span class="section-count mono">8 filed</span>
-      </div>
+    <section id="limitations" data-tab="limitations" class="fade-up">
+      <div class="section-label">Limitations &amp; Known Issues</div>
+      <div class="section-sub">Stated plainly, same as any model card should</div>
+      <ul class="limitations-list">
+        <li>CalibCheck's calibration numbers are from a synthetic baseline only — real verbalized-vs-raw-probability comparison is still pending a live run.</li>
+        <li>Evaluation work so far is primarily English-language; multilingual generalization beyond LTB's adversarial examples is untested.</li>
+        <li>Retrieval-based verification (FactTrace) depends on having a relevant evidence corpus available — behavior under fully closed-book conditions hasn't been benchmarked.</li>
+      </ul>
+    </section>
 
-      <div class="gallery-grid">
-        <figure class="gallery-item"><img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad"><figcaption>EXHIBIT G-1</figcaption></figure>
-        <figure class="gallery-item"><img src="20260521_115547.jpg" alt="RRC Robotics Lab View"><figcaption>EXHIBIT G-2</figcaption></figure>
-        <figure class="gallery-item"><img src="20260520_174144.jpg" alt="Campus Mural"><figcaption>EXHIBIT G-3</figcaption></figure>
-        <figure class="gallery-item"><img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus"><figcaption>EXHIBIT G-4</figcaption></figure>
-        <figure class="gallery-item"><img src="20260520_174209.jpg" alt="Campus Greenery"><figcaption>EXHIBIT G-5</figcaption></figure>
-        <figure class="gallery-item"><img src="20260520_174244.jpg" alt="Kohli Research Block Entrance"><figcaption>EXHIBIT G-6</figcaption></figure>
-        <figure class="gallery-item"><img src="20260521_115503.jpg" alt="RRC Workspace"><figcaption>EXHIBIT G-7</figcaption></figure>
-        <figure class="gallery-item"><img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue"><figcaption>EXHIBIT G-8</figcaption></figure>
+    <section id="skills" data-tab="tags" class="fade-up">
+      <div class="section-label">Tags</div>
+      <input type="text" class="tag-filter" id="tagFilter" placeholder="filter tags...">
+      <div class="tag-count" id="tagCount"></div>
+      <div class="tag-cloud" id="tagCloud">
+        <span class="tag core">Claim Decomposition</span>
+        <span class="tag core">Retrieval-Augmented Verification</span>
+        <span class="tag core">NLI / Entailment Scoring</span>
+        <span class="tag core">Calibration Analysis</span>
+        <span class="tag core">HuggingFace Transformers</span>
+        <span class="tag core">Sentence-Transformers</span>
+        <span class="tag">Python</span>
+        <span class="tag">C++</span>
+        <span class="tag">Java</span>
+        <span class="tag">SQL</span>
+        <span class="tag">PyTorch</span>
+        <span class="tag">Scikit-Learn</span>
+        <span class="tag">Transfer Learning</span>
+        <span class="tag">Metric Learning</span>
+        <span class="tag">Vector Databases (FAISS)</span>
+        <span class="tag">Instance Retrieval</span>
+        <span class="tag">Docker</span>
+        <span class="tag">Git / GitHub</span>
+        <span class="tag">REST APIs</span>
+        <span class="tag">CUDA</span>
+      </div>
+    </section>
+
+    <section id="appendix" data-tab="appendix" class="fade-up">
+      <div class="section-label">Appendix — Deployment Environment</div>
+      <div class="section-sub">IIIT Hyderabad, where the RRC internship happened</div>
+      <div class="appendix-grid">
+        <div class="appendix-item"><img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad"></div>
+        <div class="appendix-item"><img src="20260521_115547.jpg" alt="RRC Robotics Lab View"></div>
+        <div class="appendix-item"><img src="20260520_174144.jpg" alt="Campus Mural"></div>
+        <div class="appendix-item"><img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus"></div>
+        <div class="appendix-item"><img src="20260520_174209.jpg" alt="Campus Greenery"></div>
+        <div class="appendix-item"><img src="20260520_174244.jpg" alt="Kohli Research Block Entrance"></div>
+        <div class="appendix-item"><img src="20260521_115503.jpg" alt="RRC Workspace"></div>
+        <div class="appendix-item"><img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue"></div>
+      </div>
+    </section>
+
+    <section id="contact" data-tab="contact" class="fade-up" style="border-bottom: none;">
+      <div class="section-label">Citation &amp; Contact</div>
+      <div class="section-sub">How to reach or reference this profile</div>
+      <div class="citation-wrap">
+        <button class="copy-btn" id="copyBtn" onclick="copyCitation()">copy</button>
+        <div class="citation-block" id="citationText">@misc{nigam2026profile,
+  author = {Nigam, Aviral},
+  title  = {Trustworthy ML Researcher Profile},
+  year   = {2026},
+  note   = {LLM Evaluation, Factuality, Calibration},
+  url    = {https://aviral0ghub.github.io}
+}</div>
+      </div>
+      <div class="contact-row">
+        <a href="mailto:nigamaviral21@gmail.com"><i class="fas fa-envelope"></i> Email</a>
+        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+        <a href="https://github.com/Aviral0gHub" target="_blank"><i class="fab fa-github"></i> GitHub</a>
       </div>
     </section>
 
   </div>
 
-  <footer class="fade-up">
-    <div class="container">
-      <div class="footer-meta">FILE CLOSED &middot; &copy; 2026 AVIRAL NIGAM</div>
-      <div class="footer-links">
-        <a href="mailto:nigamaviral21@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
-        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="https://github.com/Aviral0gHub" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-      </div>
-    </div>
+  <footer>
+    <p>last updated 2026-08 &middot; model card format inspired by ML documentation conventions</p>
   </footer>
 
   <script>
-    /* fade-up on scroll */
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+    /* ---------- fade-up on scroll ---------- */
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -541,46 +464,134 @@
           obs.unobserve(entry.target);
         }
       });
-    }, observerOptions);
+    }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
     setTimeout(() => {
       document.querySelectorAll('.fade-up').forEach((el, i) => { if (i < 2) el.classList.add('visible'); });
     }, 80);
 
-    /* scroll progress */
-    const progressBar = document.querySelector('.scroll-progress');
-    function updateProgress() {
-      const h = document.documentElement;
-      const scrollable = h.scrollHeight - h.clientHeight;
-      const pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
-      progressBar.style.width = pct + '%';
-    }
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
-
-    /* typewriter reveal for the hero headline */
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const heading = document.getElementById('typed-heading');
-    const fullText = 'Claims that get checked, not assumed.';
 
-    if (reduceMotion) {
-      heading.textContent = fullText;
-    } else {
-      let i = 0;
-      const caret = document.createElement('span');
-      caret.className = 'type-caret';
-      caret.textContent = '\u2588';
+    /* ---------- tab switching (wide viewports only -- narrow screens keep
+       the normal scrolling single-page layout since the topbar nav itself
+       is hidden below 700px) ---------- */
+    const tabNavLinks = document.querySelectorAll('.topbar nav a[data-target]');
+    const tabCapable = window.matchMedia('(min-width: 701px)').matches;
 
-      function typeNext() {
-        if (i <= fullText.length) {
-          heading.textContent = fullText.slice(0, i);
-          heading.appendChild(caret);
-          i++;
-          setTimeout(typeNext, 28 + Math.random() * 35);
-        }
+    if (tabCapable) {
+      document.body.classList.add('tabs-active');
+
+      function activateTab(target, scrollToTop = true) {
+        document.querySelectorAll('section[data-tab]').forEach(sec => {
+          sec.classList.toggle('active-tab', sec.dataset.tab === target);
+          if (sec.dataset.tab === target) sec.classList.add('visible');
+        });
+        tabNavLinks.forEach(link => link.classList.toggle('active', link.dataset.target === target));
+        if (scrollToTop) window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
       }
-      setTimeout(typeNext, 500);
+
+      tabNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          activateTab(link.dataset.target);
+        });
+      });
+
+      // clicking a benchmark row jumps to the evaluation tab and flashes
+      // the matching write-up, instead of duplicating the same text twice
+      document.querySelectorAll('tr.evaluable').forEach(row => {
+        row.addEventListener('click', () => {
+          activateTab('evaluation', false);
+          const entry = document.getElementById(row.dataset.jump);
+          if (entry) {
+            entry.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+            entry.classList.remove('flash');
+            void entry.offsetWidth; // restart animation if clicked twice
+            entry.classList.add('flash');
+          }
+        });
+      });
+    } else {
+      // narrow screens: no tabs, but row clicks still jump+flash within the
+      // normal scrolling page
+      document.querySelectorAll('tr.evaluable').forEach(row => {
+        row.addEventListener('click', () => {
+          const entry = document.getElementById(row.dataset.jump);
+          if (entry) {
+            entry.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+            entry.classList.remove('flash');
+            void entry.offsetWidth;
+            entry.classList.add('flash');
+          }
+        });
+      });
     }
+
+    /* ---------- count-up numbers, triggered once when scrolled into view ---------- */
+    function animateCount(el) {
+      const from = parseFloat(el.dataset.from);
+      const to = parseFloat(el.dataset.to);
+      const suffix = el.dataset.suffix || '';
+      const decimals = (el.dataset.to.split('.')[1] || '').length;
+      if (reduceMotion) { el.textContent = to.toFixed(decimals) + suffix; return; }
+
+      const duration = 900;
+      const start = performance.now();
+      function step(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = from + (to - from) * eased;
+        el.textContent = current.toFixed(decimals) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    const countEls = document.querySelectorAll('.countup');
+    const countObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    countEls.forEach(el => countObserver.observe(el));
+    // evaluation tab starts hidden on wide viewports, so also trigger once
+    // its tab becomes active for the first time
+    document.querySelectorAll('.topbar nav a[data-target="evaluation"]').forEach(link => {
+      link.addEventListener('click', () => countEls.forEach(el => { if (!el.dataset.done) { animateCount(el); el.dataset.done = '1'; } }), { once: true });
+    });
+
+    /* ---------- copy citation ---------- */
+    function copyCitation() {
+      const text = document.getElementById('citationText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1600);
+      });
+    }
+
+    /* ---------- live tag filter ---------- */
+    const tagCloud = document.getElementById('tagCloud');
+    const allTags = Array.from(tagCloud.querySelectorAll('.tag'));
+    const tagCountEl = document.getElementById('tagCount');
+
+    function updateTagCount() {
+      const visible = allTags.filter(t => !t.classList.contains('hidden-tag')).length;
+      tagCountEl.textContent = `${visible} / ${allTags.length} shown`;
+    }
+    updateTagCount();
+
+    document.getElementById('tagFilter').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      allTags.forEach(tag => {
+        tag.classList.toggle('hidden-tag', q.length > 0 && !tag.textContent.toLowerCase().includes(q));
+      });
+      updateTagCount();
+    });
   </script>
 </body>
 </html>

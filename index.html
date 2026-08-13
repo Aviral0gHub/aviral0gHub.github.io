@@ -3,460 +3,673 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aviral-nigam — Model Card</title>
+  <title>Aviral Nigam</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --bg: #0c0e12;
-      --surface: #12151b;
-      --surface-alt: #171b22;
-      --border: #262c36;
-      --border-soft: #1c212a;
-      --text-main: #e6e9ef;
-      --text-muted: #8b93a3;
-      --text-faint: #565f6f;
+      --bg: #07090a;
+      --surface: rgba(255, 255, 255, 0.035);
+      --surface-hover: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --text-main: #f2f4f1;
+      --text-muted: #92a099;
+      --text-faint: #545e58;
 
-      --accent: #5ec9d6;
-      --accent-dim: rgba(94, 201, 214, 0.1);
-      --amber: #d4a72c;
-      --amber-dim: rgba(212, 167, 44, 0.1);
-      --coral: #e8776a;
-      --coral-dim: rgba(232, 119, 106, 0.1);
+      /* semantic verdict palette: mint = verified/success, amber = pending, coral = contradiction */
+      --accent: #5eead4;
+      --accent-dim: rgba(94, 234, 212, 0.12);
+      --accent-amber: #e8a33d;
+      --accent-amber-dim: rgba(232, 163, 61, 0.12);
+      --accent-coral: #ff7a5c;
+      --accent-coral-dim: rgba(255, 122, 92, 0.12);
+      --accent-violet: #a191f2;
+      --accent-violet-dim: rgba(161, 145, 242, 0.12);
 
-      --mono: 'IBM Plex Mono', monospace;
-      --sans: 'IBM Plex Sans', sans-serif;
-      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      --mx: 50vw;
+      --my: 50vh;
+      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
+      background-color: var(--bg);
       color: var(--text-main);
-      font-family: var(--sans);
-      line-height: 1.65;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    .fade-up { opacity: 0; transform: translateY(14px); transition: var(--transition); }
+    body.has-reticle, body.has-reticle a, body.has-reticle button, body.has-reticle .skill-tag { cursor: none; }
+
+    /* film grain */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      pointer-events: none;
+      opacity: 0.035;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* cursor-follow spotlight */
+    .cursor-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 48;
+      pointer-events: none;
+      background: radial-gradient(360px circle at var(--mx) var(--my), rgba(94, 234, 212, 0.07), transparent 70%);
+    }
+
+    /* custom reticle cursor — doubles as a "targeting" motif for the detection theme */
+    .reticle {
+      position: fixed;
+      top: 0; left: 0;
+      width: 24px; height: 24px;
+      margin-left: -12px; margin-top: -12px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 60;
+      opacity: 0;
+      transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease, background 0.25s ease, opacity 0.3s ease;
+    }
+    .reticle::after {
+      content: "";
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 3px; height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    body.has-reticle .reticle { opacity: 0.9; }
+    .reticle.active {
+      width: 46px; height: 46px;
+      margin-left: -23px; margin-top: -23px;
+      border-color: var(--accent-amber);
+      background: rgba(232, 163, 61, 0.08);
+    }
+    .reticle.active::after { background: var(--accent-amber); }
+
+    /* scroll progress */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2.5px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-amber));
+      z-index: 70;
+      transition: width 0.1s linear;
+    }
+
+    /* ---------- Telemetry tokens ---------- */
+    /* small monospace readouts drifting upward, standing in for the "confidence
+       score" / "retrieved evidence" vocabulary of both CV detection and NLI
+       verification work — replaces decorative motion with subject-grounded motion */
+    .telemetry-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+
+    .telemetry-chip {
+      position: absolute;
+      bottom: -6%;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      white-space: nowrap;
+      will-change: transform, opacity;
+      animation-name: token-rise;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      letter-spacing: 0.4px;
+    }
+
+    @keyframes token-rise {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: var(--chip-op, 0.4); }
+      50%  { transform: translateY(-55vh) translateX(var(--sway)); }
+      88%  { opacity: var(--chip-op, 0.35); }
+      100% { transform: translateY(-115vh) translateX(calc(var(--sway) * -1)); opacity: 0; }
+    }
+
+    /* ---------- Bokeh backdrop ---------- */
+    .ambient-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
+
+    .bokeh { position: absolute; border-radius: 50%; filter: blur(50px); animation: bokeh-float 26s ease-in-out infinite alternate; }
+
+    .bokeh.b1 { top: 6%;  left: 8%;  width: 260px; height: 260px; background: radial-gradient(circle, rgba(94,234,212,0.26), transparent 70%); animation-duration: 30s; }
+    .bokeh.b2 { top: 55%; left: 78%; width: 340px; height: 340px; background: radial-gradient(circle, rgba(232,163,61,0.18), transparent 70%); animation-duration: 34s; animation-delay: -6s; }
+    .bokeh.b3 { top: 78%; left: 20%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(161,145,242,0.18), transparent 70%); animation-duration: 24s; animation-delay: -12s; }
+    .bokeh.b4 { top: 18%; left: 60%; width: 160px; height: 160px; background: radial-gradient(circle, rgba(255,122,92,0.12), transparent 70%); animation-duration: 20s; animation-delay: -4s; }
+    .bokeh.b5 { top: 40%; left: 40%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%); animation-duration: 40s; }
+
+    @keyframes bokeh-float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(3vw, -4vh) scale(1.12); } }
+
+    /* ---------- Layout ---------- */
+    .container { max-width: 920px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+
+    .fade-up { opacity: 0; transform: translateY(24px); transition: var(--transition); }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    .container { max-width: 880px; margin: 0 auto; padding: 0 1.75rem; }
+    /* ---------- Nav ---------- */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--border); }
 
-    a { color: var(--accent); }
+    .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .logo svg { width: 20px; height: 20px; opacity: 0.9; }
+    .logo svg circle, .logo svg path { stroke: var(--accent); }
+    .logo-text { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.05rem; color: var(--text-main); letter-spacing: 0.5px; }
 
-    /* ---------- Top bar ---------- */
-    .topbar {
-      border-bottom: 1px solid var(--border);
-      padding: 1.1rem 0;
-      position: sticky; top: 0; z-index: 10;
-      background: rgba(12, 14, 18, 0.92);
-      backdrop-filter: blur(8px);
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+    .nav-links a {
+      display: inline-block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transition: color 0.3s ease, transform 0.2s ease;
+      position: relative;
     }
-    .topbar .container { display: flex; justify-content: space-between; align-items: center; }
-    .repo-id { font-family: var(--mono); font-size: 0.85rem; color: var(--text-muted); }
-    .repo-id b { color: var(--text-main); font-weight: 500; }
-    .topbar nav { display: flex; gap: 1.4rem; }
-    .topbar nav a {
-      font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px;
-      color: var(--text-muted); text-decoration: none; transition: color 0.2s ease;
-      position: relative; padding-bottom: 0.3rem;
-    }
-    .topbar nav a:hover { color: var(--text-main); }
-    .topbar nav a::after {
-      content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 2px;
-      background: var(--accent); transition: width 0.25s ease;
-    }
-    .topbar nav a.active { color: var(--accent); }
-    .topbar nav a.active::after { width: 100%; }
 
-    /* ---------- Header ---------- */
-    .card-header { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); }
-    .eyebrow {
-      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
-    }
-    .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background: var(--accent); transition: width 0.3s ease; }
+    .nav-links a:hover { color: var(--text-main); }
+    .nav-links a:hover::after { width: 100%; }
 
-    h1 {
-      font-family: var(--mono); font-weight: 500; font-size: clamp(1.5rem, 4vw, 2.1rem);
-      color: var(--text-main); margin-bottom: 0.3rem;
-    }
-    h1 .cursor-blink { display: inline-block; width: 0.5ch; background: var(--accent); animation: blink 1s step-end infinite; margin-left: 2px; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    .subtitle { color: var(--text-muted); font-size: 0.98rem; max-width: 620px; margin: 0.9rem 0 1.5rem; }
-    .subtitle strong { color: var(--text-main); font-weight: 600; }
-
-    .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .badge2 {
-      display: inline-flex; font-family: var(--mono); font-size: 0.68rem; border-radius: 3px; overflow: hidden;
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      margin-top: 2.5rem;
+      border-radius: 10px;
+      overflow: hidden;
       border: 1px solid var(--border);
+      min-height: 560px;
+      display: flex;
+      align-items: flex-end;
     }
-    .badge2 .label { background: var(--surface-alt); color: var(--text-muted); padding: 0.3rem 0.6rem; }
-    .badge2 .value { padding: 0.3rem 0.6rem; font-weight: 500; }
-    .badge2.mint .value { background: var(--accent-dim); color: var(--accent); }
-    .badge2.amber .value { background: var(--amber-dim); color: var(--amber); }
-    .badge2.coral .value { background: var(--coral-dim); color: var(--coral); }
+
+    .hero-photo {
+      position: absolute;
+      inset: -3%;
+      background-image: url('20260520_161154.jpg');
+      background-size: cover;
+      background-position: center 60%;
+      filter: grayscale(35%) brightness(0.55) saturate(1.1);
+      transition: transform 0.2s ease-out;
+    }
+
+    .hero-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(0deg, rgba(4,6,6,0.96) 5%, rgba(4,6,6,0.55) 45%, rgba(4,6,6,0.25) 75%),
+        linear-gradient(100deg, rgba(4,6,6,0.6), transparent 55%);
+    }
+
+    /* one-time detection scan sweep on load — reinforces the "confidence tag
+       locking on" moment right before .det-tag appears */
+    .scan-line {
+      position: absolute;
+      left: 0; right: 0; top: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      box-shadow: 0 0 14px 1px rgba(94, 234, 212, 0.6);
+      z-index: 3;
+      opacity: 0;
+      animation: scan-sweep 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s 1 both;
+      pointer-events: none;
+    }
+    @keyframes scan-sweep {
+      0%   { top: 0%;   opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 0.7; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    .af-corner { position: absolute; width: 22px; height: 22px; border-color: var(--accent); opacity: 0.85; z-index: 3; }
+    .af-corner.tl { top: 20px; left: 20px; border-top: 1.5px solid; border-left: 1.5px solid; }
+    .af-corner.tr { top: 20px; right: 20px; border-top: 1.5px solid; border-right: 1.5px solid; }
+    .af-corner.bl { bottom: 20px; left: 20px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+    .af-corner.br { bottom: 20px; right: 20px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+
+    .det-tag {
+      position: absolute; top: 20px; right: 52px; z-index: 3;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.5px;
+      color: var(--accent); background: rgba(7, 9, 10, 0.55);
+      border: 1px solid var(--border-strong); padding: 0.35rem 0.65rem; border-radius: 3px;
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      animation: det-tag-in 0.5s ease 1.85s 1 forwards;
+    }
+    .det-tag b { color: var(--text-main); font-weight: 500; }
+    @keyframes det-tag-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-inner { position: relative; z-index: 2; padding: 3rem 3rem 3.2rem; width: 100%; }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.2rem, 5.4vw, 3.4rem);
+      font-weight: 600; line-height: 1.15; letter-spacing: -0.5px;
+      margin-bottom: 1.5rem; max-width: 640px;
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+
+    .hero-bio { font-size: 1.02rem; color: #cdd6d0; max-width: 580px; font-weight: 300; line-height: 1.85; margin-bottom: 2.2rem; }
+    .hero-bio strong { color: var(--text-main); font-weight: 500; }
+
+    .coord-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .coord-tag {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.5px;
+      color: #b7c0ba; border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(7, 9, 10, 0.4); backdrop-filter: blur(6px);
+      padding: 0.45rem 0.8rem; border-radius: 3px;
+    }
+    .coord-tag b { color: var(--text-main); font-weight: 500; }
+    .coord-tag.violet { color: #e3ddff; border-color: rgba(161,145,242,0.35); }
+    .coord-tag.violet b { color: #f0ecff; }
 
     /* ---------- Sections ---------- */
-    section { padding: 3rem 0; border-bottom: 1px solid var(--border-soft); }
-    .section-label {
-      font-family: var(--mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--text-main); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.6rem;
-    }
-    .section-label::before { content: "##"; color: var(--text-faint); font-weight: 500; }
-    .section-sub { color: var(--text-faint); font-size: 0.82rem; margin-bottom: 1.8rem; font-style: italic; }
+    section { padding: 4.5rem 0; border-top: 1px solid var(--border); }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2.5rem; }
+    .section-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-main); font-weight: 500; }
+    .section-index { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); }
 
-    /* ---------- Key-value blocks (Model Details) ---------- */
-    .kv-grid { display: grid; grid-template-columns: 160px 1fr; gap: 0.7rem 1.2rem; font-size: 0.92rem; }
-    .kv-grid dt { font-family: var(--mono); color: var(--text-faint); font-size: 0.8rem; padding-top: 0.1rem; }
-    .kv-grid dd { color: var(--text-main); }
-
-    /* ---------- Evaluation table ---------- */
-    .eval-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 1rem; }
-    .eval-table th {
-      font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
-      text-align: left; color: var(--text-faint); padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border);
-    }
-    .eval-table td { padding: 0.9rem 0.8rem; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
-    .eval-table tr:last-child td { border-bottom: none; }
-    .eval-table .name { color: var(--text-main); font-weight: 500; }
-    .eval-table .name a { color: inherit; text-decoration: none; }
-    .eval-table .name a:hover { color: var(--accent); }
-    .eval-table .sub { color: var(--text-faint); font-size: 0.78rem; font-family: var(--mono); margin-top: 0.2rem; }
-    .eval-table .metric { font-family: var(--mono); color: var(--text-muted); font-size: 0.82rem; }
-    .eval-table .result { font-family: var(--mono); font-weight: 500; }
-    .result.good { color: var(--accent); }
-    .result.pending { color: var(--amber); }
-
-    /* ---------- Verdict inline ---------- */
-    .verdict-inline { display: flex; flex-wrap: wrap; gap: 1.2rem; font-family: var(--mono); font-size: 0.8rem; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px dashed var(--border); }
-    .verdict-inline span b { color: var(--text-main); }
-    .verdict-inline .supported b { color: var(--accent); }
-    .verdict-inline .unverifiable b { color: var(--amber); }
-    .verdict-inline .contradicted b { color: var(--coral); }
-
-    /* ---------- Prose entries (Training / research write-ups) ---------- */
-    .entry { margin-bottom: 1.8rem; }
-    .entry:last-child { margin-bottom: 0; }
-    .entry-title { font-weight: 600; font-size: 1.02rem; color: var(--text-main); margin-bottom: 0.15rem; }
-    .entry-meta { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); margin-bottom: 0.6rem; }
-    .entry p, .entry ul { color: var(--text-muted); font-size: 0.92rem; }
-    .entry ul { padding-left: 1.1rem; margin-top: 0.4rem; }
-    .entry li { margin-bottom: 0.4rem; }
-    .entry.flash { animation: flash-highlight 1.4s ease; }
-    @keyframes flash-highlight {
-      0% { background: var(--accent-dim); }
-      100% { background: transparent; }
+    /* ---------- Cards ---------- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2.2rem 2.4rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.2s ease, background 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      transform-style: preserve-3d;
     }
 
-    /* ---------- Limitations ---------- */
-    .limitations-list { list-style: none; }
-    .limitations-list li {
-      display: flex; gap: 0.7rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border-soft);
-      font-size: 0.9rem; color: var(--text-muted);
+    .card.featured {
+      border-color: rgba(232,163,61,0.35);
+      background: linear-gradient(160deg, rgba(232,163,61,0.06), rgba(94,234,212,0.03));
     }
-    .limitations-list li:last-child { border-bottom: none; }
-    .limitations-list li::before { content: "!"; font-family: var(--mono); color: var(--amber); font-weight: 600; flex-shrink: 0; }
+    .card.featured:hover { border-color: rgba(232,163,61,0.55); }
 
-    /* ---------- Skills as tags ---------- */
-    .tag-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .tag {
-      font-family: var(--mono); font-size: 0.76rem; padding: 0.4rem 0.7rem; border-radius: 3px;
-      border: 1px solid var(--border); color: var(--text-muted); background: var(--surface);
-      transition: var(--transition);
+    .card .af-corner { width: 14px; height: 14px; opacity: 0; transition: var(--transition); }
+    .card .af-corner.tl { top: -1px; left: -1px; }
+    .card .af-corner.tr { top: -1px; right: -1px; }
+    .card .af-corner.bl { bottom: -1px; left: -1px; }
+    .card .af-corner.br { bottom: -1px; right: -1px; }
+
+    .card:hover { background: var(--surface-hover); border-color: var(--border-strong); }
+    .card:hover .af-corner { opacity: 1; }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.4rem; }
+    .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem; font-weight: 600; color: var(--text-main); }
+    .project-link { color: var(--text-muted); font-size: 1.2rem; transition: color 0.3s ease; flex-shrink: 0; }
+    .project-link:hover { color: var(--accent); }
+    .card-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--accent); margin-bottom: 1.4rem; letter-spacing: 0.3px; }
+    .card ul { list-style: none; color: var(--text-muted); font-size: 0.93rem; }
+    .card ul li { margin-bottom: 0.75rem; padding-left: 1.1rem; position: relative; }
+    .card ul li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 5px; height: 1px; background: var(--text-faint); }
+    .card p { color: var(--text-muted); font-size: 0.93rem; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.8px;
+      text-transform: uppercase; color: #ffe8c2;
+      border: 1px solid rgba(232,163,61,0.4); background: rgba(232,163,61,0.08);
+      padding: 0.3rem 0.65rem; border-radius: 20px; margin-bottom: 1rem;
     }
-    .tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-    .tag.core { border-color: rgba(94,201,214,0.3); color: var(--accent); }
+    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-amber); box-shadow: 0 0 6px var(--accent-amber); }
 
-    /* ---------- Appendix gallery ---------- */
-    .appendix-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; }
-    .appendix-item { border-radius: 5px; overflow: hidden; border: 1px solid var(--border); aspect-ratio: 4/3; }
-    .appendix-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) contrast(1.02); transition: transform 0.4s ease; }
-    .appendix-item:hover img { transform: scale(1.04); }
+    .badge.mint { color: #d6fff7; border-color: rgba(94,234,212,0.4); background: rgba(94,234,212,0.08); }
+    .badge.mint::before { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
 
-    /* ---------- Citation block ---------- */
-    .citation-block {
-      font-family: var(--mono); font-size: 0.82rem; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 6px; padding: 1.2rem 1.4rem; color: var(--text-muted); overflow-x: auto; white-space: pre;
+    /* ---------- Verdict strip ---------- */
+    /* signature element: FactTrace's own SUPPORTED / UNVERIFIABLE / CONTRADICTED
+       vocabulary, rendered with the real confusion-matrix counts from run_eval.py */
+    .verdict-strip { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
+    .verdict-chip {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.3px;
+      padding: 0.4rem 0.75rem; border-radius: 4px;
+      border: 1px solid var(--chip-border); background: var(--chip-bg); color: var(--chip-text);
     }
-    .contact-row { display: flex; gap: 1.2rem; margin-top: 1.3rem; }
-    .contact-row a {
-      display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.82rem;
-      color: var(--text-muted); text-decoration: none; border: 1px solid var(--border); padding: 0.5rem 0.9rem;
-      border-radius: 4px; transition: var(--transition);
+    .verdict-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--chip-dot); box-shadow: 0 0 6px var(--chip-dot); flex-shrink: 0; }
+    .verdict-chip .count { color: var(--text-main); font-weight: 500; }
+    .verdict-chip.supported { --chip-border: rgba(94,234,212,0.35); --chip-bg: rgba(94,234,212,0.07); --chip-text: #b9f5e9; --chip-dot: var(--accent); }
+    .verdict-chip.unverifiable { --chip-border: rgba(232,163,61,0.35); --chip-bg: rgba(232,163,61,0.07); --chip-text: #f5dcae; --chip-dot: var(--accent-amber); }
+    .verdict-chip.contradicted { --chip-border: rgba(255,122,92,0.35); --chip-bg: rgba(255,122,92,0.07); --chip-text: #ffc9bb; --chip-dot: var(--accent-coral); }
+    .verdict-caption { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); margin-top: 0.7rem; letter-spacing: 0.3px; }
+
+    /* ---------- Mini Slider ---------- */
+    .mini-slider {
+      display: block; position: relative; width: 100%; max-width: 380px; height: 220px;
+      margin-top: 1.8rem; border-radius: 5px; overflow: hidden; border: 1px solid var(--border);
+      text-decoration: none; cursor: pointer;
     }
-    .contact-row a:hover { color: var(--accent); border-color: var(--accent); }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: none; transition: opacity 1s ease-in-out; }
+    .slide.active { opacity: 1; }
+    .slider-overlay { position: absolute; inset: 0; background: rgba(7, 9, 10, 0.72); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.35s ease; }
+    .slider-overlay span { color: var(--accent); font-size: 0.85rem; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 0.7rem; transform: translateY(8px); transition: transform 0.35s ease; }
+    .mini-slider:hover .slider-overlay { opacity: 1; }
+    .mini-slider:hover .slider-overlay span { transform: translateY(0); }
 
-    footer { padding: 2.5rem 0; text-align: center; }
-    footer p { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); }
+    /* ---------- Gallery Grid ---------- */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .gallery-item { position: relative; aspect-ratio: 4/3; background: var(--bg); overflow: hidden; transition: transform 0.2s ease; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; filter: none; }
+    .gallery-item:hover img { transform: scale(1.05); filter: none; }
 
-    /* ---------- Interactivity additions ---------- */
-
-    /* tabbed sections (JS-driven; only active on wide viewports, see script) */
-    body.tabs-active section[data-tab] { display: none; }
-    body.tabs-active section[data-tab].active-tab { display: block; }
-
-    /* result rows are clickable to reveal a bit more detail */
-    .eval-table tr.evaluable { cursor: pointer; }
-    .eval-table tr.evaluable:hover { background: var(--surface); }
-    .eval-detail-row td { padding: 0 0.8rem 1rem; border-bottom: 1px solid var(--border-soft); }
-    .eval-detail-row { display: none; }
-    .eval-detail-row.open { display: table-row; }
-    .eval-detail-row p { color: var(--text-muted); font-size: 0.85rem; max-width: 560px; }
-    .expand-hint { font-family: var(--mono); font-size: 0.68rem; color: var(--text-faint); margin-left: 0.5rem; }
-
-    /* pending pulse dot */
-    .result.pending::before {
-      content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--amber); margin-right: 0.4rem; animation: pulse-dot 1.6s ease-in-out infinite;
+    /* ---------- Skills ---------- */
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+    .skill-tag {
+      display: inline-block;
+      padding: 0.55rem 1.05rem; border: 1px solid var(--border); border-radius: 3px;
+      font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; color: var(--text-muted);
+      transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+      background: var(--surface);
     }
-    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .skill-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .skill-tag.nlp { border-color: rgba(161,145,242,0.3); color: #cfc8ff; }
+    .skill-tag.nlp:hover { border-color: var(--accent-violet); color: var(--accent-violet); background: var(--accent-violet-dim); }
 
-    /* copy button on citation block */
-    .citation-wrap { position: relative; }
-    .copy-btn {
-      position: absolute; top: 0.7rem; right: 0.7rem;
-      font-family: var(--mono); font-size: 0.68rem; color: var(--text-muted);
-      background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px;
-      padding: 0.35rem 0.6rem; cursor: pointer; transition: var(--transition);
-    }
-    .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
-    .copy-btn.copied { color: var(--accent); border-color: var(--accent); }
+    /* ---------- Footer ---------- */
+    footer { padding: 3.5rem 0; border-top: 1px solid var(--border); }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-meta { color: var(--text-faint); font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; }
+    .footer-links { display: flex; gap: 1.4rem; }
+    .footer-links a { color: var(--text-muted); font-size: 1.05rem; transition: all 0.3s ease; }
+    .footer-links a:hover { color: var(--accent); transform: translateY(-2px); }
 
-    /* tag filter input */
-    .tag-filter {
-      font-family: var(--mono); font-size: 0.82rem; background: var(--surface);
-      border: 1px solid var(--border); border-radius: 4px; color: var(--text-main);
-      padding: 0.55rem 0.8rem; width: 100%; max-width: 280px; margin-bottom: 1rem;
-    }
-    .tag-filter:focus { outline: none; border-color: var(--accent); }
-    .tag-filter::placeholder { color: var(--text-faint); }
-    .tag.hidden-tag { display: none; }
-    .tag-count { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); margin-bottom: 0.8rem; }
+    a:focus-visible, .skill-tag:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
 
     @media (prefers-reduced-motion: reduce) {
-      .fade-up, .cursor-blink { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .fade-up, .bokeh, .telemetry-chip, .scan-line, .det-tag { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .telemetry-layer, .cursor-glow, .reticle, .scan-line { display: none !important; }
     }
 
-    @media (max-width: 700px) {
-      .topbar nav { display: none; }
-      .kv-grid { grid-template-columns: 1fr; }
-      .kv-grid dt { padding-top: 0.6rem; }
-      .eval-table { font-size: 0.8rem; }
-      .eval-table th:nth-child(2), .eval-table td:nth-child(2) { display: none; }
+    @media (max-width: 768px) {
+      .hero { min-height: 460px; }
+      .hero-inner { padding: 2.2rem 1.6rem 2.4rem; }
+      .hero h1 { font-size: 2rem; }
+      .det-tag { display: none; }
+      nav { flex-direction: column; gap: 1.25rem; padding: 1.75rem 0; }
+      .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+      .card { padding: 1.5rem; }
+      .card-header { flex-direction: column; }
+      .cursor-glow, .reticle { display: none; }
+      .verdict-strip { gap: 0.5rem; }
     }
   </style>
 </head>
 <body>
 
-  <div class="topbar fade-up">
-    <div class="container">
-      <span class="repo-id"><b>aviral-nigam</b> / trustworthy-ml-researcher</span>
-      <nav>
-        <a href="#details" data-target="details" class="active">Details</a>
-        <a href="#training" data-target="training">Training</a>
-        <a href="#evaluation" data-target="evaluation">Evaluation</a>
-        <a href="#limitations" data-target="limitations">Limitations</a>
-        <a href="#skills" data-target="tags">Tags</a>
-        <a href="#appendix" data-target="appendix">Appendix</a>
-        <a href="#contact" data-target="contact">Contact</a>
-      </nav>
-    </div>
+  <div class="scroll-progress"></div>
+  <div class="cursor-glow"></div>
+  <div class="reticle"></div>
+  <div class="telemetry-layer"></div>
+
+  <div class="ambient-background">
+    <div class="bokeh b1"></div>
+    <div class="bokeh b2"></div>
+    <div class="bokeh b3"></div>
+    <div class="bokeh b4"></div>
+    <div class="bokeh b5"></div>
   </div>
 
   <div class="container">
 
-    <header class="card-header fade-up">
-      <div class="eyebrow">Model Card</div>
-      <h1>aviral-nigam<span class="cursor-blink"></span></h1>
-      <p class="subtitle">
-        <strong>Domain:</strong> Trustworthy ML — LLM evaluation, factuality, and calibration, with a foundation in retrieval systems and computer vision. Currently a Data Science &amp; Engineering undergraduate at MIT Manipal.
-      </p>
-      <div class="badge-row">
-        <span class="badge2 mint"><span class="label">domain</span><span class="value">trustworthy-ml</span></span>
-        <span class="badge2 amber"><span class="label">status</span><span class="value">seeking-internship</span></span>
-        <span class="badge2 mint"><span class="label">stack</span><span class="value">pytorch · huggingface · faiss</span></span>
-        <span class="badge2 coral"><span class="label">license</span><span class="value">open-to-collab</span></span>
+    <nav class="fade-up">
+      <a href="#" class="logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9.2" stroke-width="1.2"/>
+          <path d="M12 2.8 L14 9 L20.5 9.5 L15.3 13.6 L17 20 L12 16.2 L7 20 L8.7 13.6 L3.5 9.5 L10 9 Z" stroke-width="0.9" opacity="0.55"/>
+        </svg>
+        <span class="logo-text">AVIRAL NIGAM</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#research">Research</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <header class="hero fade-up">
+      <div class="hero-photo"></div>
+      <div class="scan-line"></div>
+      <div class="af-corner tl"></div>
+      <div class="af-corner tr"></div>
+      <div class="af-corner bl"></div>
+      <div class="af-corner br"></div>
+      <div class="det-tag">ID 0xA9F3 · <b>AVIRAL_NIGAM</b> · conf 0.99</div>
+
+      <div class="hero-inner">
+        <h1>Claims that get <em>checked</em>, not assumed.</h1>
+        <p class="hero-bio">
+          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>, working on <strong>trustworthy ML</strong> — LLM evaluation, factuality, and calibration — along with retrieval systems and computer vision. I'm a <strong>co-author</strong> on an upcoming multimodal benchmark, <em>Last Translation Benchmark</em>, and I built <strong>FactTrace</strong> (claim-level factuality verification) and <strong>CalibCheck</strong> (confidence calibration analysis) — two projects asking the same underlying question from different angles: can a model's output actually be trusted. I also spent a summer as a Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>.
+        </p>
+        <div class="coord-row">
+          <div class="coord-tag violet"><b>FOCUS</b> · Trustworthy ML · LLM Evaluation · Retrieval · Computer Vision</div>
+          <div class="coord-tag"><b>BASE</b> · MIT Manipal · 13.3467°N 74.7869°E</div>
+        </div>
       </div>
     </header>
 
-    <section id="details" data-tab="details" class="fade-up active-tab">
-      <div class="section-label">Model Details</div>
-      <div class="section-sub">Who this is and how it's currently configured</div>
-      <dl class="kv-grid">
-        <dt>Base</dt>
-        <dd>B.Tech, Data Science &amp; Engineering — Manipal Institute of Technology, MAHE (expected July 2028)</dd>
-        <dt>Coursework</dt>
-        <dd>Deep Learning, Data Structures &amp; Algorithms, Linear Algebra &amp; Probability, Statistical Modeling, Database Management Systems</dd>
-        <dt>Location</dt>
-        <dd>Manipal, Karnataka, India</dd>
-        <dt>Contact</dt>
-        <dd><a href="mailto:nigamaviral21@gmail.com">nigamaviral21@gmail.com</a></dd>
-      </dl>
+    <section id="research" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Published / Ongoing Research</h2>
+        <span class="section-index">n=1</span>
+      </div>
+
+      <div class="card featured">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
+        <span class="badge">Co-Author · Expected September 2026</span>
+        <div class="card-header">
+          <h3 class="card-title">Last Translation Benchmark</h3>
+          <a href="https://last-translation-benchmark.vilda.net" target="_blank" class="project-link" title="View project">
+            <i class="fas fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+        <div class="card-subtitle">Co-Author · with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
+        <p>Co-authoring <em>"Last Translation Benchmark,"</em> an upcoming multilingual, multimodal benchmark for evaluating state-of-the-art models — contributing adversarial multimodal inputs designed to break current systems. In preparation for release.</p>
+      </div>
     </section>
 
-    <section id="training" data-tab="training" class="fade-up">
-      <div class="section-label">Training Data</div>
-      <div class="section-sub">What this profile was shaped by</div>
+    <section id="experience" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Professional Experience</h2>
+        <span class="section-index">4 mo</span>
+      </div>
 
-      <div class="entry">
-        <div class="entry-title">Research Intern — Robotics Research Center (RRC), IIIT Hyderabad</div>
-        <div class="entry-meta">Advised by Dr. Sourav Garg · May–Aug 2026</div>
+      <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
+        <div class="card-header">
+          <h3 class="card-title">Research Intern</h3>
+        </div>
+        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad — advised by Dr. Sourav Garg · May–August 2026</div>
         <ul>
-          <li>Researched fine-grained visual instance retrieval, building neural pipelines using deep visual feature representations and similarity learning across large-scale datasets.</li>
-          <li>Implemented high-throughput vector search (FAISS) for image indexing and feature retrieval.</li>
-          <li>Engineered automated embedding extraction and normalization pipelines for metric learning architectures.</li>
+          <li>Worked as a Research Intern, researching instance retrieval in high-resolution aerial and satellite imagery.</li>
+          <li>Explored deep visual feature representations and similarity learning for object-centric retrieval.</li>
+          <li>Engineered spatial data preprocessing pipelines for deep feature matching models.</li>
         </ul>
+
+        <a href="#gallery" class="mini-slider" title="View the full gallery">
+          <img src="20260521_115503.jpg" class="slide active" alt="RRC Workstation">
+          <img src="20260520_174244.jpg" class="slide" alt="Kohli Research Block">
+          <div class="slider-overlay">
+            <span>View gallery <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
       </div>
     </section>
 
-    <section id="evaluation" data-tab="evaluation" class="fade-up">
-      <div class="section-label">Evaluation Results</div>
-      <div class="section-sub">Benchmarks run so far, and what they measured</div>
-
-      <table class="eval-table">
-        <thead>
-          <tr><th>Benchmark</th><th>Metric</th><th>Result</th></tr>
-        </thead>
-        <tbody>
-          <tr class="evaluable" data-jump="entry-facttrace">
-            <td class="name"><a href="https://github.com/Aviral0gHub/facttrace" target="_blank" onclick="event.stopPropagation()">FactTrace</a><div class="sub">65-claim curated factuality benchmark</div></td>
-            <td class="metric">Claim-level accuracy</td>
-            <td class="result good">78.5% → <span class="countup" data-from="78.5" data-to="87.7" data-suffix="%">78.5%</span></td>
-          </tr>
-          <tr class="evaluable" data-jump="entry-calibcheck">
-            <td class="name"><a href="https://github.com/Aviral0gHub/calibcheck" target="_blank" onclick="event.stopPropagation()">CalibCheck</a><div class="sub">60-question calibration benchmark, 6 domains</div></td>
-            <td class="metric">Expected Calibration Error</td>
-            <td class="result pending">pending real-model run</td>
-          </tr>
-          <tr class="evaluable" data-jump="entry-ltb">
-            <td class="name">Last Translation Benchmark<div class="sub">adversarial multimodal factuality dataset</div></td>
-            <td class="metric">Release status</td>
-            <td class="result pending">co-authoring, expected Sept 2026</td>
-          </tr>
-          <tr>
-            <td class="name"><a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank">LVI</a><div class="sub">78K-sample vegetation regression (earlier CV work)</div></td>
-            <td class="metric">RMSE (R²)</td>
-            <td class="result good">6.62m (R²=0.592)</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="expand-hint">click a row to jump to its full write-up below</div>
-
-      <div class="verdict-inline">
-        <span class="supported">SUPPORTED <b class="countup" data-from="0" data-to="41">0</b></span>
-        <span class="unverifiable">UNVERIFIABLE <b class="countup" data-from="0" data-to="5">0</b></span>
-        <span class="contradicted">CONTRADICTED <b class="countup" data-from="0" data-to="19">0</b></span>
-        <span style="color: var(--text-faint)">— FactTrace verdict breakdown, NLI scorer</span>
+    <section id="projects" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Selected Projects</h2>
+        <span class="section-index">n=3</span>
       </div>
 
-      <div class="entry" id="entry-facttrace" style="margin-top: 2.2rem;">
-        <div class="entry-title">FactTrace — Claim-level factuality verification</div>
-        <div class="entry-meta">Python · PyTorch · Sentence-Transformers · HuggingFace Transformers · FAISS</div>
-        <p>Decomposes multi-step agentic LLM reasoning into atomic claims, retrieves evidence via FAISS-based dense retrieval, and classifies each claim as supported, contradicted, or unverifiable using NLI-based entailment scoring. Failure analysis showed unsupported claims concentrate in later reasoning steps.</p>
+      <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
+        <span class="badge mint">78.5% → 87.7% Accuracy</span>
+        <div class="card-header">
+          <h3 class="card-title">FactTrace</h3>
+          <a href="https://github.com/Aviral0gHub/facttrace" target="_blank" class="project-link" title="View source code">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="card-subtitle">Python · PyTorch · Sentence-Transformers · HuggingFace Transformers · FAISS</div>
+        <p>Claim-level factuality verification pipeline for agentic LLM reasoning traces — decomposes multi-step reasoning into atomic claims, retrieves evidence via FAISS-based dense retrieval, and classifies each claim as supported, contradicted, or unverifiable using NLI-based entailment scoring. Improved accuracy from 78.5% (lexical baseline) to 87.7% by swapping in dense retrieval and RoBERTa-large-MNLI entailment scoring; failure analysis showed unsupported claims concentrate in later reasoning steps.</p>
+
+        <div class="verdict-strip">
+          <span class="verdict-chip supported"><span class="dot"></span>SUPPORTED <span class="count">41</span></span>
+          <span class="verdict-chip unverifiable"><span class="dot"></span>UNVERIFIABLE <span class="count">5</span></span>
+          <span class="verdict-chip contradicted"><span class="dot"></span>CONTRADICTED <span class="count">19</span></span>
+        </div>
+        <div class="verdict-caption">verdict breakdown — 65 claims, NLI scorer</div>
       </div>
 
-      <div class="entry" id="entry-calibcheck">
-        <div class="entry-title">CalibCheck — Confidence calibration analysis</div>
-        <div class="entry-meta">Python · HuggingFace Transformers · Anthropic API · Matplotlib</div>
-        <p>Measures whether an LLM's confidence actually tracks whether it's right, comparing verbalized self-reported confidence against raw next-token probability over answer choices. Breaks results down by topic domain, since aggregate calibration can hide systematic over- or under-confidence on specific subjects.</p>
+      <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
+        <span class="badge mint">Trustworthy ML · Calibration</span>
+        <div class="card-header">
+          <h3 class="card-title">CalibCheck</h3>
+          <a href="https://github.com/Aviral0gHub/calibcheck" target="_blank" class="project-link" title="View source code">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="card-subtitle">Python · HuggingFace Transformers · Anthropic API · Matplotlib</div>
+        <p>Measures whether an LLM's confidence actually tracks whether it's right — comparing verbalized self-reported confidence against raw next-token probability over answer choices, using Expected Calibration Error, Brier score, and reliability diagrams. Results are also broken down by topic domain, since a model can look calibrated in aggregate while being systematically over- or under-confident on one specific subject.</p>
       </div>
 
-      <div class="entry" id="entry-ltb">
-        <div class="entry-title">Last Translation Benchmark — Co-Author</div>
-        <div class="entry-meta">with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
-        <p>Co-authoring an upcoming multilingual, multimodal factuality benchmark. Contributed adversarial multimodal inputs designed to break state-of-the-art models.</p>
-      </div>
-    </section>
-
-    <section id="limitations" data-tab="limitations" class="fade-up">
-      <div class="section-label">Limitations &amp; Known Issues</div>
-      <div class="section-sub">Stated plainly, same as any model card should</div>
-      <ul class="limitations-list">
-        <li>CalibCheck's calibration numbers are from a synthetic baseline only — real verbalized-vs-raw-probability comparison is still pending a live run.</li>
-        <li>Evaluation work so far is primarily English-language; multilingual generalization beyond LTB's adversarial examples is untested.</li>
-        <li>Retrieval-based verification (FactTrace) depends on having a relevant evidence corpus available — behavior under fully closed-book conditions hasn't been benchmarked.</li>
-      </ul>
-    </section>
-
-    <section id="skills" data-tab="tags" class="fade-up">
-      <div class="section-label">Tags</div>
-      <input type="text" class="tag-filter" id="tagFilter" placeholder="filter tags...">
-      <div class="tag-count" id="tagCount"></div>
-      <div class="tag-cloud" id="tagCloud">
-        <span class="tag core">Claim Decomposition</span>
-        <span class="tag core">Retrieval-Augmented Verification</span>
-        <span class="tag core">NLI / Entailment Scoring</span>
-        <span class="tag core">Calibration Analysis</span>
-        <span class="tag core">HuggingFace Transformers</span>
-        <span class="tag core">Sentence-Transformers</span>
-        <span class="tag">Python</span>
-        <span class="tag">C++</span>
-        <span class="tag">Java</span>
-        <span class="tag">SQL</span>
-        <span class="tag">PyTorch</span>
-        <span class="tag">Scikit-Learn</span>
-        <span class="tag">Transfer Learning</span>
-        <span class="tag">Metric Learning</span>
-        <span class="tag">Vector Databases (FAISS)</span>
-        <span class="tag">Instance Retrieval</span>
-        <span class="tag">Docker</span>
-        <span class="tag">Git / GitHub</span>
-        <span class="tag">REST APIs</span>
-        <span class="tag">CUDA</span>
+      <div class="card">
+        <div class="af-corner tl"></div>
+        <div class="af-corner tr"></div>
+        <div class="af-corner bl"></div>
+        <div class="af-corner br"></div>
+        <div class="card-header">
+          <h3 class="card-title">Learned Vegetation Index (LVI)</h3>
+          <a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank" class="project-link" title="View source code">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="card-subtitle">PyTorch · XGBoost · Sentinel-2 · GEDI LiDAR</div>
+        <p>Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation. Earlier computer vision work, from before this trustworthy-ML focus.</p>
       </div>
     </section>
 
-    <section id="appendix" data-tab="appendix" class="fade-up">
-      <div class="section-label">Appendix — Deployment Environment</div>
-      <div class="section-sub">IIIT Hyderabad, where the RRC internship happened</div>
-      <div class="appendix-grid">
-        <div class="appendix-item"><img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad"></div>
-        <div class="appendix-item"><img src="20260521_115547.jpg" alt="RRC Robotics Lab View"></div>
-        <div class="appendix-item"><img src="20260520_174144.jpg" alt="Campus Mural"></div>
-        <div class="appendix-item"><img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus"></div>
-        <div class="appendix-item"><img src="20260520_174209.jpg" alt="Campus Greenery"></div>
-        <div class="appendix-item"><img src="20260520_174244.jpg" alt="Kohli Research Block Entrance"></div>
-        <div class="appendix-item"><img src="20260521_115503.jpg" alt="RRC Workspace"></div>
-        <div class="appendix-item"><img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue"></div>
+    <section id="skills" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Technical Competencies</h2>
+        <span class="section-index">n=24</span>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-tag nlp">Claim Decomposition</div>
+        <div class="skill-tag nlp">Retrieval-Augmented Verification</div>
+        <div class="skill-tag nlp">NLI / Entailment Scoring</div>
+        <div class="skill-tag nlp">Calibration Analysis</div>
+        <div class="skill-tag nlp">HuggingFace Transformers</div>
+        <div class="skill-tag nlp">Sentence-Transformers</div>
+        <div class="skill-tag">Python</div>
+        <div class="skill-tag">C++</div>
+        <div class="skill-tag">Java</div>
+        <div class="skill-tag">SQL</div>
+        <div class="skill-tag">PyTorch</div>
+        <div class="skill-tag">Torchvision</div>
+        <div class="skill-tag">Scikit-Learn</div>
+        <div class="skill-tag">Transfer Learning</div>
+        <div class="skill-tag">Metric Learning</div>
+        <div class="skill-tag">Vector Databases (FAISS)</div>
+        <div class="skill-tag">Instance Retrieval</div>
+        <div class="skill-tag">OpenCV</div>
+        <div class="skill-tag">Multimodal Evaluation</div>
+        <div class="skill-tag">Agentic AI</div>
+        <div class="skill-tag">Docker</div>
+        <div class="skill-tag">Git / GitHub</div>
+        <div class="skill-tag">REST APIs</div>
+        <div class="skill-tag">CUDA</div>
       </div>
     </section>
 
-    <section id="contact" data-tab="contact" class="fade-up" style="border-bottom: none;">
-      <div class="section-label">Citation &amp; Contact</div>
-      <div class="section-sub">How to reach or reference this profile</div>
-      <div class="citation-wrap">
-        <button class="copy-btn" id="copyBtn" onclick="copyCitation()">copy</button>
-        <div class="citation-block" id="citationText">@misc{nigam2026profile,
-  author = {Nigam, Aviral},
-  title  = {Trustworthy ML Researcher Profile},
-  year   = {2026},
-  note   = {LLM Evaluation, Factuality, Calibration},
-  url    = {https://aviral0ghub.github.io}
-}</div>
+    <section id="gallery" class="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">Vision Gallery</h2>
+        <span class="section-index">n=8</span>
       </div>
-      <div class="contact-row">
-        <a href="mailto:nigamaviral21@gmail.com"><i class="fas fa-envelope"></i> Email</a>
-        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-        <a href="https://github.com/Aviral0gHub" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260521_115547.jpg" alt="RRC Robotics Lab View">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260520_174144.jpg" alt="Campus Mural">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260520_174209.jpg" alt="Campus Greenery">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260520_174244.jpg" alt="Kohli Research Block Entrance">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260521_115503.jpg" alt="RRC Workspace">
+        </div>
+
+        <div class="gallery-item">
+          <img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue">
+        </div>
       </div>
     </section>
 
   </div>
 
-  <footer>
-    <p>last updated 2026-08 &middot; model card format inspired by ML documentation conventions</p>
+  <footer class="fade-up">
+    <div class="container">
+      <div class="footer-meta">&copy; 2026 Aviral Nigam</div>
+      <div class="footer-links">
+        <a href="mailto:nigamaviral21@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/Aviral0gHub" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
   </footer>
 
   <script>
-    /* ---------- fade-up on scroll ---------- */
+    /* fade-up on scroll */
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -464,134 +677,138 @@
           obs.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1 });
+    }, observerOptions);
     document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
     setTimeout(() => {
-      document.querySelectorAll('.fade-up').forEach((el, i) => { if (i < 2) el.classList.add('visible'); });
-    }, 80);
+      document.querySelectorAll('.fade-up').forEach((el, index) => { if (index < 2) el.classList.add('visible'); });
+    }, 100);
+
+    /* experience mini-slider */
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    if (slides.length > 1) {
+      setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }, 3500);
+    }
+
+    /* scroll progress bar */
+    const progressBar = document.querySelector('.scroll-progress');
+    function updateProgress() {
+      const h = document.documentElement;
+      const scrollable = h.scrollHeight - h.clientHeight;
+      const pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
 
-    /* ---------- tab switching (wide viewports only -- narrow screens keep
-       the normal scrolling single-page layout since the topbar nav itself
-       is hidden below 700px) ---------- */
-    const tabNavLinks = document.querySelectorAll('.topbar nav a[data-target]');
-    const tabCapable = window.matchMedia('(min-width: 701px)').matches;
+    /* cursor-follow spotlight */
+    if (!reduceMotion) {
+      window.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+        document.documentElement.style.setProperty('--my', e.clientY + 'px');
+      }, { passive: true });
+    }
 
-    if (tabCapable) {
-      document.body.classList.add('tabs-active');
+    /* custom reticle cursor (instant speed), desktop only */
+    if (finePointer && !reduceMotion) {
+      document.body.classList.add('has-reticle');
+      const reticle = document.querySelector('.reticle');
 
-      function activateTab(target, scrollToTop = true) {
-        document.querySelectorAll('section[data-tab]').forEach(sec => {
-          sec.classList.toggle('active-tab', sec.dataset.tab === target);
-          if (sec.dataset.tab === target) sec.classList.add('visible');
+      window.addEventListener('mousemove', (e) => {
+        reticle.style.left = e.clientX + 'px';
+        reticle.style.top = e.clientY + 'px';
+      }, { passive: true });
+
+      document.querySelectorAll('a, .skill-tag, .card, .mini-slider').forEach((el) => {
+        el.addEventListener('mouseenter', () => reticle.classList.add('active'));
+        el.addEventListener('mouseleave', () => reticle.classList.remove('active'));
+      });
+
+      /* card tilt */
+      document.querySelectorAll('.card').forEach((el) => {
+        el.addEventListener('mousemove', (e) => {
+          const r = el.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          el.style.transform = `perspective(700px) translateY(-3px) rotateX(${(-py * 3.5).toFixed(2)}deg) rotateY(${(px * 3.5).toFixed(2)}deg)`;
         });
-        tabNavLinks.forEach(link => link.classList.toggle('active', link.dataset.target === target));
-        if (scrollToTop) window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+      });
+
+      /* magnetic nav links + skill tags */
+      document.querySelectorAll('.nav-links a, .skill-tag').forEach((el) => {
+        el.addEventListener('mousemove', (e) => {
+          const r = el.getBoundingClientRect();
+          const mx = e.clientX - r.left - r.width / 2;
+          const my = e.clientY - r.top - r.height / 2;
+          el.style.transform = `translate(${(mx * 0.25).toFixed(1)}px, ${(my * 0.25).toFixed(1)}px)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+      });
+
+      /* subtle hero photo parallax */
+      const heroPhoto = document.querySelector('.hero-photo');
+      const hero = document.querySelector('.hero');
+      if (heroPhoto && hero) {
+        hero.addEventListener('mousemove', (e) => {
+          const r = hero.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          heroPhoto.style.transform = `translate(${(-px * 12).toFixed(1)}px, ${(-py * 10).toFixed(1)}px) scale(1.05)`;
+        });
+        hero.addEventListener('mouseleave', () => { heroPhoto.style.transform = ''; });
       }
-
-      tabNavLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          activateTab(link.dataset.target);
-        });
-      });
-
-      // clicking a benchmark row jumps to the evaluation tab and flashes
-      // the matching write-up, instead of duplicating the same text twice
-      document.querySelectorAll('tr.evaluable').forEach(row => {
-        row.addEventListener('click', () => {
-          activateTab('evaluation', false);
-          const entry = document.getElementById(row.dataset.jump);
-          if (entry) {
-            entry.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
-            entry.classList.remove('flash');
-            void entry.offsetWidth; // restart animation if clicked twice
-            entry.classList.add('flash');
-          }
-        });
-      });
     } else {
-      // narrow screens: no tabs, but row clicks still jump+flash within the
-      // normal scrolling page
-      document.querySelectorAll('tr.evaluable').forEach(row => {
-        row.addEventListener('click', () => {
-          const entry = document.getElementById(row.dataset.jump);
-          if (entry) {
-            entry.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
-            entry.classList.remove('flash');
-            void entry.offsetWidth;
-            entry.classList.add('flash');
-          }
-        });
-      });
+      document.querySelector('.cursor-glow')?.remove();
+      document.querySelector('.reticle')?.remove();
     }
 
-    /* ---------- count-up numbers, triggered once when scrolled into view ---------- */
-    function animateCount(el) {
-      const from = parseFloat(el.dataset.from);
-      const to = parseFloat(el.dataset.to);
-      const suffix = el.dataset.suffix || '';
-      const decimals = (el.dataset.to.split('.')[1] || '').length;
-      if (reduceMotion) { el.textContent = to.toFixed(decimals) + suffix; return; }
+    /* drifting telemetry tokens — replaces the old falling-petal effect with
+       small readouts pulled from the actual detection / verification vocabulary
+       (CV similarity + retrieval scores, NLI entailment labels, project stats) */
+    if (!reduceMotion) {
+      const layer = document.querySelector('.telemetry-layer');
+      const tokens = [
+        'conf 0.91', 'IoU 0.78', 'NLI: ENTAIL', 'sim 0.64', 'MATCH',
+        'k=3', 'R\u00B2=0.59', 'top-1', 'FAISS', 'retrieved',
+        '87.7%', 'evidence', 'SUPPORTED', 'RMSE 6.62m', 'cos 0.82',
+        'ECE', 'Brier', 'calibrated'
+      ];
+      const palette = ['#5eead4', '#e8a33d', '#a191f2'];
+      const count = window.innerWidth < 640 ? 8 : 14;
 
-      const duration = 900;
-      const start = performance.now();
-      function step(now) {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = from + (to - from) * eased;
-        el.textContent = current.toFixed(decimals) + suffix;
-        if (progress < 1) requestAnimationFrame(step);
+      for (let i = 0; i < count; i++) {
+        const chip = document.createElement('div');
+        chip.className = 'telemetry-chip';
+        chip.textContent = tokens[Math.floor(Math.random() * tokens.length)];
+
+        const size = 0.62 + Math.random() * 0.22;
+        const duration = 13 + Math.random() * 10;
+        const delay = -Math.random() * duration;
+        const sway = Math.round(Math.random() * 70 - 35) + 'px';
+        const opacity = (0.22 + Math.random() * 0.2).toFixed(2);
+        const color = palette[Math.floor(Math.random() * palette.length)];
+
+        chip.style.left = (Math.random() * 92).toFixed(1) + '%';
+        chip.style.fontSize = size.toFixed(2) + 'rem';
+        chip.style.color = color;
+        chip.style.setProperty('--sway', sway);
+        chip.style.setProperty('--chip-op', opacity);
+        chip.style.animationDuration = duration.toFixed(1) + 's';
+        chip.style.animationDelay = delay.toFixed(1) + 's';
+
+        layer.appendChild(chip);
       }
-      requestAnimationFrame(step);
+    } else {
+      document.querySelector('.telemetry-layer')?.remove();
     }
-
-    const countEls = document.querySelectorAll('.countup');
-    const countObserver = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCount(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    countEls.forEach(el => countObserver.observe(el));
-    // evaluation tab starts hidden on wide viewports, so also trigger once
-    // its tab becomes active for the first time
-    document.querySelectorAll('.topbar nav a[data-target="evaluation"]').forEach(link => {
-      link.addEventListener('click', () => countEls.forEach(el => { if (!el.dataset.done) { animateCount(el); el.dataset.done = '1'; } }), { once: true });
-    });
-
-    /* ---------- copy citation ---------- */
-    function copyCitation() {
-      const text = document.getElementById('citationText').innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = document.getElementById('copyBtn');
-        btn.textContent = 'copied!';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1600);
-      });
-    }
-
-    /* ---------- live tag filter ---------- */
-    const tagCloud = document.getElementById('tagCloud');
-    const allTags = Array.from(tagCloud.querySelectorAll('.tag'));
-    const tagCountEl = document.getElementById('tagCount');
-
-    function updateTagCount() {
-      const visible = allTags.filter(t => !t.classList.contains('hidden-tag')).length;
-      tagCountEl.textContent = `${visible} / ${allTags.length} shown`;
-    }
-    updateTagCount();
-
-    document.getElementById('tagFilter').addEventListener('input', (e) => {
-      const q = e.target.value.trim().toLowerCase();
-      allTags.forEach(tag => {
-        tag.classList.toggle('hidden-tag', q.length > 0 && !tag.textContent.toLowerCase().includes(q));
-      });
-      updateTagCount();
-    });
   </script>
 </body>
 </html>

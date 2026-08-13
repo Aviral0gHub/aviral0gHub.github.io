@@ -113,33 +113,6 @@
       transition: width 0.1s linear;
     }
 
-    /* ---------- Telemetry tokens ---------- */
-    /* small monospace readouts drifting upward, standing in for the "confidence
-       score" / "retrieved evidence" vocabulary of both CV detection and NLI
-       verification work — replaces decorative motion with subject-grounded motion */
-    .telemetry-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
-
-    .telemetry-chip {
-      position: absolute;
-      bottom: -6%;
-      font-family: 'IBM Plex Mono', monospace;
-      font-weight: 500;
-      white-space: nowrap;
-      will-change: transform, opacity;
-      animation-name: token-rise;
-      animation-timing-function: ease-in-out;
-      animation-iteration-count: infinite;
-      letter-spacing: 0.4px;
-    }
-
-    @keyframes token-rise {
-      0%   { transform: translateY(0) translateX(0); opacity: 0; }
-      10%  { opacity: var(--chip-op, 0.4); }
-      50%  { transform: translateY(-55vh) translateX(var(--sway)); }
-      88%  { opacity: var(--chip-op, 0.35); }
-      100% { transform: translateY(-115vh) translateX(calc(var(--sway) * -1)); opacity: 0; }
-    }
-
     /* ---------- Bokeh backdrop ---------- */
     .ambient-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
 
@@ -392,8 +365,8 @@
     a:focus-visible, .skill-tag:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
 
     @media (prefers-reduced-motion: reduce) {
-      .fade-up, .bokeh, .telemetry-chip, .scan-line, .det-tag { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
-      .telemetry-layer, .cursor-glow, .reticle, .scan-line { display: none !important; }
+      .fade-up, .bokeh, .scan-line, .det-tag { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+      .cursor-glow, .reticle, .scan-line { display: none !important; }
     }
 
     @media (max-width: 768px) {
@@ -415,7 +388,6 @@
   <div class="scroll-progress"></div>
   <div class="cursor-glow"></div>
   <div class="reticle"></div>
-  <div class="telemetry-layer"></div>
 
   <div class="ambient-background">
     <div class="bokeh b1"></div>
@@ -456,7 +428,8 @@
       <div class="hero-inner">
         <h1>Claims that get <em>checked</em>, not assumed.</h1>
         <p class="hero-bio">
-          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>, working on <strong>trustworthy ML</strong> — LLM evaluation, factuality, and calibration — along with retrieval systems and computer vision. I'm a <strong>co-author</strong> on an upcoming multimodal benchmark, <em>Last Translation Benchmark</em>, and I built <strong>FactTrace</strong> (claim-level factuality verification) and <strong>CalibCheck</strong> (confidence calibration analysis) — two projects asking the same underlying question from different angles: can a model's output actually be trusted. I also spent a summer as a Research Intern at the <strong>Robotics Research Center (RRC), IIIT Hyderabad</strong>.
+          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>. Interested in trustworthy ML, LLM evaluation, and agentic AI.<br>
+          Also interested in computer vision.
         </p>
         <div class="coord-row">
           <div class="coord-tag violet"><b>FOCUS</b> · Trustworthy ML · LLM Evaluation · Retrieval · Computer Vision</div>
@@ -553,15 +526,15 @@
         <div class="af-corner tr"></div>
         <div class="af-corner bl"></div>
         <div class="af-corner br"></div>
-        <span class="badge mint">Trustworthy ML · Calibration</span>
+        <span class="badge">Overconfident +14.3pts</span>
         <div class="card-header">
           <h3 class="card-title">CalibCheck</h3>
           <a href="https://github.com/Aviral0gHub/calibcheck" target="_blank" class="project-link" title="View source code">
             <i class="fab fa-github"></i>
           </a>
         </div>
-        <div class="card-subtitle">Python · HuggingFace Transformers · Anthropic API · Matplotlib</div>
-        <p>Measures whether an LLM's confidence actually tracks whether it's right — comparing verbalized self-reported confidence against raw next-token probability over answer choices, using Expected Calibration Error, Brier score, and reliability diagrams. Results are also broken down by topic domain, since a model can look calibrated in aggregate while being systematically over- or under-confident on one specific subject.</p>
+        <div class="card-subtitle">Python · HuggingFace Transformers · Matplotlib</div>
+        <p>Measures whether an LLM's confidence actually tracks whether it's right — comparing verbalized self-reported confidence against raw next-token probability over answer choices, using Expected Calibration Error, Brier score, and reliability diagrams, broken down by topic domain. On a 60-question benchmark, Qwen2.5-0.5B-Instruct ran overconfident by 14.3 points on average (ECE = 0.14) — with sports questions the worst offender: 30% actual accuracy against a stated 87.5% confidence, a 57.5-point gap.</p>
       </div>
 
       <div class="card">
@@ -768,46 +741,6 @@
     } else {
       document.querySelector('.cursor-glow')?.remove();
       document.querySelector('.reticle')?.remove();
-    }
-
-    /* drifting telemetry tokens — replaces the old falling-petal effect with
-       small readouts pulled from the actual detection / verification vocabulary
-       (CV similarity + retrieval scores, NLI entailment labels, project stats) */
-    if (!reduceMotion) {
-      const layer = document.querySelector('.telemetry-layer');
-      const tokens = [
-        'conf 0.91', 'IoU 0.78', 'NLI: ENTAIL', 'sim 0.64', 'MATCH',
-        'k=3', 'R\u00B2=0.59', 'top-1', 'FAISS', 'retrieved',
-        '87.7%', 'evidence', 'SUPPORTED', 'RMSE 6.62m', 'cos 0.82',
-        'ECE', 'Brier', 'calibrated'
-      ];
-      const palette = ['#5eead4', '#e8a33d', '#a191f2'];
-      const count = window.innerWidth < 640 ? 8 : 14;
-
-      for (let i = 0; i < count; i++) {
-        const chip = document.createElement('div');
-        chip.className = 'telemetry-chip';
-        chip.textContent = tokens[Math.floor(Math.random() * tokens.length)];
-
-        const size = 0.62 + Math.random() * 0.22;
-        const duration = 13 + Math.random() * 10;
-        const delay = -Math.random() * duration;
-        const sway = Math.round(Math.random() * 70 - 35) + 'px';
-        const opacity = (0.22 + Math.random() * 0.2).toFixed(2);
-        const color = palette[Math.floor(Math.random() * palette.length)];
-
-        chip.style.left = (Math.random() * 92).toFixed(1) + '%';
-        chip.style.fontSize = size.toFixed(2) + 'rem';
-        chip.style.color = color;
-        chip.style.setProperty('--sway', sway);
-        chip.style.setProperty('--chip-op', opacity);
-        chip.style.animationDuration = duration.toFixed(1) + 's';
-        chip.style.animationDelay = delay.toFixed(1) + 's';
-
-        layer.appendChild(chip);
-      }
-    } else {
-      document.querySelector('.telemetry-layer')?.remove();
     }
   </script>
 </body>

@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Aviral Nigam — Measuring whether models are honest</title>
-<meta name="description" content="Aviral Nigam builds evaluations for language models: chain-of-thought faithfulness, confidence calibration, and adversarial benchmark construction. Data Science &amp; Engineering undergraduate at Manipal Institute of Technology.">
+<title>Aviral Nigam — AI Safety &amp; Trustworthy ML</title>
+<meta name="description" content="Aviral Nigam works on AI safety and trustworthy ML through empirical LLM evaluation: chain-of-thought faithfulness, confidence calibration, and adversarial benchmark construction. Data Science &amp; Engineering undergraduate at Manipal Institute of Technology.">
 <meta name="author" content="Aviral Nigam">
 <meta name="theme-color" content="#0b0e0f">
 <link rel="canonical" href="https://aviral0ghub.github.io/">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Aviral Nigam — Measuring whether models are honest">
-<meta property="og:description" content="Chain-of-thought faithfulness, confidence calibration, adversarial benchmarks.">
+<meta property="og:title" content="Aviral Nigam — AI Safety &amp; Trustworthy ML">
+<meta property="og:description" content="AI safety through empirical LLM evaluation — faithfulness, calibration, benchmark validity.">
 <meta property="og:url" content="https://aviral0ghub.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -435,21 +435,21 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 <a class="skip" href="#main">Skip to content</a>
 
 <nav class="rail" aria-label="Section progress">
-  <a href="#work"><i></i>WORK</a>
   <a href="#approach"><i></i>APPROACH</a>
-  <a href="#experience"><i></i>EXPERIENCE</a>
+  <a href="#work"><i></i>WORK</a>
   <a href="#methods"><i></i>METHODS</a>
+  <a href="#experience"><i></i>EXPERIENCE</a>
   <a href="#contact"><i></i>CONTACT</a>
 </nav>
 
 <header class="top" id="top">
   <div class="wrap">
-    <a href="#top" class="brand"><span class="n">AVIRAL NIGAM</span><span class="r">— LLM evaluation</span></a>
+    <a href="#top" class="brand"><span class="n">AVIRAL NIGAM</span><span class="r">— AI safety &amp; trustworthy ML</span></a>
     <ul class="topnav">
       <li><a href="#approach">Approach</a></li>
       <li><a href="#work">Work</a></li>
-      <li><a href="#experience">Experience</a></li>
       <li><a href="#methods">Methods</a></li>
+      <li><a href="#experience">Experience</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <button class="kbd-hint" id="cmdk-open" aria-label="Open command palette">
@@ -465,13 +465,18 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   <div class="wrap">
     <div class="hero-grid">
       <div class="rv">
-        <p class="eyebrow"><span class="pip"></span>Open to research internships &amp; fellowships</p>
+        <p class="eyebrow"><span class="pip"></span>AI safety · Trustworthy ML</p>
         <h1>Models sound<br class="brk">certain. I measure<br class="brk">whether they <em>are</em>.</h1>
         <p class="lede">
-          I build evaluations for language models — checking whether a model's reasoning is
-          actually supported by evidence, and whether its stated confidence tracks how often
-          it's right. Data Science &amp; Engineering undergraduate at
+          I work on <strong>AI safety through empirical LLM evaluation</strong> — checking whether a
+          model's reasoning is actually supported by evidence, and whether its stated confidence
+          tracks how often it's right. Both are measurement problems, and measurement is where
+          trustworthy ML either holds up or doesn't.
+        </p>
+        <p class="lede" style="margin-top:.9rem">
+          Data Science &amp; Engineering undergraduate at
           <strong>Manipal Institute of Technology</strong>, graduating 2028.
+          Open to research internships and fellowships.
         </p>
         <div class="cta">
           <a class="btn solid" href="mailto:nigamaviral21@gmail.com">
@@ -484,7 +489,8 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           </a>
         </div>
         <div class="meta-row">
-          <span class="chip"><b>FOCUS</b> Faithfulness · Calibration · Benchmark validity</span>
+          <span class="chip"><b>FOCUS</b> CoT faithfulness · Calibration &amp; honesty · Benchmark validity</span>
+          <span class="chip"><b>OPEN TO</b> Research internships &amp; fellowships</span>
           <span class="chip"><b>BASE</b> India · remote</span>
         </div>
       </div>
@@ -522,7 +528,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   <div class="wrap">
     <div class="sec-head rv">
       <span class="sec-num">01</span>
-      <h2 class="sec-title">What I work on</h2>
+      <h2 class="sec-title">The safety problems I work on</h2>
       <span class="sec-rule"></span>
     </div>
     <div class="pillars">
@@ -731,11 +737,51 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   </div>
 </section>
 
+<!-- ============================ METHODS ============================ -->
+<section class="sec" id="methods">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Methods &amp; tooling</h2>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="skillset rv">
+      <div class="skillgrp primary">
+        <h3>Evaluation</h3>
+        <ul>
+          <li>Chain-of-thought faithfulness</li>
+          <li>Claim decomposition</li>
+          <li>Retrieval-augmented verification</li>
+          <li>NLI / entailment scoring</li>
+          <li>Calibration analysis (ECE, Brier)</li>
+          <li>Reliability diagrams</li>
+          <li>Adversarial benchmark construction</li>
+          <li>Black-box behavioural evals</li>
+        </ul>
+      </div>
+      <div class="skillgrp">
+        <h3>Modelling</h3>
+        <ul>
+          <li>PyTorch</li><li>HuggingFace Transformers</li><li>Sentence-Transformers</li>
+          <li>FAISS</li><li>Scikit-Learn</li><li>Metric learning</li><li>Transfer learning</li>
+        </ul>
+      </div>
+      <div class="skillgrp">
+        <h3>Engineering</h3>
+        <ul>
+          <li>Python</li><li>C++</li><li>SQL</li><li>Linux</li>
+          <li>Docker</li><li>Git</li><li>CUDA</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================ EXPERIENCE ============================ -->
 <section class="sec" id="experience">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="sec-num">03</span>
+      <span class="sec-num">04</span>
       <h2 class="sec-title">Research experience</h2>
       <span class="sec-rule"></span>
     </div>
@@ -774,46 +820,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
         </div>
       </div>
     </article>
-  </div>
-</section>
-
-<!-- ============================ METHODS ============================ -->
-<section class="sec" id="methods">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="sec-num">04</span>
-      <h2 class="sec-title">Methods &amp; tooling</h2>
-      <span class="sec-rule"></span>
-    </div>
-    <div class="skillset rv">
-      <div class="skillgrp primary">
-        <h3>Evaluation</h3>
-        <ul>
-          <li>Chain-of-thought faithfulness</li>
-          <li>Claim decomposition</li>
-          <li>Retrieval-augmented verification</li>
-          <li>NLI / entailment scoring</li>
-          <li>Calibration analysis (ECE, Brier)</li>
-          <li>Reliability diagrams</li>
-          <li>Adversarial benchmark construction</li>
-          <li>Black-box behavioural evals</li>
-        </ul>
-      </div>
-      <div class="skillgrp">
-        <h3>Modelling</h3>
-        <ul>
-          <li>PyTorch</li><li>HuggingFace Transformers</li><li>Sentence-Transformers</li>
-          <li>FAISS</li><li>Scikit-Learn</li><li>Metric learning</li><li>Transfer learning</li>
-        </ul>
-      </div>
-      <div class="skillgrp">
-        <h3>Engineering</h3>
-        <ul>
-          <li>Python</li><li>C++</li><li>SQL</li><li>Linux</li>
-          <li>Docker</li><li>Git</li><li>CUDA</li>
-        </ul>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1199,7 +1205,7 @@ var onScroll = function(){ top.classList.toggle('stuck', window.scrollY > 8); };
 window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
 var marks = Array.prototype.slice.call(document.querySelectorAll('.topnav a, .rail a'));
-var ids = ['approach','work','experience','methods','contact'];
+var ids = ['approach','work','methods','experience','contact'];
 if ('IntersectionObserver' in window){
   var sObs = new IntersectionObserver(function(es){
     es.forEach(function(e){
@@ -1235,8 +1241,8 @@ var CMDS = [
   {label:'FactTrace', href:'#work',       tag:'project'},
   {label:'CalibCheck',href:'#work',       tag:'project'},
   {label:'Last Translation Benchmark', href:'#work', tag:'project'},
-  {label:'Research experience', href:'#experience', tag:'section'},
   {label:'Methods & tooling',   href:'#methods',    tag:'section'},
+  {label:'Research experience', href:'#experience', tag:'section'},
   {label:'Contact',   href:'#contact',    tag:'section'},
   {label:'GitHub',    href:'https://github.com/Aviral0gHub', tag:'link', ext:true},
   {label:'LinkedIn',  href:'https://www.linkedin.com/in/aviral-nigam-a0b469271/', tag:'link', ext:true},

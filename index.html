@@ -1,747 +1,1295 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviral Nigam</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Aviral Nigam — Measuring whether models are honest</title>
+<meta name="description" content="Aviral Nigam builds evaluations for language models: chain-of-thought faithfulness, confidence calibration, and adversarial benchmark construction. Data Science &amp; Engineering undergraduate at Manipal Institute of Technology.">
+<meta name="author" content="Aviral Nigam">
+<meta name="theme-color" content="#0b0e0f">
+<link rel="canonical" href="https://aviral0ghub.github.io/">
 
-  <style>
-    :root {
-      --bg: #07090a;
-      --surface: rgba(255, 255, 255, 0.035);
-      --surface-hover: rgba(255, 255, 255, 0.06);
-      --border: rgba(255, 255, 255, 0.09);
-      --border-strong: rgba(255, 255, 255, 0.22);
-      --text-main: #f2f4f1;
-      --text-muted: #92a099;
-      --text-faint: #545e58;
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aviral Nigam — Measuring whether models are honest">
+<meta property="og:description" content="Chain-of-thought faithfulness, confidence calibration, adversarial benchmarks.">
+<meta property="og:url" content="https://aviral0ghub.github.io/">
+<meta name="twitter:card" content="summary_large_image">
 
-      /* semantic verdict palette: mint = verified/success, amber = pending, coral = contradiction */
-      --accent: #5eead4;
-      --accent-dim: rgba(94, 234, 212, 0.12);
-      --accent-amber: #e8a33d;
-      --accent-amber-dim: rgba(232, 163, 61, 0.12);
-      --accent-coral: #ff7a5c;
-      --accent-coral-dim: rgba(255, 122, 92, 0.12);
-      --accent-violet: #a191f2;
-      --accent-violet-dim: rgba(161, 145, 242, 0.12);
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0e0f'/%3E%3Cpath d='M6 22 L14 22' stroke='%23f0b64a' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M6 11 L26 11' stroke='%235eead4' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 
-      --mx: 50vw;
-      --my: 50vh;
-      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+<script>document.documentElement.classList.replace('no-js','js')</script>
 
-    body {
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      position: relative;
-    }
+<style>
+/* ============================================================
+   TOKENS
+   Chart fills are NOT the UI accents. The UI accents (--mint,
+   --amber, --red) are thin text/stroke tokens. The chart fills
+   (--viz-*) are darker steps of the same hues, chosen because
+   the bright trio failed CVD separation on this surface
+   (amber vs coral: deutan ΔE 4.5, normal-vision ΔE 11.2).
+   The --viz- trio measures deutan ΔE 8.3 / normal 16.9, inside
+   the L 0.48–0.67 band, all ≥3:1 on --surface-0.
+   ============================================================ */
+:root{
+  color-scheme: dark;
 
-    body.has-reticle, body.has-reticle a, body.has-reticle button, body.has-reticle .skill-tag { cursor: none; }
+  --surface-0:#0b0e0f;
+  --surface-1:#111618;
+  --surface-2:#161d1f;
+  --surface-3:#1d2528;
 
-    /* film grain */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 55;
-      pointer-events: none;
-      opacity: 0.035;
-      mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
+  --ink-0:#eef2f0;
+  --ink-1:#a6b3ad;
+  --ink-2:#6e7b75;
 
-    /* cursor-follow spotlight */
-    .cursor-glow {
-      position: fixed;
-      inset: 0;
-      z-index: 48;
-      pointer-events: none;
-      background: radial-gradient(360px circle at var(--mx) var(--my), rgba(94, 234, 212, 0.07), transparent 70%);
-    }
+  --rule:rgba(255,255,255,.075);
+  --rule-2:rgba(255,255,255,.14);
 
-    /* custom reticle cursor — doubles as a "targeting" motif for the detection theme */
-    .reticle {
-      position: fixed;
-      top: 0; left: 0;
-      width: 24px; height: 24px;
-      margin-left: -12px; margin-top: -12px;
-      border: 1px solid var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 60;
-      opacity: 0;
-      transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease, background 0.25s ease, opacity 0.3s ease;
-    }
-    .reticle::after {
-      content: "";
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 3px; height: 3px;
-      background: var(--accent);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-    }
-    body.has-reticle .reticle { opacity: 0.9; }
-    .reticle.active {
-      width: 46px; height: 46px;
-      margin-left: -23px; margin-top: -23px;
-      border-color: var(--accent-amber);
-      background: rgba(232, 163, 61, 0.08);
-    }
-    .reticle.active::after { background: var(--accent-amber); }
+  /* UI accents — text, strokes, hairlines */
+  --mint:#5eead4;
+  --amber:#f0b64a;
+  --red:#ff8f7a;
+  --violet:#b3a6f5;
 
-    /* scroll progress */
-    .scroll-progress {
-      position: fixed;
-      top: 0; left: 0;
-      height: 2.5px;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-amber));
-      z-index: 70;
-      transition: width 0.1s linear;
-    }
+  /* Validated chart fills */
+  --viz-mint:#1ea88c;
+  --viz-amber:#b58712;
+  --viz-red:#cd4a52;
 
-    /* ---------- Bokeh backdrop ---------- */
-    .ambient-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
+  --grid:rgba(255,255,255,.055);
+  --axis:rgba(255,255,255,.16);
 
-    .bokeh { position: absolute; border-radius: 50%; filter: blur(50px); animation: bokeh-float 26s ease-in-out infinite alternate; }
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --ff-body:'Inter',system-ui,-apple-system,sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 
-    .bokeh.b1 { top: 6%;  left: 8%;  width: 260px; height: 260px; background: radial-gradient(circle, rgba(94,234,212,0.26), transparent 70%); animation-duration: 30s; }
-    .bokeh.b2 { top: 55%; left: 78%; width: 340px; height: 340px; background: radial-gradient(circle, rgba(232,163,61,0.18), transparent 70%); animation-duration: 34s; animation-delay: -6s; }
-    .bokeh.b3 { top: 78%; left: 20%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(161,145,242,0.18), transparent 70%); animation-duration: 24s; animation-delay: -12s; }
-    .bokeh.b4 { top: 18%; left: 60%; width: 160px; height: 160px; background: radial-gradient(circle, rgba(255,122,92,0.12), transparent 70%); animation-duration: 20s; animation-delay: -4s; }
-    .bokeh.b5 { top: 40%; left: 40%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%); animation-duration: 40s; }
+  --ease:cubic-bezier(.22,1,.36,1);
+  --maxw:1120px;
+}
 
-    @keyframes bokeh-float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(3vw, -4vh) scale(1.12); } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px;-webkit-text-size-adjust:100%}
+body{
+  background:var(--surface-0);
+  color:var(--ink-0);
+  font-family:var(--ff-body);
+  font-weight:300;
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
 
-    /* ---------- Layout ---------- */
-    .container { max-width: 920px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+/* graph-paper plane, extremely quiet */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 5%,transparent 75%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(720px 420px at 12% -5%,rgba(94,234,212,.075),transparent 70%),
+    radial-gradient(560px 380px at 92% 8%,rgba(240,182,74,.05),transparent 70%);
+}
 
-    .fade-up { opacity: 0; transform: translateY(24px); transition: var(--transition); }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+a{color:inherit}
+::selection{background:rgba(94,234,212,.25)}
 
-    /* ---------- Nav ---------- */
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+.skip{position:absolute;left:1rem;top:-5rem;z-index:300;background:var(--mint);color:#06211c;
+  padding:.65rem 1.1rem;border-radius:6px;font:500 .8rem/1 var(--ff-mono);text-decoration:none;transition:top .18s}
+.skip:focus{top:1rem}
 
-    .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
-    .logo svg { width: 20px; height: 20px; opacity: 0.9; }
-    .logo svg circle, .logo svg path { stroke: var(--accent); }
-    .logo-text { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.05rem; color: var(--text-main); letter-spacing: 0.5px; }
+:where(a,button,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--mint);outline-offset:3px;border-radius:4px
+}
 
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1.15rem,4vw,2.5rem)}
 
-    .nav-links a {
-      display: inline-block;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      transition: color 0.3s ease, transform 0.2s ease;
-      position: relative;
-    }
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.no-js .rv{opacity:1;transform:none}
 
-    .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background: var(--accent); transition: width 0.3s ease; }
-    .nav-links a:hover { color: var(--text-main); }
-    .nav-links a:hover::after { width: 100%; }
+/* ============================================================ NAV */
+.top{
+  position:sticky;top:0;z-index:100;
+  background:rgba(11,14,15,.72);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s,background .3s;
+}
+.top.stuck{border-bottom-color:var(--rule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:64px}
+.brand{display:flex;align-items:baseline;gap:.6rem;text-decoration:none;font-family:var(--ff-mono);font-size:.82rem;letter-spacing:.04em}
+.brand .n{color:var(--ink-0);font-weight:500}
+.brand .r{color:var(--ink-2)}
+.topnav{display:flex;gap:1.6rem;list-style:none}
+.topnav a{
+  font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);text-decoration:none;position:relative;padding:.3rem 0;transition:color .25s
+}
+.topnav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--mint);transition:right .3s var(--ease)}
+.topnav a:hover{color:var(--ink-0)}
+.topnav a:hover::after,.topnav a[aria-current="true"]::after{right:0}
+.topnav a[aria-current="true"]{color:var(--mint)}
+.kbd-hint{
+  display:flex;align-items:center;gap:.4rem;background:none;border:1px solid var(--rule);
+  color:var(--ink-2);border-radius:6px;padding:.3rem .55rem;cursor:pointer;
+  font-family:var(--ff-mono);font-size:.68rem;transition:border-color .25s,color .25s
+}
+.kbd-hint:hover{border-color:var(--rule-2);color:var(--ink-1)}
+.kbd-hint kbd{font:inherit;background:var(--surface-3);border-radius:3px;padding:.05rem .3rem}
 
-    /* ---------- Hero ---------- */
-    .hero {
-      position: relative;
-      margin-top: 2.5rem;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      min-height: 560px;
-      display: flex;
-      align-items: flex-end;
-    }
+/* ============================================================ RAIL */
+.rail{
+  position:fixed;left:max(1.1rem,calc((100vw - var(--maxw))/2 - 68px));top:50%;
+  transform:translateY(-50%);z-index:60;display:none;flex-direction:column;gap:.9rem
+}
+@media(min-width:1320px){.rail{display:flex}}
+.rail a{
+  display:flex;align-items:center;gap:.6rem;text-decoration:none;
+  font-family:var(--ff-mono);font-size:.62rem;color:var(--ink-2);letter-spacing:.08em;
+  opacity:.55;transition:opacity .3s,color .3s
+}
+.rail a i{width:14px;height:1px;background:currentColor;display:block;transition:width .3s var(--ease)}
+.rail a:hover,.rail a[aria-current="true"]{opacity:1;color:var(--mint)}
+.rail a[aria-current="true"] i{width:30px}
 
-    .hero-photo {
-      position: absolute;
-      inset: -3%;
-      background-image: url('20260520_161154.jpg');
-      background-size: cover;
-      background-position: center 60%;
-      filter: grayscale(35%) brightness(0.55) saturate(1.1);
-      transition: transform 0.2s ease-out;
-    }
+/* ============================================================ SECTION SHELL */
+.sec{padding:clamp(4rem,9vw,7.5rem) 0;position:relative}
+.sec + .sec{border-top:1px solid var(--rule)}
+.sec-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(2rem,4vw,3.25rem)}
+.sec-num{font-family:var(--ff-mono);font-size:.7rem;color:var(--mint);letter-spacing:.1em;flex:none}
+.sec-title{font-family:var(--ff-mono);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-1);font-weight:500}
+.sec-rule{flex:1;height:1px;background:var(--rule)}
 
-    .hero-photo::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(0deg, rgba(4,6,6,0.96) 5%, rgba(4,6,6,0.55) 45%, rgba(4,6,6,0.25) 75%),
-        linear-gradient(100deg, rgba(4,6,6,0.6), transparent 55%);
-    }
+/* ============================================================ HERO */
+.hero{padding-top:clamp(3rem,7vw,5.5rem);padding-bottom:clamp(3.5rem,7vw,6rem)}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:clamp(2.5rem,5vw,4rem)}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.05fr .95fr;align-items:center}}
 
-    /* one-time detection scan sweep on load — reinforces the "confidence tag
-       locking on" moment right before .det-tag appears */
-    .scan-line {
-      position: absolute;
-      left: 0; right: 0; top: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      box-shadow: 0 0 14px 1px rgba(94, 234, 212, 0.6);
-      z-index: 3;
-      opacity: 0;
-      animation: scan-sweep 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s 1 both;
-      pointer-events: none;
-    }
-    @keyframes scan-sweep {
-      0%   { top: 0%;   opacity: 0; }
-      8%   { opacity: 1; }
-      92%  { opacity: 0.7; }
-      100% { top: 100%; opacity: 0; }
-    }
+.eyebrow{
+  display:inline-flex;align-items:center;gap:.55rem;font-family:var(--ff-mono);font-size:.7rem;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);margin-bottom:1.5rem
+}
+.eyebrow .pip{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 3px rgba(94,234,212,.14);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35}}
 
-    .af-corner { position: absolute; width: 22px; height: 22px; border-color: var(--accent); opacity: 0.85; z-index: 3; }
-    .af-corner.tl { top: 20px; left: 20px; border-top: 1.5px solid; border-left: 1.5px solid; }
-    .af-corner.tr { top: 20px; right: 20px; border-top: 1.5px solid; border-right: 1.5px solid; }
-    .af-corner.bl { bottom: 20px; left: 20px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
-    .af-corner.br { bottom: 20px; right: 20px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+h1{
+  font-family:var(--ff-display);font-weight:400;
+  font-size:clamp(2.7rem,6.2vw,4.6rem);line-height:1.02;letter-spacing:-.015em;
+  margin-bottom:1.6rem
+}
+h1 em{font-style:italic;color:var(--mint)}
+.lede{font-size:clamp(1rem,1.5vw,1.13rem);color:var(--ink-1);max-width:34em;line-height:1.75}
+.lede strong{color:var(--ink-0);font-weight:500}
 
-    .det-tag {
-      position: absolute; top: 20px; right: 52px; z-index: 3;
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.5px;
-      color: var(--accent); background: rgba(7, 9, 10, 0.55);
-      border: 1px solid var(--border-strong); padding: 0.35rem 0.65rem; border-radius: 3px;
-      backdrop-filter: blur(6px);
-      opacity: 0;
-      animation: det-tag-in 0.5s ease 1.85s 1 forwards;
-    }
-    .det-tag b { color: var(--text-main); font-weight: 500; }
-    @keyframes det-tag-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2.2rem}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;cursor:pointer;
+  font-family:var(--ff-mono);font-size:.74rem;letter-spacing:.06em;
+  padding:.7rem 1.1rem;border-radius:7px;border:1px solid var(--rule-2);
+  background:var(--surface-1);color:var(--ink-0);
+  transition:border-color .25s,background .25s,transform .18s var(--ease),color .25s
+}
+.btn:hover{border-color:var(--mint);color:var(--mint);transform:translateY(-2px)}
+.btn.solid{background:var(--mint);color:#062420;border-color:var(--mint);font-weight:500}
+.btn.solid:hover{background:#7ff2de;border-color:#7ff2de;color:#062420}
+.btn svg{width:14px;height:14px;flex:none}
 
-    .hero-inner { position: relative; z-index: 2; padding: 3rem 3rem 3.2rem; width: 100%; }
+.meta-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.8rem}
+.chip{
+  font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.04em;color:var(--ink-1);
+  border:1px solid var(--rule);background:var(--surface-1);border-radius:20px;padding:.35rem .75rem
+}
+.chip b{color:var(--ink-0);font-weight:500}
 
-    .hero h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.2rem, 5.4vw, 3.4rem);
-      font-weight: 600; line-height: 1.15; letter-spacing: -0.5px;
-      margin-bottom: 1.5rem; max-width: 640px;
-    }
-    .hero h1 em { font-style: normal; color: var(--accent); }
+/* ============================================================ FIGURE */
+figure{
+  background:var(--surface-1);border:1px solid var(--rule);border-radius:12px;
+  padding:clamp(1.1rem,2.4vw,1.6rem);position:relative;overflow:hidden
+}
+figure::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(94,234,212,.4),transparent)}
+.fig-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.35rem;flex-wrap:wrap}
+.fig-label{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mint)}
+.fig-title{font-size:.95rem;color:var(--ink-0);font-weight:500;margin-bottom:.15rem}
+.fig-sub{font-family:var(--ff-mono);font-size:.68rem;color:var(--ink-2);line-height:1.5}
+figcaption{font-size:.78rem;color:var(--ink-2);margin-top:.9rem;line-height:1.6;border-top:1px solid var(--rule);padding-top:.8rem}
+figcaption b{color:var(--ink-1);font-weight:500}
 
-    .hero-bio { font-size: 1.02rem; color: #cdd6d0; max-width: 580px; font-weight: 300; line-height: 1.85; margin-bottom: 2.2rem; }
-    .hero-bio strong { color: var(--text-main); font-weight: 500; }
+.legend{display:flex;flex-wrap:wrap;gap:.9rem;margin:.9rem 0 .2rem}
+.legend span{display:inline-flex;align-items:center;gap:.42rem;font-family:var(--ff-mono);font-size:.68rem;color:var(--ink-1)}
+.legend i{width:9px;height:9px;border-radius:50%;display:block;flex:none}
 
-    .coord-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-    .coord-tag {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.5px;
-      color: #b7c0ba; border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(7, 9, 10, 0.4); backdrop-filter: blur(6px);
-      padding: 0.45rem 0.8rem; border-radius: 3px;
-    }
-    .coord-tag b { color: var(--text-main); font-weight: 500; }
-    .coord-tag.violet { color: #e3ddff; border-color: rgba(161,145,242,0.35); }
-    .coord-tag.violet b { color: #f0ecff; }
+.viz{width:100%;display:block;overflow:visible;font-family:var(--ff-mono)}
+.viz text{font-family:var(--ff-mono);fill:var(--ink-2);font-size:11px}
+.viz .val{fill:var(--ink-0);font-size:12.5px;font-weight:500}
+.viz .axis-line{stroke:var(--axis);stroke-width:1}
+.viz .gridline{stroke:var(--grid);stroke-width:1}
+.viz .connector{stroke:var(--rule-2);stroke-width:2;stroke-linecap:round}
+.viz .hit{fill:transparent;cursor:crosshair}
 
-    /* ---------- Sections ---------- */
-    section { padding: 4.5rem 0; border-top: 1px solid var(--border); }
-    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2.5rem; }
-    .section-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-main); font-weight: 500; }
-    .section-index { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); }
+.tip{
+  position:fixed;z-index:200;pointer-events:none;opacity:0;transform:translateY(4px);
+  background:var(--surface-3);border:1px solid var(--rule-2);border-radius:7px;
+  padding:.5rem .7rem;font-family:var(--ff-mono);font-size:.7rem;color:var(--ink-0);
+  box-shadow:0 12px 32px rgba(0,0,0,.55);transition:opacity .14s,transform .14s;max-width:240px;line-height:1.55
+}
+.tip.on{opacity:1;transform:none}
+.tip .k{color:var(--ink-2)}
 
-    /* ---------- Cards ---------- */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 2.2rem 2.4rem;
-      margin-bottom: 1.5rem;
-      transition: transform 0.2s ease, background 0.3s ease, border-color 0.3s ease;
-      position: relative;
-      transform-style: preserve-3d;
-    }
+.tbl-toggle{
+  align-self:flex-start;margin-top:.85rem;background:none;border:1px solid var(--rule);color:var(--ink-2);
+  border-radius:6px;padding:.3rem .6rem;font-family:var(--ff-mono);font-size:.66rem;cursor:pointer;
+  transition:border-color .25s,color .25s
+}
+.tbl-toggle:hover{border-color:var(--rule-2);color:var(--ink-1)}
+.data-table{width:100%;border-collapse:collapse;margin-top:.85rem;font-family:var(--ff-mono);font-size:.72rem}
+.data-table[hidden]{display:none}
+.data-table th,.data-table td{text-align:right;padding:.42rem .55rem;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums}
+.data-table th:first-child,.data-table td:first-child{text-align:left}
+.data-table thead th{color:var(--ink-2);font-weight:400;letter-spacing:.06em;text-transform:uppercase;font-size:.64rem}
+.data-table td{color:var(--ink-0)}
 
-    .card.featured {
-      border-color: rgba(232,163,61,0.35);
-      background: linear-gradient(160deg, rgba(232,163,61,0.06), rgba(94,234,212,0.03));
-    }
-    .card.featured:hover { border-color: rgba(232,163,61,0.55); }
+/* ============================================================ STAT TILES */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:1.4rem}
+.tile{background:var(--surface-1);padding:1.05rem 1.15rem}
+.tile .v{font-family:var(--ff-mono);font-size:clamp(1.5rem,3.4vw,2rem);font-weight:500;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.tile .v.mint{color:var(--mint)} .tile .v.amber{color:var(--amber)} .tile .v.red{color:var(--red)}
+.tile .k{font-family:var(--ff-mono);font-size:.66rem;color:var(--ink-2);letter-spacing:.06em;margin-top:.4rem;line-height:1.5}
 
-    .card .af-corner { width: 14px; height: 14px; opacity: 0; transition: var(--transition); }
-    .card .af-corner.tl { top: -1px; left: -1px; }
-    .card .af-corner.tr { top: -1px; right: -1px; }
-    .card .af-corner.bl { bottom: -1px; left: -1px; }
-    .card .af-corner.br { bottom: -1px; right: -1px; }
+/* ============================================================ PILLARS */
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem}
+.pillar{border:1px solid var(--rule);border-radius:11px;padding:1.5rem 1.5rem 1.6rem;background:var(--surface-1);
+  position:relative;overflow:hidden;transition:border-color .3s,transform .3s var(--ease)}
+.pillar:hover{border-color:var(--rule-2);transform:translateY(-3px)}
+.pillar .idx{font-family:var(--ff-mono);font-size:.66rem;color:var(--ink-2);letter-spacing:.1em}
+.pillar h3{font-family:var(--ff-display);font-weight:400;font-size:1.5rem;line-height:1.2;margin:.6rem 0 .6rem}
+.pillar p{font-size:.9rem;color:var(--ink-1);line-height:1.7}
+.pillar .tie{margin-top:.9rem;font-family:var(--ff-mono);font-size:.66rem;color:var(--ink-2);
+  border-top:1px solid var(--rule);padding-top:.7rem}
+.pillar .tie b{color:var(--mint);font-weight:500}
 
-    .card:hover { background: var(--surface-hover); border-color: var(--border-strong); }
-    .card:hover .af-corner { opacity: 1; }
+/* ============================================================ WORK */
+.work{display:flex;flex-direction:column;gap:clamp(2rem,4vw,3rem)}
+.entry{border:1px solid var(--rule);border-radius:14px;background:var(--surface-1);overflow:hidden;
+  transition:border-color .35s}
+.entry:hover{border-color:var(--rule-2)}
+.entry-body{padding:clamp(1.4rem,3.2vw,2.2rem)}
+.entry-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.9rem}
+.entry h3{font-family:var(--ff-display);font-weight:400;font-size:clamp(1.8rem,3.6vw,2.4rem);line-height:1.1;letter-spacing:-.01em}
+.entry .kicker{font-family:var(--ff-mono);font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:.55rem}
+.entry p{color:var(--ink-1);font-size:.95rem;line-height:1.8;max-width:62ch}
+.entry p + p{margin-top:.9rem}
+.entry p strong{color:var(--ink-0);font-weight:500}
+.stack{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem}
+.stack span{font-family:var(--ff-mono);font-size:.65rem;color:var(--ink-2);border:1px solid var(--rule);
+  border-radius:5px;padding:.25rem .55rem}
+.links{display:flex;gap:.55rem;flex-wrap:wrap;flex:none}
+.iconlink{
+  display:inline-flex;align-items:center;gap:.42rem;text-decoration:none;
+  font-family:var(--ff-mono);font-size:.68rem;color:var(--ink-1);
+  border:1px solid var(--rule);border-radius:6px;padding:.38rem .65rem;
+  transition:border-color .25s,color .25s,background .25s
+}
+.iconlink:hover{border-color:var(--mint);color:var(--mint);background:rgba(94,234,212,.06)}
+.iconlink svg{width:13px;height:13px}
 
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.4rem; }
-    .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem; font-weight: 600; color: var(--text-main); }
-    .project-link { color: var(--text-muted); font-size: 1.2rem; transition: color 0.3s ease; flex-shrink: 0; }
-    .project-link:hover { color: var(--accent); }
-    .card-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--accent); margin-bottom: 1.4rem; letter-spacing: 0.3px; }
-    .card ul { list-style: none; color: var(--text-muted); font-size: 0.93rem; }
-    .card ul li { margin-bottom: 0.75rem; padding-left: 1.1rem; position: relative; }
-    .card ul li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 5px; height: 1px; background: var(--text-faint); }
-    .card p { color: var(--text-muted); font-size: 0.93rem; }
+.split{display:grid;grid-template-columns:1fr;gap:1.4rem;margin-top:1.6rem}
+@media(min-width:900px){.split.two{grid-template-columns:1fr 1fr;align-items:stretch}}
+.split.two > figure{display:flex;flex-direction:column}
+/* split the leftover height into two equal gaps instead of one dead pocket */
+.split.two > figure > .viz{margin-top:auto}
+.split.two > figure > figcaption{margin-top:auto}
+.split.two > figure > .tbl-toggle{align-self:flex-start}
 
-    .badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.8px;
-      text-transform: uppercase; color: #ffe8c2;
-      border: 1px solid rgba(232,163,61,0.4); background: rgba(232,163,61,0.08);
-      padding: 0.3rem 0.65rem; border-radius: 20px; margin-bottom: 1rem;
-    }
-    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-amber); box-shadow: 0 0 6px var(--accent-amber); }
+/* ---------- FactTrace runner ---------- */
+.runner{border:1px solid var(--rule);border-radius:11px;background:var(--surface-0);overflow:hidden}
+.runner-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+  padding:.6rem .8rem;border-bottom:1px solid var(--rule);background:var(--surface-2);flex-wrap:wrap}
+.runner-head .t{font-family:var(--ff-mono);font-size:.65rem;color:var(--ink-2);letter-spacing:.06em}
+.run-btn{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface-3);border:1px solid var(--rule-2);
+  color:var(--ink-0);border-radius:6px;padding:.35rem .7rem;font-family:var(--ff-mono);font-size:.68rem;cursor:pointer;
+  transition:border-color .25s,color .25s}
+.run-btn:hover{border-color:var(--mint);color:var(--mint)}
+.run-btn[disabled]{opacity:.5;cursor:progress}
+.q{padding:.85rem .9rem;border-bottom:1px solid var(--rule);font-size:.85rem;color:var(--ink-1);line-height:1.6}
+.q b{color:var(--ink-2);font-family:var(--ff-mono);font-size:.65rem;letter-spacing:.1em;display:block;margin-bottom:.3rem;text-transform:uppercase;font-weight:400}
+.trace{list-style:none}
+.trace li{
+  display:flex;gap:.75rem;align-items:flex-start;padding:.7rem .9rem;border-bottom:1px solid var(--rule);
+  font-size:.86rem;color:var(--ink-2);line-height:1.6;transition:color .35s,background .35s
+}
+.trace li:last-child{border-bottom:0}
+.trace li .step{font-family:var(--ff-mono);font-size:.65rem;color:var(--ink-2);flex:none;padding-top:.18rem;min-width:2.1rem}
+.trace li .claim{flex:1}
+.trace li .verdict{
+  flex:none;font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.07em;padding:.2rem .45rem;border-radius:4px;
+  border:1px solid var(--rule);color:var(--ink-2);opacity:0;transform:translateX(-4px);
+  transition:opacity .3s,transform .3s,color .3s,border-color .3s,background .3s;white-space:nowrap
+}
+.trace li.done{color:var(--ink-1);background:rgba(255,255,255,.014)}
+.trace li.done .verdict{opacity:1;transform:none}
+.trace li.scan{background:rgba(94,234,212,.05)}
+.trace li.scan .verdict{opacity:1;transform:none;color:var(--mint);border-color:rgba(94,234,212,.35)}
+.trace li[data-v="supported"].done .verdict{color:#8ff0dc;border-color:rgba(30,168,140,.55);background:rgba(30,168,140,.14)}
+.trace li[data-v="contradicted"].done .verdict{color:#ffb3a4;border-color:rgba(205,74,82,.6);background:rgba(205,74,82,.16)}
+.trace li[data-v="unverifiable"].done .verdict{color:#f7d79a;border-color:rgba(181,135,18,.6);background:rgba(181,135,18,.16)}
+.trace li[data-v="contradicted"].done{background:rgba(205,74,82,.055)}
+.runner-foot{padding:.6rem .9rem;font-family:var(--ff-mono);font-size:.64rem;color:var(--ink-2);
+  border-top:1px solid var(--rule);background:var(--surface-2);line-height:1.6}
 
-    .badge.mint { color: #d6fff7; border-color: rgba(94,234,212,0.4); background: rgba(94,234,212,0.08); }
-    .badge.mint::before { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+/* ---------- Honors ---------- */
+.honors{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.3rem}
+.honor{display:inline-flex;align-items:center;gap:.55rem;border:1px solid rgba(179,166,245,.28);
+  background:rgba(179,166,245,.07);border-radius:8px;padding:.5rem .8rem;
+  font-family:var(--ff-mono);font-size:.7rem;color:#ded7ff}
+.honor svg{width:13px;height:13px;flex:none;color:var(--violet)}
 
-    /* ---------- Verdict strip ---------- */
-    /* signature element: FactTrace's own SUPPORTED / UNVERIFIABLE / CONTRADICTED
-       vocabulary, rendered with the real confusion-matrix counts from run_eval.py */
-    .verdict-strip { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
-    .verdict-chip {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.3px;
-      padding: 0.4rem 0.75rem; border-radius: 4px;
-      border: 1px solid var(--chip-border); background: var(--chip-bg); color: var(--chip-text);
-    }
-    .verdict-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--chip-dot); box-shadow: 0 0 6px var(--chip-dot); flex-shrink: 0; }
-    .verdict-chip .count { color: var(--text-main); font-weight: 500; }
-    .verdict-chip.supported { --chip-border: rgba(94,234,212,0.35); --chip-bg: rgba(94,234,212,0.07); --chip-text: #b9f5e9; --chip-dot: var(--accent); }
-    .verdict-chip.unverifiable { --chip-border: rgba(232,163,61,0.35); --chip-bg: rgba(232,163,61,0.07); --chip-text: #f5dcae; --chip-dot: var(--accent-amber); }
-    .verdict-chip.contradicted { --chip-border: rgba(255,122,92,0.35); --chip-bg: rgba(255,122,92,0.07); --chip-text: #ffc9bb; --chip-dot: var(--accent-coral); }
-    .verdict-caption { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); margin-top: 0.7rem; letter-spacing: 0.3px; }
+/* ---------- thumbnail ---------- */
+.thumb{border:1px solid var(--rule);border-radius:9px;overflow:hidden;margin-top:1.4rem;max-width:300px}
+.thumb img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;filter:grayscale(30%) brightness(.82)}
+.thumb figcaption{padding:.55rem .7rem;margin:0;border:0;font-family:var(--ff-mono);font-size:.63rem;color:var(--ink-2)}
 
-    /* ---------- Mini Slider ---------- */
-    .mini-slider {
-      display: block; position: relative; width: 100%; max-width: 380px; height: 220px;
-      margin-top: 1.8rem; border-radius: 5px; overflow: hidden; border: 1px solid var(--border);
-      text-decoration: none; cursor: pointer;
-    }
-    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: none; transition: opacity 1s ease-in-out; }
-    .slide.active { opacity: 1; }
-    .slider-overlay { position: absolute; inset: 0; background: rgba(7, 9, 10, 0.72); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.35s ease; }
-    .slider-overlay span { color: var(--accent); font-size: 0.85rem; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 0.7rem; transform: translateY(8px); transition: transform 0.35s ease; }
-    .mini-slider:hover .slider-overlay { opacity: 1; }
-    .mini-slider:hover .slider-overlay span { transform: translateY(0); }
+/* ============================================================ SKILLS */
+.skillset{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.6rem}
+.skillgrp h3{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:400;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--rule)}
+.skillgrp ul{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem}
+.skillgrp li{font-family:var(--ff-mono);font-size:.72rem;color:var(--ink-1);border:1px solid var(--rule);
+  background:var(--surface-1);border-radius:6px;padding:.35rem .65rem;transition:border-color .25s,color .25s}
+.skillgrp li:hover{border-color:var(--rule-2);color:var(--ink-0)}
+.skillgrp.primary li{color:#cfe9e2;border-color:rgba(94,234,212,.22)}
+.skillgrp.primary li:hover{border-color:var(--mint);color:var(--mint)}
 
-    /* ---------- Gallery Grid ---------- */
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-    .gallery-item { position: relative; aspect-ratio: 4/3; background: var(--bg); overflow: hidden; transition: transform 0.2s ease; }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; filter: none; }
-    .gallery-item:hover img { transform: scale(1.05); filter: none; }
+/* ============================================================ CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr;gap:2rem}
+@media(min-width:820px){.contact-grid{grid-template-columns:1.1fr .9fr;align-items:start}}
+.contact-lede{font-family:var(--ff-display);font-size:clamp(1.7rem,3.6vw,2.5rem);line-height:1.2;font-weight:400}
+.contact-note{color:var(--ink-1);font-size:.95rem;margin-top:1rem;line-height:1.8;max-width:42ch}
+.copyrow{display:flex;align-items:center;gap:.5rem;margin-top:1.4rem;flex-wrap:wrap}
+.copy-btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--rule-2);background:var(--surface-1);
+  color:var(--ink-0);border-radius:7px;padding:.65rem 1rem;font-family:var(--ff-mono);font-size:.75rem;cursor:pointer;
+  transition:border-color .25s,color .25s}
+.copy-btn:hover{border-color:var(--mint);color:var(--mint)}
+.copy-btn.ok{border-color:var(--mint);color:var(--mint)}
 
-    /* ---------- Skills ---------- */
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.7rem; }
-    .skill-tag {
-      display: inline-block;
-      padding: 0.55rem 1.05rem; border: 1px solid var(--border); border-radius: 3px;
-      font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; color: var(--text-muted);
-      transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.2s ease;
-      background: var(--surface);
-    }
-    .skill-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-    .skill-tag.nlp { border-color: rgba(161,145,242,0.3); color: #cfc8ff; }
-    .skill-tag.nlp:hover { border-color: var(--accent-violet); color: var(--accent-violet); background: var(--accent-violet-dim); }
+/* ============================================================ FOOTER */
+footer{border-top:1px solid var(--rule);padding:2.5rem 0 3.2rem}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.foot-meta{font-family:var(--ff-mono);font-size:.68rem;color:var(--ink-2);line-height:1.7}
+.foot-links{display:flex;gap:1.1rem}
+.foot-links a{font-family:var(--ff-mono);font-size:.7rem;color:var(--ink-2);text-decoration:none;transition:color .25s}
+.foot-links a:hover{color:var(--mint)}
 
-    /* ---------- Footer ---------- */
-    footer { padding: 3.5rem 0; border-top: 1px solid var(--border); }
-    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
-    .footer-meta { color: var(--text-faint); font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; }
-    .footer-links { display: flex; gap: 1.4rem; }
-    .footer-links a { color: var(--text-muted); font-size: 1.05rem; transition: all 0.3s ease; }
-    .footer-links a:hover { color: var(--accent); transform: translateY(-2px); }
+/* ============================================================ COMMAND PALETTE */
+.cmdk{position:fixed;inset:0;z-index:250;display:none;align-items:flex-start;justify-content:center;
+  padding:12vh 1rem 1rem;background:rgba(4,7,8,.72);backdrop-filter:blur(6px)}
+.cmdk[open]{display:flex}
+.cmdk-box{width:min(560px,100%);background:var(--surface-2);border:1px solid var(--rule-2);border-radius:13px;
+  overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.cmdk input{width:100%;background:none;border:0;border-bottom:1px solid var(--rule);color:var(--ink-0);
+  padding:1rem 1.1rem;font-family:var(--ff-mono);font-size:.9rem;outline:none}
+.cmdk input::placeholder{color:var(--ink-2)}
+.cmdk ul{list-style:none;max-height:46vh;overflow-y:auto}
+.cmdk li a{display:flex;align-items:center;gap:.7rem;padding:.68rem 1.1rem;text-decoration:none;
+  font-family:var(--ff-mono);font-size:.78rem;color:var(--ink-1);border-left:2px solid transparent}
+.cmdk li.sel a,.cmdk li a:hover{background:rgba(94,234,212,.07);color:var(--mint);border-left-color:var(--mint)}
+.cmdk li a .tag{margin-left:auto;font-size:.63rem;color:var(--ink-2)}
+.cmdk-foot{padding:.55rem 1.1rem;border-top:1px solid var(--rule);font-family:var(--ff-mono);
+  font-size:.63rem;color:var(--ink-2);display:flex;gap:1rem;flex-wrap:wrap}
 
-    a:focus-visible, .skill-tag:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .fade-up, .bokeh, .scan-line, .det-tag { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
-      .cursor-glow, .reticle, .scan-line { display: none !important; }
-    }
-
-    @media (max-width: 768px) {
-      .hero { min-height: 460px; }
-      .hero-inner { padding: 2.2rem 1.6rem 2.4rem; }
-      .hero h1 { font-size: 2rem; }
-      .det-tag { display: none; }
-      nav { flex-direction: column; gap: 1.25rem; padding: 1.75rem 0; }
-      .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
-      .card { padding: 1.5rem; }
-      .card-header { flex-direction: column; }
-      .cursor-glow, .reticle { display: none; }
-      .verdict-strip { gap: 0.5rem; }
-    }
-  </style>
+/* ============================================================ RESPONSIVE / MOTION */
+@media(max-width:640px){ .brk{display:none} }
+@media(max-width:860px){
+  .topnav{display:none}
+  h1{font-size:clamp(2.2rem,9vw,3rem)}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .rv{opacity:1!important;transform:none!important}
+}
+@media print{
+  .top,.rail,.cmdk,.tip,.runner,.thumb,.cta,.copyrow{display:none!important}
+  body{background:#fff;color:#000}
+  body::before,body::after{display:none}
+  .entry,figure,.pillar{border-color:#ccc;background:#fff}
+  .lede,.entry p,.pillar p{color:#222}
+}
+</style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-  <div class="scroll-progress"></div>
-  <div class="cursor-glow"></div>
-  <div class="reticle"></div>
+<nav class="rail" aria-label="Section progress">
+  <a href="#work"><i></i>WORK</a>
+  <a href="#approach"><i></i>APPROACH</a>
+  <a href="#experience"><i></i>EXPERIENCE</a>
+  <a href="#methods"><i></i>METHODS</a>
+  <a href="#contact"><i></i>CONTACT</a>
+</nav>
 
-  <div class="ambient-background">
-    <div class="bokeh b1"></div>
-    <div class="bokeh b2"></div>
-    <div class="bokeh b3"></div>
-    <div class="bokeh b4"></div>
-    <div class="bokeh b5"></div>
+<header class="top" id="top">
+  <div class="wrap">
+    <a href="#top" class="brand"><span class="n">AVIRAL NIGAM</span><span class="r">— LLM evaluation</span></a>
+    <ul class="topnav">
+      <li><a href="#approach">Approach</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#methods">Methods</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="kbd-hint" id="cmdk-open" aria-label="Open command palette">
+      <span>Jump</span><kbd>⌘K</kbd>
+    </button>
   </div>
+</header>
 
-  <div class="container">
+<main id="main">
 
-    <nav class="fade-up">
-      <a href="#" class="logo">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="9.2" stroke-width="1.2"/>
-          <path d="M12 2.8 L14 9 L20.5 9.5 L15.3 13.6 L17 20 L12 16.2 L7 20 L8.7 13.6 L3.5 9.5 L10 9 Z" stroke-width="0.9" opacity="0.55"/>
-        </svg>
-        <span class="logo-text">AVIRAL NIGAM</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="#research">Research</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-      </ul>
-    </nav>
-
-    <header class="hero fade-up">
-      <div class="hero-photo"></div>
-      <div class="scan-line"></div>
-      <div class="af-corner tl"></div>
-      <div class="af-corner tr"></div>
-      <div class="af-corner bl"></div>
-      <div class="af-corner br"></div>
-      <div class="det-tag">ID 0xA9F3 · <b>AVIRAL_NIGAM</b> · conf 0.99</div>
-
-      <div class="hero-inner">
-        <h1>Claims that get <em>checked</em>, not assumed.</h1>
-        <p class="hero-bio">
-          I'm a Data Science &amp; Engineering student at <strong>MIT Manipal</strong>. Interested in trustworthy ML, LLM evaluation, and agentic AI.<br>
-          Also interested in computer vision.
+<!-- ============================ HERO ============================ -->
+<section class="sec hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="rv">
+        <p class="eyebrow"><span class="pip"></span>Open to research internships &amp; fellowships</p>
+        <h1>Models sound<br class="brk">certain. I measure<br class="brk">whether they <em>are</em>.</h1>
+        <p class="lede">
+          I build evaluations for language models — checking whether a model's reasoning is
+          actually supported by evidence, and whether its stated confidence tracks how often
+          it's right. Data Science &amp; Engineering undergraduate at
+          <strong>Manipal Institute of Technology</strong>, graduating 2028.
         </p>
-        <div class="coord-row">
-          <div class="coord-tag violet"><b>FOCUS</b> · Trustworthy ML · LLM Evaluation · Retrieval · Computer Vision</div>
-          <div class="coord-tag"><b>BASE</b> · MIT Manipal · 13.3467°N 74.7869°E</div>
-        </div>
-      </div>
-    </header>
-
-    <section id="research" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Published / Ongoing Research</h2>
-        <span class="section-index">n=1</span>
-      </div>
-
-      <div class="card featured">
-        <div class="af-corner tl"></div>
-        <div class="af-corner tr"></div>
-        <div class="af-corner bl"></div>
-        <div class="af-corner br"></div>
-        <span class="badge">Co-Author · Expected September 2026</span>
-        <div class="card-header">
-          <h3 class="card-title">Last Translation Benchmark</h3>
-          <a href="https://last-translation-benchmark.vilda.net" target="_blank" class="project-link" title="View project">
-            <i class="fas fa-arrow-up-right-from-square"></i>
+        <div class="cta">
+          <a class="btn solid" href="mailto:nigamaviral21@gmail.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            Email
+          </a>
+          <a class="btn" href="https://github.com/Aviral0gHub" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.5 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+            GitHub
           </a>
         </div>
-        <div class="card-subtitle">Co-Author · with researchers from ETH Zürich, JHU, CUNI, UvA &amp; KIT</div>
-        <p>Co-authoring <em>"Last Translation Benchmark,"</em> an upcoming multilingual, multimodal benchmark for evaluating state-of-the-art models — contributing adversarial multimodal inputs designed to break current systems. In preparation for release.</p>
-      </div>
-    </section>
-
-    <section id="experience" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Professional Experience</h2>
-        <span class="section-index">4 mo</span>
-      </div>
-
-      <div class="card">
-        <div class="af-corner tl"></div>
-        <div class="af-corner tr"></div>
-        <div class="af-corner bl"></div>
-        <div class="af-corner br"></div>
-        <div class="card-header">
-          <h3 class="card-title">Research Intern</h3>
+        <div class="meta-row">
+          <span class="chip"><b>FOCUS</b> Faithfulness · Calibration · Benchmark validity</span>
+          <span class="chip"><b>BASE</b> India · remote</span>
         </div>
-        <div class="card-subtitle">Robotics Research Center, IIIT Hyderabad — advised by Dr. Sourav Garg · May–August 2026</div>
-        <ul>
-          <li>Worked as a Research Intern, researching instance retrieval in high-resolution aerial and satellite imagery.</li>
-          <li>Explored deep visual feature representations and similarity learning for object-centric retrieval.</li>
-          <li>Engineered spatial data preprocessing pipelines for deep feature matching models.</li>
-        </ul>
+      </div>
 
-        <a href="#gallery" class="mini-slider" title="View the full gallery">
-          <img src="20260521_115503.jpg" class="slide active" alt="RRC Workstation">
-          <img src="20260520_174244.jpg" class="slide" alt="Kohli Research Block">
-          <div class="slider-overlay">
-            <span>View gallery <i class="fas fa-arrow-right"></i></span>
+      <!-- FIGURE 1 -->
+      <figure class="rv" id="fig1">
+        <div class="fig-head">
+          <div>
+            <p class="fig-label">Fig. 1</p>
+            <p class="fig-title">Stated confidence vs. measured accuracy</p>
+            <p class="fig-sub">Qwen2.5-0.5B-Instruct · CalibCheck · sports domain</p>
           </div>
-        </a>
-      </div>
-    </section>
-
-    <section id="projects" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Selected Projects</h2>
-        <span class="section-index">n=3</span>
-      </div>
-
-      <div class="card">
-        <div class="af-corner tl"></div>
-        <div class="af-corner tr"></div>
-        <div class="af-corner bl"></div>
-        <div class="af-corner br"></div>
-        <span class="badge mint">78.5% → 87.7% Accuracy</span>
-        <div class="card-header">
-          <h3 class="card-title">FactTrace</h3>
-          <a href="https://github.com/Aviral0gHub/facttrace" target="_blank" class="project-link" title="View source code">
-            <i class="fab fa-github"></i>
-          </a>
         </div>
-        <div class="card-subtitle">Python · PyTorch · Sentence-Transformers · HuggingFace Transformers · FAISS</div>
-        <p>Claim-level factuality verification pipeline for agentic LLM reasoning traces — decomposes multi-step reasoning into atomic claims, retrieves evidence via FAISS-based dense retrieval, and classifies each claim as supported, contradicted, or unverifiable using NLI-based entailment scoring. Improved accuracy from 78.5% (lexical baseline) to 87.7% by swapping in dense retrieval and RoBERTa-large-MNLI entailment scoring; failure analysis showed unsupported claims concentrate in later reasoning steps.</p>
-
-        <div class="verdict-strip">
-          <span class="verdict-chip supported"><span class="dot"></span>SUPPORTED <span class="count">41</span></span>
-          <span class="verdict-chip unverifiable"><span class="dot"></span>UNVERIFIABLE <span class="count">5</span></span>
-          <span class="verdict-chip contradicted"><span class="dot"></span>CONTRADICTED <span class="count">19</span></span>
-        </div>
-        <div class="verdict-caption">verdict breakdown — 65 claims, NLI scorer</div>
-      </div>
-
-      <div class="card">
-        <div class="af-corner tl"></div>
-        <div class="af-corner tr"></div>
-        <div class="af-corner bl"></div>
-        <div class="af-corner br"></div>
-        <span class="badge">Overconfident +14.3pts</span>
-        <div class="card-header">
-          <h3 class="card-title">CalibCheck</h3>
-          <a href="https://github.com/Aviral0gHub/calibcheck" target="_blank" class="project-link" title="View source code">
-            <i class="fab fa-github"></i>
-          </a>
-        </div>
-        <div class="card-subtitle">Python · HuggingFace Transformers · Matplotlib</div>
-        <p>Measures whether an LLM's confidence actually tracks whether it's right — comparing verbalized self-reported confidence against raw next-token probability over answer choices, using Expected Calibration Error, Brier score, and reliability diagrams, broken down by topic domain. On a 60-question benchmark, Qwen2.5-0.5B-Instruct ran overconfident by 14.3 points on average (ECE = 0.14) — with sports questions the worst offender: 30% actual accuracy against a stated 87.5% confidence, a 57.5-point gap.</p>
-      </div>
-
-      <div class="card">
-        <div class="af-corner tl"></div>
-        <div class="af-corner tr"></div>
-        <div class="af-corner bl"></div>
-        <div class="af-corner br"></div>
-        <div class="card-header">
-          <h3 class="card-title">Learned Vegetation Index (LVI)</h3>
-          <a href="https://github.com/Aviral0gHub/Learned-Vegetation-Index" target="_blank" class="project-link" title="View source code">
-            <i class="fab fa-github"></i>
-          </a>
-        </div>
-        <div class="card-subtitle">PyTorch · XGBoost · Sentinel-2 · GEDI LiDAR</div>
-        <p>Trained regression models on Sentinel-2 multispectral imagery using NASA GEDI LiDAR ground truth. Outperformed traditional vegetation indices by 23% in canopy height estimation. Earlier computer vision work, from before this trustworthy-ML focus.</p>
-      </div>
-    </section>
-
-    <section id="skills" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Technical Competencies</h2>
-        <span class="section-index">n=24</span>
-      </div>
-      <div class="skills-grid">
-        <div class="skill-tag nlp">Claim Decomposition</div>
-        <div class="skill-tag nlp">Retrieval-Augmented Verification</div>
-        <div class="skill-tag nlp">NLI / Entailment Scoring</div>
-        <div class="skill-tag nlp">Calibration Analysis</div>
-        <div class="skill-tag nlp">HuggingFace Transformers</div>
-        <div class="skill-tag nlp">Sentence-Transformers</div>
-        <div class="skill-tag">Python</div>
-        <div class="skill-tag">C++</div>
-        <div class="skill-tag">Java</div>
-        <div class="skill-tag">SQL</div>
-        <div class="skill-tag">PyTorch</div>
-        <div class="skill-tag">Torchvision</div>
-        <div class="skill-tag">Scikit-Learn</div>
-        <div class="skill-tag">Transfer Learning</div>
-        <div class="skill-tag">Metric Learning</div>
-        <div class="skill-tag">Vector Databases (FAISS)</div>
-        <div class="skill-tag">Instance Retrieval</div>
-        <div class="skill-tag">OpenCV</div>
-        <div class="skill-tag">Multimodal Evaluation</div>
-        <div class="skill-tag">Agentic AI</div>
-        <div class="skill-tag">Docker</div>
-        <div class="skill-tag">Git / GitHub</div>
-        <div class="skill-tag">REST APIs</div>
-        <div class="skill-tag">CUDA</div>
-      </div>
-    </section>
-
-    <section id="gallery" class="fade-up">
-      <div class="section-header">
-        <h2 class="section-title">Vision Gallery</h2>
-        <span class="section-index">n=8</span>
-      </div>
-
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="20260520_174407.jpg" alt="Kohli Research Block, IIIT Hyderabad">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260521_115547.jpg" alt="RRC Robotics Lab View">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260520_174144.jpg" alt="Campus Mural">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260520_161154.jpg" alt="View from IIIT Hyderabad Campus">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260520_174209.jpg" alt="Campus Greenery">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260520_174244.jpg" alt="Kohli Research Block Entrance">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260521_115503.jpg" alt="RRC Workspace">
-        </div>
-
-        <div class="gallery-item">
-          <img src="20260522_105200.jpg" alt="Tree-Lined Campus Avenue">
-        </div>
-      </div>
-    </section>
-
+        <div class="legend" id="fig1-legend"></div>
+        <svg class="viz" id="viz-gap" role="img"
+             aria-label="Dumbbell chart. On sports questions the model stated 87.5 percent confidence but scored 30 percent accuracy, a gap of 57.5 percentage points."></svg>
+        <button class="tbl-toggle" data-table="tbl-gap" aria-expanded="false">Show data table</button>
+        <table class="data-table" id="tbl-gap" hidden>
+          <caption class="sr-only">Stated confidence versus measured accuracy</caption>
+          <thead><tr><th scope="col">Domain</th><th scope="col">Stated</th><th scope="col">Actual</th><th scope="col">Gap</th></tr></thead>
+          <tbody><tr><td>Sports</td><td>87.5%</td><td>30.0%</td><td>57.5 pts</td></tr></tbody>
+        </table>
+        <figcaption>
+          The worst of six topic domains on a 60-question benchmark. Across all domains the model
+          ran overconfident by <b>14.3 points on average (ECE 0.14)</b> — but the failure is
+          concentrated, not uniform. That's the part an aggregate score hides.
+        </figcaption>
+      </figure>
+    </div>
   </div>
+</section>
 
-  <footer class="fade-up">
-    <div class="container">
-      <div class="footer-meta">&copy; 2026 Aviral Nigam</div>
-      <div class="footer-links">
-        <a href="mailto:nigamaviral21@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
-        <a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="https://github.com/Aviral0gHub" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+<!-- ============================ APPROACH ============================ -->
+<section class="sec" id="approach">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">What I work on</h2>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="pillars">
+      <article class="pillar rv">
+        <span class="idx">i</span>
+        <h3>Is the reasoning real?</h3>
+        <p>A model can reach the right answer through steps that nothing supports. I decompose
+        reasoning traces into atomic claims and check each one against retrieved evidence, so
+        "it explained itself" becomes something you can score.</p>
+        <p class="tie">Built in <b>FactTrace</b></p>
+      </article>
+      <article class="pillar rv">
+        <span class="idx">ii</span>
+        <h3>Does it know what it knows?</h3>
+        <p>A model that says 90% and is right 30% of the time isn't wrong once — it's wrong about
+        itself. I measure the divergence between what a model states about its own confidence and
+        what its token probabilities imply.</p>
+        <p class="tie">Built in <b>CalibCheck</b></p>
+      </article>
+      <article class="pillar rv">
+        <span class="idx">iii</span>
+        <h3>Does the benchmark hold?</h3>
+        <p>Benchmark scores are only as good as the pressure they've survived. I write adversarial
+        examples designed to break state-of-the-art systems, and I report how much a metric's
+        design changes its own answer.</p>
+        <p class="tie">Built in <b>Last Translation Benchmark</b></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ WORK ============================ -->
+<section class="sec" id="work">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Selected work</h2>
+      <span class="sec-rule"></span>
+    </div>
+
+    <div class="work">
+
+      <!-- FactTrace -->
+      <article class="entry rv">
+        <div class="entry-body">
+          <div class="entry-top">
+            <div>
+              <p class="kicker">Chain-of-thought faithfulness · Aug 2026</p>
+              <h3>FactTrace</h3>
+            </div>
+            <div class="links">
+              <a class="iconlink" href="https://github.com/Aviral0gHub/facttrace" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.5 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+                Source
+              </a>
+            </div>
+          </div>
+          <p>
+            A claim-level factuality verifier for agentic reasoning traces. It splits a chain of
+            thought into atomic claims, retrieves evidence for each with FAISS dense retrieval, and
+            labels it supported, contradicted, or unverifiable using NLI entailment scoring.
+            Entirely black-box — no access to model internals.
+          </p>
+          <p>
+            Replacing regex heuristics with dense retrieval and RoBERTa-large-MNLI moved claim-level
+            accuracy from <strong>78.5% to 87.7%</strong> on a 65-claim benchmark. The nine-point swing is
+            the more useful finding: faithfulness scores are heavily metric-dependent, so a number
+            reported without its retrieval method doesn't mean much. Failure analysis showed
+            <strong>unsupported claims concentrate in later reasoning steps</strong> — the position a
+            trace monitor is least likely to catch.
+          </p>
+
+          <div class="split two">
+            <!-- interactive demo -->
+            <div class="runner" id="runner">
+              <div class="runner-head">
+                <span class="t">demo · pipeline output format</span>
+                <button class="run-btn" id="run-btn">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                  Run verifier
+                </button>
+              </div>
+              <p class="q"><b>Question</b>Which has the larger population — the country that hosted the 2016 Summer Olympics, or the country where the Rhine reaches the sea?</p>
+              <ol class="trace" id="trace">
+                <li data-v="supported"><span class="step">01</span><span class="claim">The 2016 Summer Olympics were held in Rio de Janeiro, Brazil.</span><span class="verdict">…</span></li>
+                <li data-v="supported"><span class="step">02</span><span class="claim">The Rhine reaches the sea in the Netherlands.</span><span class="verdict">…</span></li>
+                <li data-v="supported"><span class="step">03</span><span class="claim">Brazil's population is roughly 215 million.</span><span class="verdict">…</span></li>
+                <li data-v="contradicted"><span class="step">04</span><span class="claim">The Netherlands has a population of about 30 million.</span><span class="verdict">…</span></li>
+                <li data-v="unverifiable"><span class="step">05</span><span class="claim">So Brazil's population exceeds the Netherlands' by roughly 7×.</span><span class="verdict">…</span></li>
+              </ol>
+              <p class="runner-foot">
+                Illustrative trace, not a logged run. Note where the error lands: step 04 is wrong,
+                and step 05 inherits it. The answer is still correct.
+              </p>
+            </div>
+
+            <!-- FIGURE 2 -->
+            <figure id="fig2">
+              <div class="fig-head">
+                <div>
+                  <p class="fig-label">Fig. 2</p>
+                  <p class="fig-title">Verdict distribution</p>
+                  <p class="fig-sub">65 claims · NLI scorer · curated benchmark</p>
+                </div>
+              </div>
+              <div class="legend" id="fig2-legend"></div>
+              <svg class="viz" id="viz-verdict" role="img"
+                   aria-label="Stacked bar. Of 65 claims, 41 were supported, 19 contradicted, and 5 unverifiable."></svg>
+              <button class="tbl-toggle" data-table="tbl-verdict" aria-expanded="false">Show data table</button>
+              <table class="data-table" id="tbl-verdict" hidden>
+                <thead><tr><th scope="col">Verdict</th><th scope="col">Claims</th><th scope="col">Share</th></tr></thead>
+                <tbody>
+                  <tr><td>Supported</td><td>41</td><td>63.1%</td></tr>
+                  <tr><td>Contradicted</td><td>19</td><td>29.2%</td></tr>
+                  <tr><td>Unverifiable</td><td>5</td><td>7.7%</td></tr>
+                </tbody>
+              </table>
+              <figcaption>
+                The <b>unverifiable</b> bucket matters as much as the other two: a claim the
+                evidence base simply can't reach is a different failure from a false one, and
+                collapsing them into "wrong" loses the distinction.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="stack">
+            <span>Python</span><span>PyTorch</span><span>Sentence-Transformers</span>
+            <span>RoBERTa-large-MNLI</span><span>FAISS</span><span>HuggingFace</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CalibCheck -->
+      <article class="entry rv">
+        <div class="entry-body">
+          <div class="entry-top">
+            <div>
+              <p class="kicker">Confidence calibration · Aug 2026</p>
+              <h3>CalibCheck</h3>
+            </div>
+            <div class="links">
+              <a class="iconlink" href="https://github.com/Aviral0gHub/calibcheck" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.5 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+                Source
+              </a>
+            </div>
+          </div>
+          <p>
+            An epistemic evaluation: does a model's confidence track whether it's actually right?
+            CalibCheck compares <strong>verbalised self-reported confidence against raw next-token
+            probability</strong> over answer choices, scored with Expected Calibration Error, Brier
+            score, and reliability diagrams, broken out by topic domain.
+          </p>
+          <p>
+            The domain breakdown is the point. An aggregate ECE of 0.14 reads as mild overconfidence;
+            split by topic, one domain is off by 57.5 points and others are close to honest. The two
+            elicitation methods also disagree with each other, which means the number you report
+            depends on how you asked. Sixty questions is a small sample and the README says so
+            before anyone else has to.
+          </p>
+          <div class="tiles">
+            <div class="tile"><p class="v amber">0.14</p><p class="k">Expected Calibration Error<br>(all domains)</p></div>
+            <div class="tile"><p class="v amber">+14.3</p><p class="k">Mean overconfidence<br>(percentage points)</p></div>
+            <div class="tile"><p class="v red">57.5</p><p class="k">Worst domain gap<br>(sports — see Fig. 1)</p></div>
+            <div class="tile"><p class="v">6 / 60</p><p class="k">Domains / questions<br>evaluated</p></div>
+          </div>
+          <div class="stack">
+            <span>Python</span><span>HuggingFace Transformers</span><span>Matplotlib</span>
+            <span>ECE</span><span>Brier score</span><span>Reliability diagrams</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- LTB -->
+      <article class="entry rv">
+        <div class="entry-body">
+          <div class="entry-top">
+            <div>
+              <p class="kicker">Benchmark construction · co-author · Sept 2026</p>
+              <h3>Last Translation Benchmark</h3>
+            </div>
+            <div class="links">
+              <a class="iconlink" href="https://last-translation-benchmark.vilda.net" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Project site
+              </a>
+            </div>
+          </div>
+          <p>
+            A multilingual, multimodal factuality benchmark for frontier models, organised by
+            Vilém Zouhar (ETH Zürich) with collaborators at JHU, CUNI, UvA and KIT. I contributed
+            <strong>adversarial multimodal examples that broke state-of-the-art performance</strong>.
+          </p>
+          <p>
+            It's the other half of the evaluation problem. FactTrace and CalibCheck ask whether a
+            measurement is meaningful; this asks whether the test itself survives someone actively
+            trying to break it.
+          </p>
+          <div class="stack">
+            <span>Adversarial data</span><span>Multimodal</span><span>Multilingual</span><span>Benchmark design</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EXPERIENCE ============================ -->
+<section class="sec" id="experience">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Research experience</h2>
+      <span class="sec-rule"></span>
+    </div>
+    <article class="entry rv">
+      <div class="entry-body">
+        <div class="entry-top">
+          <div>
+            <p class="kicker">Robotics Research Center, IIIT Hyderabad · May – Aug 2026</p>
+            <h3>Research Intern</h3>
+          </div>
+        </div>
+        <p>
+          Advised by Dr. Sourav Garg. Researched fine-grained visual instance retrieval — building
+          neural pipelines with deep feature representations and similarity learning to isolate,
+          index, and match target object instances across large-scale imagery with high-throughput
+          vector search (FAISS), plus the preprocessing and embedding-extraction pipelines to
+          benchmark metric learning architectures against each other.
+        </p>
+        <p>
+          Different domain from the evaluation work, same underlying habit: build the pipeline,
+          then build the thing that tells you whether the pipeline is any good.
+        </p>
+        <div class="honors">
+          <span class="honor">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
+            Shortlisted · Algoverse AI Research Fellowship, Fall 2026
+          </span>
+        </div>
+        <!-- One photo from the internship. Swap the filename or delete the <figure> block. -->
+        <figure class="thumb">
+          <img src="20260521_115503.jpg" alt="Workstation at the Robotics Research Center, IIIT Hyderabad" loading="lazy" decoding="async" width="300" height="225">
+          <figcaption>RRC, IIIT Hyderabad — summer 2026</figcaption>
+        </figure>
+        <div class="stack">
+          <span>PyTorch</span><span>FAISS</span><span>Metric learning</span><span>Instance retrieval</span><span>OpenCV</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============================ METHODS ============================ -->
+<section class="sec" id="methods">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Methods &amp; tooling</h2>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="skillset rv">
+      <div class="skillgrp primary">
+        <h3>Evaluation</h3>
+        <ul>
+          <li>Chain-of-thought faithfulness</li>
+          <li>Claim decomposition</li>
+          <li>Retrieval-augmented verification</li>
+          <li>NLI / entailment scoring</li>
+          <li>Calibration analysis (ECE, Brier)</li>
+          <li>Reliability diagrams</li>
+          <li>Adversarial benchmark construction</li>
+          <li>Black-box behavioural evals</li>
+        </ul>
+      </div>
+      <div class="skillgrp">
+        <h3>Modelling</h3>
+        <ul>
+          <li>PyTorch</li><li>HuggingFace Transformers</li><li>Sentence-Transformers</li>
+          <li>FAISS</li><li>Scikit-Learn</li><li>Metric learning</li><li>Transfer learning</li>
+        </ul>
+      </div>
+      <div class="skillgrp">
+        <h3>Engineering</h3>
+        <ul>
+          <li>Python</li><li>C++</li><li>SQL</li><li>Linux</li>
+          <li>Docker</li><li>Git</li><li>CUDA</li>
+        </ul>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    /* fade-up on scroll */
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target);
-        }
+<!-- ============================ CONTACT ============================ -->
+<section class="sec" id="contact">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Contact</h2>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="contact-grid rv">
+      <div>
+        <p class="contact-lede">If you work on faithfulness, honesty, or whether a benchmark means anything — I'd like to hear from you.</p>
+        <p class="contact-note">
+          Looking for research internships and fellowships in AI safety and trustworthy ML.
+          Available remotely now; able to work on-site from May 2027.
+        </p>
+        <div class="copyrow">
+          <button class="copy-btn" id="copy-email" data-email="nigamaviral21@gmail.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>nigamaviral21@gmail.com</span>
+          </button>
+          <a class="btn" href="https://github.com/Aviral0gHub" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </div>
+      <div>
+        <div class="skillgrp">
+          <h3>Elsewhere</h3>
+          <ul>
+            <li><a href="https://github.com/Aviral0gHub" target="_blank" rel="noopener noreferrer" style="text-decoration:none">GitHub ↗</a></li>
+            <li><a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" rel="noopener noreferrer" style="text-decoration:none">LinkedIn ↗</a></li>
+            <li><a href="mailto:nigamaviral21@gmail.com" style="text-decoration:none">Email ↗</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="foot-meta">© <span id="yr">2026</span> Aviral Nigam · Manipal Institute of Technology<br>Built as a static page. No trackers.</p>
+    <div class="foot-links">
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<!-- command palette -->
+<div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Jump to section">
+  <div class="cmdk-box">
+    <input id="cmdk-input" type="text" placeholder="Jump to…" autocomplete="off" spellcheck="false" aria-label="Filter destinations">
+    <ul id="cmdk-list"></ul>
+    <div class="cmdk-foot"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var motionQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+var reduce  = motionQ.matches;
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* =========================================================
+   DATA — every number here is a measured result.
+   Change these and the charts redraw; nothing is hardcoded
+   in the drawing code.
+   ========================================================= */
+var GAP = {
+  unit: '%',
+  rows: [
+    { label: 'Sports',  stated: 87.5, actual: 30.0, note: 'worst of 6 domains' }
+  ],
+  series: [
+    { key:'stated', name:'Stated confidence', fill:'var(--viz-amber)' },
+    { key:'actual', name:'Measured accuracy', fill:'var(--viz-mint)'  }
+  ]
+};
+
+var VERDICT = {
+  total: 65,
+  parts: [
+    { name:'Supported',    n:41, fill:'var(--viz-mint)'  },
+    { name:'Contradicted', n:19, fill:'var(--viz-red)'   },
+    { name:'Unverifiable', n:5,  fill:'var(--viz-amber)' }
+  ]
+};
+
+/* ========================= tooltip ========================= */
+var tip = document.getElementById('tip');
+function showTip(html, x, y){
+  tip.innerHTML = html;
+  tip.classList.add('on');
+  var r = tip.getBoundingClientRect();
+  var left = Math.min(Math.max(8, x - r.width/2), window.innerWidth - r.width - 8);
+  var top  = y - r.height - 12;
+  if (top < 8) top = y + 18;
+  tip.style.left = left + 'px';
+  tip.style.top  = top + 'px';
+}
+function hideTip(){ tip.classList.remove('on'); }
+
+/* ========================= Fig 1 — gap / dumbbell ========================= */
+var NS = 'http://www.w3.org/2000/svg';
+function el(n, attrs){
+  var e = document.createElementNS(NS, n);
+  for (var k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+function drawGap(){
+  var svg = document.getElementById('viz-gap');
+  if (!svg) return;
+  svg.textContent = '';
+
+  var W = svg.clientWidth || svg.parentNode.clientWidth || 420;
+  var padL = 62, padR = 34, padT = 26, padB = 30;
+  var rowH = 78;
+  var H = padT + GAP.rows.length * rowH + padB;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('height', H);
+
+  var x = function(v){ return padL + (v/100) * (W - padL - padR); };
+
+  // gridlines + ticks (recessive)
+  [0,25,50,75,100].forEach(function(t){
+    svg.appendChild(el('line',{class:'gridline', x1:x(t), x2:x(t), y1:padT-6, y2:H-padB+4}));
+    var lbl = el('text',{x:x(t), y:H-padB+18, 'text-anchor':'middle'});
+    lbl.textContent = t + '%';
+    svg.appendChild(lbl);
+  });
+  svg.appendChild(el('line',{class:'axis-line', x1:padL, x2:W-padR, y1:H-padB+2, y2:H-padB+2}));
+
+  GAP.rows.forEach(function(row, i){
+    var cy = padT + i*rowH + rowH/2 - 6;
+    var xs = x(row.stated), xa = x(row.actual);
+
+    // row label
+    var lab = el('text',{x:0, y:cy - 26, 'text-anchor':'start'});
+    lab.textContent = row.label.toUpperCase() + ' · ' + row.note;
+    svg.appendChild(lab);
+
+    // connector = the gap itself
+    var conn = el('line',{class:'connector', x1:xa, x2:xa, y1:cy, y2:cy});
+    svg.appendChild(conn);
+
+    // gap label
+    var gapv = Math.abs(row.stated - row.actual).toFixed(1);
+    var gtxt = el('text',{class:'val', x:(xa+xs)/2, y:cy - 12, 'text-anchor':'middle', opacity:0});
+    gtxt.textContent = gapv + ' pt gap';
+    svg.appendChild(gtxt);
+
+    // end dots (≥8px) with a 2px surface ring so overlaps stay legible
+    function dot(xv, fill, key, name){
+      var ring = el('circle',{cx:xv, cy:cy, r:9, fill:'var(--surface-1)'});
+      var c    = el('circle',{cx:xv, cy:cy, r:7, fill:fill});
+      svg.appendChild(ring); svg.appendChild(c);
+      var hit = el('circle',{class:'hit', cx:xv, cy:cy, r:18});
+      hit.addEventListener('mousemove', function(ev){
+        showTip('<span class="k">'+name+'</span><br>'+ row.label +' — <strong>'+ row[key].toFixed(1) +'%</strong>', ev.clientX, ev.clientY);
       });
-    }, observerOptions);
-    document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
-    setTimeout(() => {
-      document.querySelectorAll('.fade-up').forEach((el, index) => { if (index < 2) el.classList.add('visible'); });
-    }, 100);
-
-    /* experience mini-slider */
-    const slides = document.querySelectorAll('.slide');
-    let currentSlide = 0;
-    if (slides.length > 1) {
-      setInterval(() => {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-      }, 3500);
+      hit.addEventListener('mouseleave', hideTip);
+      svg.appendChild(hit);
+      return {ring:ring, c:c};
     }
+    var dActual = dot(xa, 'var(--viz-mint)',  'actual', 'Measured accuracy');
+    var dStated = dot(xs, 'var(--viz-amber)', 'stated', 'Stated confidence');
 
-    /* scroll progress bar */
-    const progressBar = document.querySelector('.scroll-progress');
-    function updateProgress() {
-      const h = document.documentElement;
-      const scrollable = h.scrollHeight - h.clientHeight;
-      const pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
-      progressBar.style.width = pct + '%';
-    }
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
+    // direct labels on both ends (identity is never color-alone)
+    var la = el('text',{class:'val', x:xa, y:cy + 26, 'text-anchor':'middle'});
+    la.textContent = row.actual.toFixed(0) + '% correct';
+    var ls = el('text',{class:'val', x:xs, y:cy + 26, 'text-anchor':'middle'});
+    ls.textContent = row.stated.toFixed(1) + '% claimed';
+    svg.appendChild(la); svg.appendChild(ls);
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const finePointer = window.matchMedia('(pointer: fine)').matches;
-
-    /* cursor-follow spotlight */
-    if (!reduceMotion) {
-      window.addEventListener('mousemove', (e) => {
-        document.documentElement.style.setProperty('--mx', e.clientX + 'px');
-        document.documentElement.style.setProperty('--my', e.clientY + 'px');
-      }, { passive: true });
-    }
-
-    /* custom reticle cursor (instant speed), desktop only */
-    if (finePointer && !reduceMotion) {
-      document.body.classList.add('has-reticle');
-      const reticle = document.querySelector('.reticle');
-
-      window.addEventListener('mousemove', (e) => {
-        reticle.style.left = e.clientX + 'px';
-        reticle.style.top = e.clientY + 'px';
-      }, { passive: true });
-
-      document.querySelectorAll('a, .skill-tag, .card, .mini-slider').forEach((el) => {
-        el.addEventListener('mouseenter', () => reticle.classList.add('active'));
-        el.addEventListener('mouseleave', () => reticle.classList.remove('active'));
-      });
-
-      /* card tilt */
-      document.querySelectorAll('.card').forEach((el) => {
-        el.addEventListener('mousemove', (e) => {
-          const r = el.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
-          el.style.transform = `perspective(700px) translateY(-3px) rotateX(${(-py * 3.5).toFixed(2)}deg) rotateY(${(px * 3.5).toFixed(2)}deg)`;
-        });
-        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-      });
-
-      /* magnetic nav links + skill tags */
-      document.querySelectorAll('.nav-links a, .skill-tag').forEach((el) => {
-        el.addEventListener('mousemove', (e) => {
-          const r = el.getBoundingClientRect();
-          const mx = e.clientX - r.left - r.width / 2;
-          const my = e.clientY - r.top - r.height / 2;
-          el.style.transform = `translate(${(mx * 0.25).toFixed(1)}px, ${(my * 0.25).toFixed(1)}px)`;
-        });
-        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-      });
-
-      /* subtle hero photo parallax */
-      const heroPhoto = document.querySelector('.hero-photo');
-      const hero = document.querySelector('.hero');
-      if (heroPhoto && hero) {
-        hero.addEventListener('mousemove', (e) => {
-          const r = hero.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
-          heroPhoto.style.transform = `translate(${(-px * 12).toFixed(1)}px, ${(-py * 10).toFixed(1)}px) scale(1.05)`;
-        });
-        hero.addEventListener('mouseleave', () => { heroPhoto.style.transform = ''; });
-      }
+    // animate the gap opening
+    if (reduce){
+      conn.setAttribute('x2', xs); gtxt.setAttribute('opacity', 1);
+      dStated.ring.setAttribute('cx', xs); dStated.c.setAttribute('cx', xs);
     } else {
-      document.querySelector('.cursor-glow')?.remove();
-      document.querySelector('.reticle')?.remove();
+      dStated.ring.setAttribute('cx', xa); dStated.c.setAttribute('cx', xa);
+      ls.setAttribute('opacity', 0);
+      var t0 = null, dur = 1100;
+      var step = function(ts){
+        if (t0 === null) t0 = ts;
+        var p = Math.min(1, (ts - t0)/dur);
+        var e = 1 - Math.pow(1 - p, 3);
+        var cx = xa + (xs - xa) * e;
+        conn.setAttribute('x2', cx);
+        dStated.ring.setAttribute('cx', cx);
+        dStated.c.setAttribute('cx', cx);
+        ls.setAttribute('x', cx);
+        ls.setAttribute('opacity', e);
+        gtxt.setAttribute('x', (xa + cx)/2);
+        gtxt.setAttribute('opacity', e);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     }
-  </script>
+  });
+
+  // legend
+  var lg = document.getElementById('fig1-legend');
+  lg.innerHTML = GAP.series.map(function(s){
+    return '<span><i style="background:'+s.fill+'"></i>'+s.name+'</span>';
+  }).join('');
+}
+
+/* ========================= Fig 2 — verdict composition ========================= */
+function drawVerdict(){
+  var svg = document.getElementById('viz-verdict');
+  if (!svg) return;
+  svg.textContent = '';
+
+  var W = svg.clientWidth || svg.parentNode.clientWidth || 380;
+  var padL = 0, padR = 0, padT = 8, barH = 34, gap = 2;
+  var H = padT + barH + 46;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.setAttribute('height', H);
+
+  var inner = W - padL - padR;
+  var totalGaps = gap * (VERDICT.parts.length - 1);
+  var scale = (inner - totalGaps) / VERDICT.total;
+
+  // clip the whole bar so only the outer ends are rounded — rx on each rect
+  // would round the inner corners too and read as three detached pills
+  var cid = 'clip-verdict';
+  var defs = el('defs',{});
+  var cp = el('clipPath',{id:cid});
+  cp.appendChild(el('rect',{x:padL, y:padT, width:inner, height:barH, rx:4}));
+  defs.appendChild(cp); svg.appendChild(defs);
+  var bars = el('g',{'clip-path':'url(#'+cid+')'});
+  svg.appendChild(bars);
+
+  var cx = padL;
+  VERDICT.parts.forEach(function(p, i){
+    var w = p.n * scale;
+    var r = el('rect',{ x:cx, y:padT, width:0, height:barH, fill:p.fill });
+    bars.appendChild(r);
+
+    var pct = (p.n / VERDICT.total * 100);
+    var hit = el('rect',{class:'hit', x:cx, y:padT-6, width:w, height:barH+12});
+    (function(px, pn, ppct, pname){
+      hit.addEventListener('mousemove', function(ev){
+        showTip('<span class="k">'+pname+'</span><br><strong>'+pn+'</strong> of 65 claims · '+ppct.toFixed(1)+'%', ev.clientX, ev.clientY);
+      });
+    })(cx, p.n, pct, p.name);
+    hit.addEventListener('mouseleave', hideTip);
+    svg.appendChild(hit);
+
+    // every segment gets its count; the name only where it fits
+    var t1 = el('text',{class:'val', x:cx + w/2, y:padT+barH+20, 'text-anchor':'middle'});
+    t1.textContent = p.n;
+    svg.appendChild(t1);
+    if (w > 62){
+      var t2 = el('text',{x:cx + w/2, y:padT+barH+34, 'text-anchor':'middle'});
+      t2.textContent = p.name.toLowerCase();
+      svg.appendChild(t2);
+    }
+
+    if (reduce){ r.setAttribute('width', w); }
+    else {
+      var t0=null, dur=800, delay=i*110;
+      var step=function(ts){
+        if(t0===null) t0=ts;
+        var p2=Math.min(1,Math.max(0,(ts-t0-delay)/dur));
+        r.setAttribute('width', (1-Math.pow(1-p2,3)) * w);
+        if(p2<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    cx += w + gap;
+  });
+
+  var lg = document.getElementById('fig2-legend');
+  lg.innerHTML = VERDICT.parts.map(function(p){
+    return '<span><i style="background:'+p.fill+'"></i>'+p.name+'</span>';
+  }).join('');
+}
+
+/* draw when visible, redraw on resize */
+var drawn = {};
+function drawIfNeeded(id, fn){ if(!drawn[id]){ drawn[id]=true; fn(); } }
+if ('IntersectionObserver' in window){
+  var vizObs = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      if(e.target.id==='fig1') drawIfNeeded('fig1', drawGap);
+      if(e.target.id==='fig2') drawIfNeeded('fig2', drawVerdict);
+      vizObs.unobserve(e.target);
+    });
+  },{threshold:.25});
+  ['fig1','fig2'].forEach(function(id){ var n=document.getElementById(id); if(n) vizObs.observe(n); });
+} else { drawGap(); drawVerdict(); }
+
+var rt;
+window.addEventListener('resize', function(){
+  clearTimeout(rt);
+  rt = setTimeout(function(){ if(drawn.fig1) drawGap(); if(drawn.fig2) drawVerdict(); }, 160);
+});
+
+/* ========================= table toggles ========================= */
+document.querySelectorAll('.tbl-toggle').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var t = document.getElementById(btn.dataset.table);
+    var open = t.hasAttribute('hidden');
+    if(open){ t.removeAttribute('hidden'); } else { t.setAttribute('hidden',''); }
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? 'Hide data table' : 'Show data table';
+  });
+});
+
+/* ========================= FactTrace runner ========================= */
+var runBtn = document.getElementById('run-btn');
+var traceEl = document.getElementById('trace');
+if (runBtn && traceEl){
+  var items = Array.prototype.slice.call(traceEl.children);
+  var running = false;
+  function reset(){
+    items.forEach(function(li){
+      li.classList.remove('done','scan');
+      li.querySelector('.verdict').textContent = '…';
+    });
+  }
+  function run(){
+    if (running) return;
+    running = true; runBtn.disabled = true; reset();
+    var i = 0;
+    var scanMs = reduce ? 0 : 420;
+    var holdMs = reduce ? 0 : 240;
+    function next(){
+      if (i >= items.length){
+        running = false; runBtn.disabled = false; return;
+      }
+      var li = items[i];
+      li.classList.add('scan');
+      li.querySelector('.verdict').textContent = 'checking';
+      setTimeout(function(){
+        li.classList.remove('scan');
+        li.classList.add('done');
+        li.querySelector('.verdict').textContent = li.dataset.v.toUpperCase();
+        i++;
+        setTimeout(next, holdMs);
+      }, scanMs);
+    }
+    next();
+  }
+  runBtn.addEventListener('click', run);
+  // auto-run once when it scrolls into view
+  if ('IntersectionObserver' in window){
+    var ro = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ run(); ro.disconnect(); } });
+    },{threshold:.4});
+    ro.observe(traceEl);
+  }
+}
+
+/* ========================= reveal ========================= */
+var rvs = document.querySelectorAll('.rv');
+if ('IntersectionObserver' in window && !reduce){
+  var rObs = new IntersectionObserver(function(es, o){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); o.unobserve(e.target); } });
+  },{threshold:.08, rootMargin:'0px 0px -50px 0px'});
+  rvs.forEach(function(n){ rObs.observe(n); });
+  requestAnimationFrame(function(){
+    rvs.forEach(function(n){ if(n.getBoundingClientRect().top < window.innerHeight) n.classList.add('in'); });
+  });
+} else {
+  rvs.forEach(function(n){ n.classList.add('in'); });
+}
+
+/* ========================= nav state ========================= */
+var top = document.querySelector('.top');
+var onScroll = function(){ top.classList.toggle('stuck', window.scrollY > 8); };
+window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+var marks = Array.prototype.slice.call(document.querySelectorAll('.topnav a, .rail a'));
+var ids = ['approach','work','experience','methods','contact'];
+if ('IntersectionObserver' in window){
+  var sObs = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      marks.forEach(function(a){ a.removeAttribute('aria-current'); });
+      marks.filter(function(a){ return a.getAttribute('href') === '#'+e.target.id; })
+           .forEach(function(a){ a.setAttribute('aria-current','true'); });
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  ids.forEach(function(id){ var n=document.getElementById(id); if(n) sObs.observe(n); });
+}
+
+/* ========================= copy email ========================= */
+var copyBtn = document.getElementById('copy-email');
+if (copyBtn){
+  copyBtn.addEventListener('click', function(){
+    var addr = copyBtn.dataset.email;
+    var label = copyBtn.querySelector('span');
+    var done = function(){
+      copyBtn.classList.add('ok'); label.textContent = 'Copied to clipboard';
+      setTimeout(function(){ copyBtn.classList.remove('ok'); label.textContent = addr; }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(addr).then(done, function(){ window.location.href = 'mailto:'+addr; });
+    } else { window.location.href = 'mailto:'+addr; }
+  });
+}
+
+/* ========================= command palette ========================= */
+var CMDS = [
+  {label:'Approach',  href:'#approach',   tag:'section'},
+  {label:'Work',      href:'#work',       tag:'section'},
+  {label:'FactTrace', href:'#work',       tag:'project'},
+  {label:'CalibCheck',href:'#work',       tag:'project'},
+  {label:'Last Translation Benchmark', href:'#work', tag:'project'},
+  {label:'Research experience', href:'#experience', tag:'section'},
+  {label:'Methods & tooling',   href:'#methods',    tag:'section'},
+  {label:'Contact',   href:'#contact',    tag:'section'},
+  {label:'GitHub',    href:'https://github.com/Aviral0gHub', tag:'link', ext:true},
+  {label:'LinkedIn',  href:'https://www.linkedin.com/in/aviral-nigam-a0b469271/', tag:'link', ext:true},
+  {label:'Email',     href:'mailto:nigamaviral21@gmail.com', tag:'link', ext:true}
+];
+var cmdk = document.getElementById('cmdk');
+var cmdkIn = document.getElementById('cmdk-input');
+var cmdkList = document.getElementById('cmdk-list');
+var sel = 0, filtered = CMDS.slice(), lastFocus = null;
+
+function renderCmd(){
+  cmdkList.innerHTML = filtered.map(function(c,i){
+    return '<li class="'+(i===sel?'sel':'')+'"><a href="'+c.href+'"'+(c.ext?' target="_blank" rel="noopener noreferrer"':'')+'>'+
+           c.label+'<span class="tag">'+c.tag+'</span></a></li>';
+  }).join('') || '<li><a href="#" style="color:var(--ink-2)">No match</a></li>';
+}
+function openCmd(){
+  lastFocus = document.activeElement;
+  cmdk.setAttribute('open',''); cmdkIn.value=''; filtered=CMDS.slice(); sel=0;
+  renderCmd(); cmdkIn.focus(); document.body.style.overflow='hidden';
+}
+function closeCmd(){
+  cmdk.removeAttribute('open'); document.body.style.overflow='';
+  if (lastFocus) lastFocus.focus();
+}
+document.getElementById('cmdk-open').addEventListener('click', openCmd);
+cmdk.addEventListener('click', function(e){ if(e.target===cmdk) closeCmd(); });
+cmdkIn.addEventListener('input', function(){
+  var q = cmdkIn.value.toLowerCase().trim();
+  filtered = CMDS.filter(function(c){ return c.label.toLowerCase().indexOf(q) > -1 || c.tag.indexOf(q) > -1; });
+  sel = 0; renderCmd();
+});
+document.addEventListener('keydown', function(e){
+  var open = cmdk.hasAttribute('open');
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault(); open ? closeCmd() : openCmd(); return;
+  }
+  if (!open) return;
+  if (e.key === 'Escape'){ e.preventDefault(); closeCmd(); }
+  else if (e.key === 'ArrowDown'){ e.preventDefault(); sel = Math.min(filtered.length-1, sel+1); renderCmd(); }
+  else if (e.key === 'ArrowUp'){ e.preventDefault(); sel = Math.max(0, sel-1); renderCmd(); }
+  else if (e.key === 'Enter'){
+    var a = cmdkList.querySelectorAll('a')[sel];
+    if (a){ e.preventDefault(); closeCmd(); a.click(); }
+  }
+  else if (e.key === 'Tab'){ e.preventDefault(); cmdkIn.focus(); }
+});
+cmdkList.addEventListener('click', function(){ closeCmd(); });
+
+/* respect a mid-session motion-preference change */
+motionQ.addEventListener('change', function(e){ reduce = e.matches; });
+
+})();
+</script>
 </body>
 </html>

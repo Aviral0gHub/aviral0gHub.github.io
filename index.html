@@ -412,9 +412,13 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   font-size:.63rem;color:var(--ink-2);display:flex;gap:1rem;flex-wrap:wrap}
 
 /* ============================================================ RESPONSIVE / MOTION */
+/* NOTE: keep the space before each <br class="brk"> — when the break is
+   hidden the space is what stops "sound" and "certain." welding together. */
 @media(max-width:640px){ .brk{display:none} }
 @media(max-width:860px){
   .topnav{display:none}
+  .brand .r{display:none}          /* tagline wrapped to 2 lines inside the 64px bar */
+  .brand{white-space:nowrap}
   h1{font-size:clamp(2.2rem,9vw,3rem)}
 }
 @media(prefers-reduced-motion:reduce){
@@ -466,7 +470,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     <div class="hero-grid">
       <div class="rv">
         <p class="eyebrow"><span class="pip"></span>AI safety · Trustworthy ML</p>
-        <h1>Models sound<br class="brk">certain. I measure<br class="brk">whether they <em>are</em>.</h1>
+        <h1>Models sound <br class="brk">certain. I measure <br class="brk">whether they <em>are</em>.</h1>
         <p class="lede">
           I work on <strong>AI safety through empirical LLM evaluation</strong> — checking whether a
           model's reasoning is actually supported by evidence, and whether its stated confidence

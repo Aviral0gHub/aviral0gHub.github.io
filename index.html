@@ -1,6 +1,3 @@
-
-
-Index · HTML
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
@@ -192,6 +189,23 @@ h1 em{font-style:italic;color:var(--mint)}
 .btn.solid{background:var(--mint);color:#062420;border-color:var(--mint);font-weight:500}
 .btn.solid:hover{background:#7ff2de;border-color:#7ff2de;color:#062420}
 .btn svg{width:14px;height:14px;flex:none}
+/* featured publication — the one externally verifiable credential,
+   surfaced above the fold instead of buried in Selected Work */
+.pub-flag{
+  display:flex;align-items:center;gap:.7rem;margin-top:1.9rem;text-decoration:none;
+  border:1px solid rgba(94,234,212,.28);
+  background:linear-gradient(90deg,rgba(94,234,212,.10),rgba(94,234,212,.02));
+  border-radius:9px;padding:.72rem .85rem;max-width:36em;
+  transition:border-color .25s,background .25s,transform .18s var(--ease)
+}
+.pub-flag:hover{border-color:var(--mint);background:linear-gradient(90deg,rgba(94,234,212,.16),rgba(94,234,212,.04));transform:translateY(-2px)}
+.pf-tag{font-family:var(--ff-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;
+  color:#062420;background:var(--mint);border-radius:4px;padding:.22rem .45rem;flex:none;font-weight:500;white-space:nowrap}
+.pf-body{font-family:var(--ff-mono);font-size:.69rem;color:var(--ink-1);line-height:1.55}
+.pf-body b{color:var(--ink-0);font-weight:500}
+.pf-arrow{margin-left:auto;color:var(--mint);font-size:.95rem;flex:none;transition:transform .25s var(--ease)}
+.pub-flag:hover .pf-arrow{transform:translateX(3px)}
+@media(max-width:560px){ .pf-arrow{display:none} .pub-flag{align-items:flex-start} }
 .meta-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.8rem}
 .chip{
   font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.04em;color:var(--ink-1);
@@ -452,6 +466,11 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           <strong>Manipal Institute of Technology</strong>, graduating 2028.
           Open to research internships and fellowships.
         </p>
+        <a class="pub-flag" href="#work" aria-label="Featured publication: Last Translation Benchmark on arXiv">
+          <span class="pf-tag">Published</span>
+          <span class="pf-body"><b>Last Translation Benchmark</b> · named dataset author · arXiv:2609.04173 · ongoing contributor</span>
+          <span class="pf-arrow" aria-hidden="true">&rarr;</span>
+        </a>
         <div class="cta">
           <a class="btn solid" href="Aviral_Nigam_CurriculumVitae.pdf" download>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -507,9 +526,16 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <h2 class="sec-title">The safety problems I work on</h2>
       <span class="sec-rule"></span>
     </div>
-    <div class="pillars">
-      <article class="pillar rv">
+    <div class="pillars">      <article class="pillar rv">
         <span class="idx">i</span>
+        <h3>Does the benchmark hold?</h3>
+        <p>Benchmark scores are only as good as the pressure they've survived. I write adversarial
+        examples designed to break state-of-the-art systems, and I report how much a metric's
+        design changes its own answer.</p>
+        <p class="tie">Built in <b>Last Translation Benchmark</b></p>
+      </article>
+      <article class="pillar rv">
+        <span class="idx">ii</span>
         <h3>Is the reasoning real?</h3>
         <p>A model can reach the right answer through steps that nothing supports. I decompose
         reasoning traces into atomic claims and check each one against retrieved evidence, so
@@ -517,20 +543,12 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
         <p class="tie">Built in <b>FactTrace</b></p>
       </article>
       <article class="pillar rv">
-        <span class="idx">ii</span>
+        <span class="idx">iii</span>
         <h3>Does it know what it knows?</h3>
         <p>A model that says 90% and is right 30% of the time isn't wrong once — it's wrong about
         itself. I measure the divergence between what a model states about its own confidence and
         what its token probabilities imply.</p>
         <p class="tie">Built in <b>CalibCheck</b></p>
-      </article>
-      <article class="pillar rv">
-        <span class="idx">iii</span>
-        <h3>Does the benchmark hold?</h3>
-        <p>Benchmark scores are only as good as the pressure they've survived. I write adversarial
-        examples designed to break state-of-the-art systems, and I report how much a metric's
-        design changes its own answer.</p>
-        <p class="tie">Built in <b>Last Translation Benchmark</b></p>
       </article>
     </div>
   </div>
@@ -544,6 +562,51 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <span class="sec-rule"></span>
     </div>
     <div class="work">
+      <!-- LTB -->
+      <article class="entry rv">
+        <div class="entry-body">
+          <div class="entry-top">
+            <div>
+              <p class="kicker">Publication · named dataset author · arXiv, Sept 2026 · ongoing</p>
+              <h3>Last Translation Benchmark</h3>
+            </div>
+            <div class="links">
+              <a class="iconlink" href="https://arxiv.org/abs/2609.04173" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                arXiv
+              </a>
+              <a class="iconlink" href="https://huggingface.co/datasets/zouhar/last-translation-benchmark" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+                Dataset
+              </a>
+              <a class="iconlink" href="https://last-translation-benchmark.vilda.net" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Leaderboard
+              </a>
+            </div>
+          </div>
+          <p>
+            A multilingual, multimodal benchmark for frontier models — 3,456 human-authored,
+            peer-reviewed examples across 58+ languages spanning text, image, audio and video, each
+            paired with handcrafted verification rules so future systems can be scored objectively
+            where automatic metrics have saturated. Built by contributors across ETH Zürich, Johns
+            Hopkins, MBZUAI, KIT, Amsterdam and Queen's University Belfast.
+          </p>
+          <p>
+            I am a <strong>named dataset author</strong>, listed in the paper's contribution-ordered
+            dataset-author list, and I contributed <strong>adversarial multimodal examples that broke
+            state-of-the-art performance</strong>.
+          </p>
+          <p>
+            The benchmark is live and versioned, and I am continuing as a contributor to subsequent
+            releases. Where the two systems below ask whether a measurement is meaningful, this asks
+            whether the test itself survives someone actively trying to break it.
+          </p>
+          <div class="stack">
+            <span>Adversarial data</span><span>Multimodal</span><span>Multilingual</span><span>Benchmark design</span>
+          </div>
+        </div>
+      </article>
       <!-- FactTrace -->
       <article class="entry rv">
         <div class="entry-body">
@@ -670,51 +733,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           </div>
         </div>
       </article>
-      <!-- LTB -->
-      <article class="entry rv">
-        <div class="entry-body">
-          <div class="entry-top">
-            <div>
-              <p class="kicker">Benchmark construction · dataset author · Sept 2026</p>
-              <h3>Last Translation Benchmark</h3>
-            </div>
-            <div class="links">
-              <a class="iconlink" href="https://arxiv.org/abs/2609.04173" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                arXiv
-              </a>
-              <a class="iconlink" href="https://huggingface.co/datasets/zouhar/last-translation-benchmark" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
-                Dataset
-              </a>
-              <a class="iconlink" href="https://last-translation-benchmark.vilda.net" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Leaderboard
-              </a>
-            </div>
-          </div>
-          <p>
-            A multilingual, multimodal benchmark for frontier models — 3,456 human-authored,
-            peer-reviewed examples across 58+ languages spanning text, image, audio and video, each
-            paired with handcrafted verification rules so future systems can be scored objectively
-            where automatic metrics have saturated. Built by contributors across ETH Zürich, Johns
-            Hopkins, MBZUAI, KIT, Amsterdam and Queen's University Belfast.
-          </p>
-          <p>
-            I am a <strong>named dataset author</strong>, listed in the paper's contribution-ordered
-            dataset-author list, and I contributed <strong>adversarial multimodal examples that broke
-            state-of-the-art performance</strong>.
-          </p>
-          <p>
-            It's the other half of the evaluation problem. FactTrace and CalibCheck ask whether a
-            measurement is meaningful; this asks whether the test itself survives someone actively
-            trying to break it.
-          </p>
-          <div class="stack">
-            <span>Adversarial data</span><span>Multimodal</span><span>Multilingual</span><span>Benchmark design</span>
-          </div>
-        </div>
-      </article>
       <!-- recognition -->
       <div class="honors rv">
         <span class="honor">
@@ -784,7 +802,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             <span>nigamaviral21@gmail.com</span>
           </button>
-          <a class="btn" href="Aviral_Nigam_.pdf" download>Download CV</a>
+          <a class="btn" href="Aviral_Nigam_CurriculumVitae.pdf" download>Download CV</a>
           <a class="btn" href="https://github.com/Aviral0gHub" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
       </div>
@@ -1200,7 +1218,3 @@ motionQ.addEventListener('change', function(e){ reduce = e.matches; });
 </script>
 </body>
 </html>
- 
-
-
-Downloaded index_3.html Show in Explorer

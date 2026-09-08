@@ -1,29 +1,26 @@
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Aviral Nigam — AI Safety &amp; Trustworthy ML</title>
 <meta name="description" content="Aviral Nigam works on AI safety and trustworthy ML through empirical LLM evaluation: chain-of-thought faithfulness, confidence calibration, and adversarial benchmark construction. Data Science &amp; Engineering undergraduate at Manipal Institute of Technology.">
 <meta name="author" content="Aviral Nigam">
 <meta name="theme-color" content="#0b0e0f">
 <link rel="canonical" href="https://aviral0ghub.github.io/">
-
 <meta property="og:type" content="website">
 <meta property="og:title" content="Aviral Nigam — AI Safety &amp; Trustworthy ML">
 <meta property="og:description" content="AI safety through empirical LLM evaluation — faithfulness, calibration, benchmark validity.">
 <meta property="og:url" content="https://aviral0ghub.github.io/">
 <meta name="twitter:card" content="summary_large_image">
-
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0e0f'/%3E%3Cpath d='M6 22 L14 22' stroke='%23f0b64a' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M6 11 L26 11' stroke='%235eead4' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <script>document.documentElement.classList.replace('no-js','js')</script>
-
 <style>
 /* ============================================================
    TOKENS
@@ -37,41 +34,32 @@
    ============================================================ */
 :root{
   color-scheme: dark;
-
   --surface-0:#0b0e0f;
   --surface-1:#111618;
   --surface-2:#161d1f;
   --surface-3:#1d2528;
-
   --ink-0:#eef2f0;
   --ink-1:#a6b3ad;
   --ink-2:#6e7b75;
-
   --rule:rgba(255,255,255,.075);
   --rule-2:rgba(255,255,255,.14);
-
   /* UI accents — text, strokes, hairlines */
   --mint:#5eead4;
   --amber:#f0b64a;
   --red:#ff8f7a;
   --violet:#b3a6f5;
-
   /* Validated chart fills */
   --viz-mint:#1ea88c;
   --viz-amber:#b58712;
   --viz-red:#cd4a52;
-
   --grid:rgba(255,255,255,.055);
   --axis:rgba(255,255,255,.16);
-
   --ff-display:'Instrument Serif',Georgia,serif;
   --ff-body:'Inter',system-ui,-apple-system,sans-serif;
   --ff-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-
   --ease:cubic-bezier(.22,1,.36,1);
   --maxw:1120px;
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:90px;-webkit-text-size-adjust:100%}
 body{
@@ -84,7 +72,6 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
-
 /* graph-paper plane, extremely quiet */
 body::before{
   content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
@@ -100,25 +87,19 @@ body::after{
     radial-gradient(720px 420px at 12% -5%,rgba(94,234,212,.075),transparent 70%),
     radial-gradient(560px 380px at 92% 8%,rgba(240,182,74,.05),transparent 70%);
 }
-
 a{color:inherit}
 ::selection{background:rgba(94,234,212,.25)}
-
 .skip{position:absolute;left:1rem;top:-5rem;z-index:300;background:var(--mint);color:#06211c;
   padding:.65rem 1.1rem;border-radius:6px;font:500 .8rem/1 var(--ff-mono);text-decoration:none;transition:top .18s}
 .skip:focus{top:1rem}
-
 :where(a,button,summary,[tabindex]):focus-visible{
   outline:2px solid var(--mint);outline-offset:3px;border-radius:4px
 }
-
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1.15rem,4vw,2.5rem)}
-
 /* ---------- reveal ---------- */
 .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .rv.in{opacity:1;transform:none}
 .no-js .rv{opacity:1;transform:none}
-
 /* ============================================================ NAV */
 .top{
   position:sticky;top:0;z-index:100;
@@ -141,6 +122,18 @@ a{color:inherit}
 .topnav a:hover{color:var(--ink-0)}
 .topnav a:hover::after,.topnav a[aria-current="true"]::after{right:0}
 .topnav a[aria-current="true"]{color:var(--mint)}
+.top-actions{display:flex;align-items:center;gap:.5rem;flex:none}
+/* résumé button lives in the sticky bar — the one thing a reader
+   most often wants and shouldn't have to scroll for */
+.cv-btn{
+  display:inline-flex;align-items:center;gap:.45rem;text-decoration:none;
+  font-family:var(--ff-mono);font-size:.7rem;letter-spacing:.05em;
+  border:1px solid rgba(94,234,212,.4);background:rgba(94,234,212,.09);color:var(--mint);
+  border-radius:6px;padding:.4rem .7rem;white-space:nowrap;
+  transition:background .25s,border-color .25s,transform .18s var(--ease)
+}
+.cv-btn:hover{background:rgba(94,234,212,.17);border-color:var(--mint);transform:translateY(-1px)}
+.cv-btn svg{width:13px;height:13px;flex:none}
 .kbd-hint{
   display:flex;align-items:center;gap:.4rem;background:none;border:1px solid var(--rule);
   color:var(--ink-2);border-radius:6px;padding:.3rem .55rem;cursor:pointer;
@@ -148,7 +141,6 @@ a{color:inherit}
 }
 .kbd-hint:hover{border-color:var(--rule-2);color:var(--ink-1)}
 .kbd-hint kbd{font:inherit;background:var(--surface-3);border-radius:3px;padding:.05rem .3rem}
-
 /* ============================================================ RAIL */
 .rail{
   position:fixed;left:max(1.1rem,calc((100vw - var(--maxw))/2 - 68px));top:50%;
@@ -163,7 +155,6 @@ a{color:inherit}
 .rail a i{width:14px;height:1px;background:currentColor;display:block;transition:width .3s var(--ease)}
 .rail a:hover,.rail a[aria-current="true"]{opacity:1;color:var(--mint)}
 .rail a[aria-current="true"] i{width:30px}
-
 /* ============================================================ SECTION SHELL */
 .sec{padding:clamp(4rem,9vw,7.5rem) 0;position:relative}
 .sec + .sec{border-top:1px solid var(--rule)}
@@ -171,19 +162,16 @@ a{color:inherit}
 .sec-num{font-family:var(--ff-mono);font-size:.7rem;color:var(--mint);letter-spacing:.1em;flex:none}
 .sec-title{font-family:var(--ff-mono);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-1);font-weight:500}
 .sec-rule{flex:1;height:1px;background:var(--rule)}
-
 /* ============================================================ HERO */
 .hero{padding-top:clamp(3rem,7vw,5.5rem);padding-bottom:clamp(3.5rem,7vw,6rem)}
 .hero-grid{display:grid;grid-template-columns:1fr;gap:clamp(2.5rem,5vw,4rem)}
 @media(min-width:980px){.hero-grid{grid-template-columns:1.05fr .95fr;align-items:center}}
-
 .eyebrow{
   display:inline-flex;align-items:center;gap:.55rem;font-family:var(--ff-mono);font-size:.7rem;
   letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);margin-bottom:1.5rem
 }
 .eyebrow .pip{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 3px rgba(94,234,212,.14);animation:breathe 3.2s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.35}}
-
 h1{
   font-family:var(--ff-display);font-weight:400;
   font-size:clamp(2.7rem,6.2vw,4.6rem);line-height:1.02;letter-spacing:-.015em;
@@ -192,7 +180,6 @@ h1{
 h1 em{font-style:italic;color:var(--mint)}
 .lede{font-size:clamp(1rem,1.5vw,1.13rem);color:var(--ink-1);max-width:34em;line-height:1.75}
 .lede strong{color:var(--ink-0);font-weight:500}
-
 .cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2.2rem}
 .btn{
   display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;cursor:pointer;
@@ -205,14 +192,12 @@ h1 em{font-style:italic;color:var(--mint)}
 .btn.solid{background:var(--mint);color:#062420;border-color:var(--mint);font-weight:500}
 .btn.solid:hover{background:#7ff2de;border-color:#7ff2de;color:#062420}
 .btn svg{width:14px;height:14px;flex:none}
-
 .meta-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.8rem}
 .chip{
   font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.04em;color:var(--ink-1);
   border:1px solid var(--rule);background:var(--surface-1);border-radius:20px;padding:.35rem .75rem
 }
 .chip b{color:var(--ink-0);font-weight:500}
-
 /* ============================================================ FIGURE */
 figure{
   background:var(--surface-1);border:1px solid var(--rule);border-radius:12px;
@@ -226,11 +211,9 @@ figure::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;
 .fig-sub{font-family:var(--ff-mono);font-size:.68rem;color:var(--ink-2);line-height:1.5}
 figcaption{font-size:.78rem;color:var(--ink-2);margin-top:.9rem;line-height:1.6;border-top:1px solid var(--rule);padding-top:.8rem}
 figcaption b{color:var(--ink-1);font-weight:500}
-
 .legend{display:flex;flex-wrap:wrap;gap:.9rem;margin:.9rem 0 .2rem}
 .legend span{display:inline-flex;align-items:center;gap:.42rem;font-family:var(--ff-mono);font-size:.68rem;color:var(--ink-1)}
 .legend i{width:9px;height:9px;border-radius:50%;display:block;flex:none}
-
 .viz{width:100%;display:block;overflow:visible;font-family:var(--ff-mono)}
 .viz text{font-family:var(--ff-mono);fill:var(--ink-2);font-size:11px}
 .viz .val{fill:var(--ink-0);font-size:12.5px;font-weight:500}
@@ -238,7 +221,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 .viz .gridline{stroke:var(--grid);stroke-width:1}
 .viz .connector{stroke:var(--rule-2);stroke-width:2;stroke-linecap:round}
 .viz .hit{fill:transparent;cursor:crosshair}
-
 .tip{
   position:fixed;z-index:200;pointer-events:none;opacity:0;transform:translateY(4px);
   background:var(--surface-3);border:1px solid var(--rule-2);border-radius:7px;
@@ -247,7 +229,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 }
 .tip.on{opacity:1;transform:none}
 .tip .k{color:var(--ink-2)}
-
 .tbl-toggle{
   align-self:flex-start;margin-top:.85rem;background:none;border:1px solid var(--rule);color:var(--ink-2);
   border-radius:6px;padding:.3rem .6rem;font-family:var(--ff-mono);font-size:.66rem;cursor:pointer;
@@ -260,7 +241,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 .data-table th:first-child,.data-table td:first-child{text-align:left}
 .data-table thead th{color:var(--ink-2);font-weight:400;letter-spacing:.06em;text-transform:uppercase;font-size:.64rem}
 .data-table td{color:var(--ink-0)}
-
 /* ============================================================ STAT TILES */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);
   border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:1.4rem}
@@ -269,7 +249,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
   font-variant-numeric:tabular-nums;line-height:1.1}
 .tile .v.mint{color:var(--mint)} .tile .v.amber{color:var(--amber)} .tile .v.red{color:var(--red)}
 .tile .k{font-family:var(--ff-mono);font-size:.66rem;color:var(--ink-2);letter-spacing:.06em;margin-top:.4rem;line-height:1.5}
-
 /* ============================================================ PILLARS */
 .pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem}
 .pillar{border:1px solid var(--rule);border-radius:11px;padding:1.5rem 1.5rem 1.6rem;background:var(--surface-1);
@@ -281,7 +260,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 .pillar .tie{margin-top:.9rem;font-family:var(--ff-mono);font-size:.66rem;color:var(--ink-2);
   border-top:1px solid var(--rule);padding-top:.7rem}
 .pillar .tie b{color:var(--mint);font-weight:500}
-
 /* ============================================================ WORK */
 .work{display:flex;flex-direction:column;gap:clamp(2rem,4vw,3rem)}
 .entry{border:1px solid var(--rule);border-radius:14px;background:var(--surface-1);overflow:hidden;
@@ -306,7 +284,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 }
 .iconlink:hover{border-color:var(--mint);color:var(--mint);background:rgba(94,234,212,.06)}
 .iconlink svg{width:13px;height:13px}
-
 .split{display:grid;grid-template-columns:1fr;gap:1.4rem;margin-top:1.6rem}
 @media(min-width:900px){.split.two{grid-template-columns:1fr 1fr;align-items:stretch}}
 .split.two > figure{display:flex;flex-direction:column}
@@ -314,7 +291,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 .split.two > figure > .viz{margin-top:auto}
 .split.two > figure > figcaption{margin-top:auto}
 .split.two > figure > .tbl-toggle{align-self:flex-start}
-
 /* ---------- FactTrace runner ---------- */
 .runner{border:1px solid var(--rule);border-radius:11px;background:var(--surface-0);overflow:hidden}
 .runner-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
@@ -350,19 +326,12 @@ figcaption b{color:var(--ink-1);font-weight:500}
 .trace li[data-v="contradicted"].done{background:rgba(205,74,82,.055)}
 .runner-foot{padding:.6rem .9rem;font-family:var(--ff-mono);font-size:.64rem;color:var(--ink-2);
   border-top:1px solid var(--rule);background:var(--surface-2);line-height:1.6}
-
 /* ---------- Honors ---------- */
-.honors{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.3rem}
+.honors{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.2rem}
 .honor{display:inline-flex;align-items:center;gap:.55rem;border:1px solid rgba(179,166,245,.28);
   background:rgba(179,166,245,.07);border-radius:8px;padding:.5rem .8rem;
   font-family:var(--ff-mono);font-size:.7rem;color:#ded7ff}
 .honor svg{width:13px;height:13px;flex:none;color:var(--violet)}
-
-/* ---------- thumbnail ---------- */
-.thumb{border:1px solid var(--rule);border-radius:9px;overflow:hidden;margin-top:1.4rem;max-width:300px}
-.thumb img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;filter:grayscale(30%) brightness(.82)}
-.thumb figcaption{padding:.55rem .7rem;margin:0;border:0;font-family:var(--ff-mono);font-size:.63rem;color:var(--ink-2)}
-
 /* ============================================================ SKILLS */
 .skillset{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.6rem}
 .skillgrp h3{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;
@@ -373,7 +342,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
 .skillgrp li:hover{border-color:var(--rule-2);color:var(--ink-0)}
 .skillgrp.primary li{color:#cfe9e2;border-color:rgba(94,234,212,.22)}
 .skillgrp.primary li:hover{border-color:var(--mint);color:var(--mint)}
-
 /* ============================================================ CONTACT */
 .contact-grid{display:grid;grid-template-columns:1fr;gap:2rem}
 @media(min-width:820px){.contact-grid{grid-template-columns:1.1fr .9fr;align-items:start}}
@@ -385,7 +353,6 @@ figcaption b{color:var(--ink-1);font-weight:500}
   transition:border-color .25s,color .25s}
 .copy-btn:hover{border-color:var(--mint);color:var(--mint)}
 .copy-btn.ok{border-color:var(--mint);color:var(--mint)}
-
 /* ============================================================ FOOTER */
 footer{border-top:1px solid var(--rule);padding:2.5rem 0 3.2rem}
 footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1.2rem;flex-wrap:wrap}
@@ -393,7 +360,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 .foot-links{display:flex;gap:1.1rem}
 .foot-links a{font-family:var(--ff-mono);font-size:.7rem;color:var(--ink-2);text-decoration:none;transition:color .25s}
 .foot-links a:hover{color:var(--mint)}
-
 /* ============================================================ COMMAND PALETTE */
 .cmdk{position:fixed;inset:0;z-index:250;display:none;align-items:flex-start;justify-content:center;
   padding:12vh 1rem 1rem;background:rgba(4,7,8,.72);backdrop-filter:blur(6px)}
@@ -410,7 +376,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 .cmdk li a .tag{margin-left:auto;font-size:.63rem;color:var(--ink-2)}
 .cmdk-foot{padding:.55rem 1.1rem;border-top:1px solid var(--rule);font-family:var(--ff-mono);
   font-size:.63rem;color:var(--ink-2);display:flex;gap:1rem;flex-wrap:wrap}
-
 /* ============================================================ RESPONSIVE / MOTION */
 /* NOTE: keep the space before each <br class="brk"> — when the break is
    hidden the space is what stops "sound" and "certain." welding together. */
@@ -419,7 +384,12 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   .topnav{display:none}
   .brand .r{display:none}          /* tagline wrapped to 2 lines inside the 64px bar */
   .brand{white-space:nowrap}
+  .kbd-hint{display:none}          /* ⌘K is meaningless on touch — keep the CV button instead */
   h1{font-size:clamp(2.2rem,9vw,3rem)}
+}
+@media(max-width:400px){
+  .cv-btn span{display:none}       /* icon-only at the very narrow end */
+  .cv-btn{padding:.4rem .55rem}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -427,7 +397,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   .rv{opacity:1!important;transform:none!important}
 }
 @media print{
-  .top,.rail,.cmdk,.tip,.runner,.thumb,.cta,.copyrow{display:none!important}
+  .top,.rail,.cmdk,.tip,.runner,.cta,.copyrow{display:none!important}
   body{background:#fff;color:#000}
   body::before,body::after{display:none}
   .entry,figure,.pillar{border-color:#ccc;background:#fff}
@@ -437,15 +407,12 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-
 <nav class="rail" aria-label="Section progress">
   <a href="#approach"><i></i>APPROACH</a>
   <a href="#work"><i></i>WORK</a>
   <a href="#methods"><i></i>METHODS</a>
-  <a href="#experience"><i></i>EXPERIENCE</a>
   <a href="#contact"><i></i>CONTACT</a>
 </nav>
-
 <header class="top" id="top">
   <div class="wrap">
     <a href="#top" class="brand"><span class="n">AVIRAL NIGAM</span><span class="r">— AI safety &amp; trustworthy ML</span></a>
@@ -453,17 +420,20 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <li><a href="#approach">Approach</a></li>
       <li><a href="#work">Work</a></li>
       <li><a href="#methods">Methods</a></li>
-      <li><a href="#experience">Experience</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <button class="kbd-hint" id="cmdk-open" aria-label="Open command palette">
-      <span>Jump</span><kbd>⌘K</kbd>
-    </button>
+    <div class="top-actions">
+      <a class="cv-btn" href="Aviral_Nigam_CV.pdf" download aria-label="Download CV as PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>CV</span>
+      </a>
+      <button class="kbd-hint" id="cmdk-open" aria-label="Open command palette">
+        <span>Jump</span><kbd>⌘K</kbd>
+      </button>
+    </div>
   </div>
 </header>
-
 <main id="main">
-
 <!-- ============================ HERO ============================ -->
 <section class="sec hero">
   <div class="wrap">
@@ -483,7 +453,11 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           Open to research internships and fellowships.
         </p>
         <div class="cta">
-          <a class="btn solid" href="mailto:nigamaviral21@gmail.com">
+          <a class="btn solid" href="Aviral_Nigam_CV.pdf" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download CV
+          </a>
+          <a class="btn" href="mailto:nigamaviral21@gmail.com">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
             Email
           </a>
@@ -498,7 +472,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           <span class="chip"><b>BASE</b> India · remote</span>
         </div>
       </div>
-
       <!-- FIGURE 1 -->
       <figure class="rv" id="fig1">
         <div class="fig-head">
@@ -526,7 +499,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     </div>
   </div>
 </section>
-
 <!-- ============================ APPROACH ============================ -->
 <section class="sec" id="approach">
   <div class="wrap">
@@ -563,7 +535,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     </div>
   </div>
 </section>
-
 <!-- ============================ WORK ============================ -->
 <section class="sec" id="work">
   <div class="wrap">
@@ -572,9 +543,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
       <h2 class="sec-title">Selected work</h2>
       <span class="sec-rule"></span>
     </div>
-
     <div class="work">
-
       <!-- FactTrace -->
       <article class="entry rv">
         <div class="entry-body">
@@ -604,7 +573,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
             <strong>unsupported claims concentrate in later reasoning steps</strong> — the position a
             trace monitor is least likely to catch.
           </p>
-
           <div class="split two">
             <!-- interactive demo -->
             <div class="runner" id="runner">
@@ -628,7 +596,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
                 and step 05 inherits it. The answer is still correct.
               </p>
             </div>
-
             <!-- FIGURE 2 -->
             <figure id="fig2">
               <div class="fig-head">
@@ -657,14 +624,12 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
               </figcaption>
             </figure>
           </div>
-
           <div class="stack">
             <span>Python</span><span>PyTorch</span><span>Sentence-Transformers</span>
             <span>RoBERTa-large-MNLI</span><span>FAISS</span><span>HuggingFace</span>
           </div>
         </div>
       </article>
-
       <!-- CalibCheck -->
       <article class="entry rv">
         <div class="entry-body">
@@ -705,26 +670,40 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           </div>
         </div>
       </article>
-
       <!-- LTB -->
       <article class="entry rv">
         <div class="entry-body">
           <div class="entry-top">
             <div>
-              <p class="kicker">Benchmark construction · co-author · Sept 2026</p>
+              <p class="kicker">Benchmark construction · dataset author · Sept 2026</p>
               <h3>Last Translation Benchmark</h3>
             </div>
             <div class="links">
+              <a class="iconlink" href="https://arxiv.org/abs/2609.04173" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                arXiv
+              </a>
+              <a class="iconlink" href="https://huggingface.co/datasets/zouhar/last-translation-benchmark" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+                Dataset
+              </a>
               <a class="iconlink" href="https://last-translation-benchmark.vilda.net" target="_blank" rel="noopener noreferrer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Project site
+                Leaderboard
               </a>
             </div>
           </div>
           <p>
-            A multilingual, multimodal factuality benchmark for frontier models, organised by
-            Vilém Zouhar (ETH Zürich) with collaborators at JHU, CUNI, UvA and KIT. I contributed
-            <strong>adversarial multimodal examples that broke state-of-the-art performance</strong>.
+            A multilingual, multimodal benchmark for frontier models — 3,456 human-authored,
+            peer-reviewed examples across 58+ languages spanning text, image, audio and video, each
+            paired with handcrafted verification rules so future systems can be scored objectively
+            where automatic metrics have saturated. Built by contributors across ETH Zürich, Johns
+            Hopkins, MBZUAI, KIT, Amsterdam and Queen's University Belfast.
+          </p>
+          <p>
+            I am a <strong>named dataset author</strong>, listed in the paper's contribution-ordered
+            dataset-author list, and I contributed <strong>adversarial multimodal examples that broke
+            state-of-the-art performance</strong>.
           </p>
           <p>
             It's the other half of the evaluation problem. FactTrace and CalibCheck ask whether a
@@ -736,11 +715,16 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           </div>
         </div>
       </article>
-
+      <!-- recognition -->
+      <div class="honors rv">
+        <span class="honor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
+          Shortlisted · Algoverse AI Research Fellowship, Fall 2026
+        </span>
+      </div>
     </div>
   </div>
 </section>
-
 <!-- ============================ METHODS ============================ -->
 <section class="sec" id="methods">
   <div class="wrap">
@@ -780,58 +764,11 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     </div>
   </div>
 </section>
-
-<!-- ============================ EXPERIENCE ============================ -->
-<section class="sec" id="experience">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="sec-num">04</span>
-      <h2 class="sec-title">Research experience</h2>
-      <span class="sec-rule"></span>
-    </div>
-    <article class="entry rv">
-      <div class="entry-body">
-        <div class="entry-top">
-          <div>
-            <p class="kicker">Robotics Research Center, IIIT Hyderabad · May – Aug 2026</p>
-            <h3>Research Intern</h3>
-          </div>
-        </div>
-        <p>
-          Advised by Dr. Sourav Garg. Researched fine-grained visual instance retrieval — building
-          neural pipelines with deep feature representations and similarity learning to isolate,
-          index, and match target object instances across large-scale imagery with high-throughput
-          vector search (FAISS), plus the preprocessing and embedding-extraction pipelines to
-          benchmark metric learning architectures against each other.
-        </p>
-        <p>
-          Different domain from the evaluation work, same underlying habit: build the pipeline,
-          then build the thing that tells you whether the pipeline is any good.
-        </p>
-        <div class="honors">
-          <span class="honor">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
-            Shortlisted · Algoverse AI Research Fellowship, Fall 2026
-          </span>
-        </div>
-        <!-- One photo from the internship. Swap the filename or delete the <figure> block. -->
-        <figure class="thumb">
-          <img src="20260521_115503.jpg" alt="Workstation at the Robotics Research Center, IIIT Hyderabad" loading="lazy" decoding="async" width="300" height="225">
-          <figcaption>RRC, IIIT Hyderabad — summer 2026</figcaption>
-        </figure>
-        <div class="stack">
-          <span>PyTorch</span><span>FAISS</span><span>Metric learning</span><span>Instance retrieval</span><span>OpenCV</span>
-        </div>
-      </div>
-    </article>
-  </div>
-</section>
-
 <!-- ============================ CONTACT ============================ -->
 <section class="sec" id="contact">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="sec-num">05</span>
+      <span class="sec-num">04</span>
       <h2 class="sec-title">Contact</h2>
       <span class="sec-rule"></span>
     </div>
@@ -847,6 +784,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             <span>nigamaviral21@gmail.com</span>
           </button>
+          <a class="btn" href="Aviral_Nigam_CV.pdf" download>Download CV</a>
           <a class="btn" href="https://github.com/Aviral0gHub" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
       </div>
@@ -856,6 +794,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
           <ul>
             <li><a href="https://github.com/Aviral0gHub" target="_blank" rel="noopener noreferrer" style="text-decoration:none">GitHub ↗</a></li>
             <li><a href="https://www.linkedin.com/in/aviral-nigam-a0b469271/" target="_blank" rel="noopener noreferrer" style="text-decoration:none">LinkedIn ↗</a></li>
+            <li><a href="https://arxiv.org/abs/2609.04173" target="_blank" rel="noopener noreferrer" style="text-decoration:none">arXiv ↗</a></li>
             <li><a href="mailto:nigamaviral21@gmail.com" style="text-decoration:none">Email ↗</a></li>
           </ul>
         </div>
@@ -863,20 +802,17 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     </div>
   </div>
 </section>
-
 </main>
-
 <footer>
   <div class="wrap">
     <p class="foot-meta">© <span id="yr">2026</span> Aviral Nigam · Manipal Institute of Technology<br>Built as a static page. No trackers.</p>
     <div class="foot-links">
+      <a href="Aviral_Nigam_CV.pdf" download>CV ↓</a>
       <a href="#top">Back to top ↑</a>
     </div>
   </div>
 </footer>
-
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
-
 <!-- command palette -->
 <div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Jump to section">
   <div class="cmdk-box">
@@ -885,16 +821,12 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
     <div class="cmdk-foot"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span></div>
   </div>
 </div>
-
 <script>
 (function(){
 'use strict';
-
 var motionQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 var reduce  = motionQ.matches;
-
 document.getElementById('yr').textContent = new Date().getFullYear();
-
 /* =========================================================
    DATA — every number here is a measured result.
    Change these and the charts redraw; nothing is hardcoded
@@ -910,7 +842,6 @@ var GAP = {
     { key:'actual', name:'Measured accuracy', fill:'var(--viz-mint)'  }
   ]
 };
-
 var VERDICT = {
   total: 65,
   parts: [
@@ -919,7 +850,6 @@ var VERDICT = {
     { name:'Unverifiable', n:5,  fill:'var(--viz-amber)' }
   ]
 };
-
 /* ========================= tooltip ========================= */
 var tip = document.getElementById('tip');
 function showTip(html, x, y){
@@ -933,7 +863,6 @@ function showTip(html, x, y){
   tip.style.top  = top + 'px';
 }
 function hideTip(){ tip.classList.remove('on'); }
-
 /* ========================= Fig 1 — gap / dumbbell ========================= */
 var NS = 'http://www.w3.org/2000/svg';
 function el(n, attrs){
@@ -941,21 +870,17 @@ function el(n, attrs){
   for (var k in attrs) e.setAttribute(k, attrs[k]);
   return e;
 }
-
 function drawGap(){
   var svg = document.getElementById('viz-gap');
   if (!svg) return;
   svg.textContent = '';
-
   var W = svg.clientWidth || svg.parentNode.clientWidth || 420;
   var padL = 62, padR = 34, padT = 26, padB = 30;
   var rowH = 78;
   var H = padT + GAP.rows.length * rowH + padB;
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   svg.setAttribute('height', H);
-
   var x = function(v){ return padL + (v/100) * (W - padL - padR); };
-
   // gridlines + ticks (recessive)
   [0,25,50,75,100].forEach(function(t){
     svg.appendChild(el('line',{class:'gridline', x1:x(t), x2:x(t), y1:padT-6, y2:H-padB+4}));
@@ -964,26 +889,21 @@ function drawGap(){
     svg.appendChild(lbl);
   });
   svg.appendChild(el('line',{class:'axis-line', x1:padL, x2:W-padR, y1:H-padB+2, y2:H-padB+2}));
-
   GAP.rows.forEach(function(row, i){
     var cy = padT + i*rowH + rowH/2 - 6;
     var xs = x(row.stated), xa = x(row.actual);
-
     // row label
     var lab = el('text',{x:0, y:cy - 26, 'text-anchor':'start'});
     lab.textContent = row.label.toUpperCase() + ' · ' + row.note;
     svg.appendChild(lab);
-
     // connector = the gap itself
     var conn = el('line',{class:'connector', x1:xa, x2:xa, y1:cy, y2:cy});
     svg.appendChild(conn);
-
     // gap label
     var gapv = Math.abs(row.stated - row.actual).toFixed(1);
     var gtxt = el('text',{class:'val', x:(xa+xs)/2, y:cy - 12, 'text-anchor':'middle', opacity:0});
     gtxt.textContent = gapv + ' pt gap';
     svg.appendChild(gtxt);
-
     // end dots (≥8px) with a 2px surface ring so overlaps stay legible
     function dot(xv, fill, key, name){
       var ring = el('circle',{cx:xv, cy:cy, r:9, fill:'var(--surface-1)'});
@@ -999,14 +919,12 @@ function drawGap(){
     }
     var dActual = dot(xa, 'var(--viz-mint)',  'actual', 'Measured accuracy');
     var dStated = dot(xs, 'var(--viz-amber)', 'stated', 'Stated confidence');
-
     // direct labels on both ends (identity is never color-alone)
     var la = el('text',{class:'val', x:xa, y:cy + 26, 'text-anchor':'middle'});
     la.textContent = row.actual.toFixed(0) + '% correct';
     var ls = el('text',{class:'val', x:xs, y:cy + 26, 'text-anchor':'middle'});
     ls.textContent = row.stated.toFixed(1) + '% claimed';
     svg.appendChild(la); svg.appendChild(ls);
-
     // animate the gap opening
     if (reduce){
       conn.setAttribute('x2', xs); gtxt.setAttribute('opacity', 1);
@@ -1032,30 +950,25 @@ function drawGap(){
       requestAnimationFrame(step);
     }
   });
-
   // legend
   var lg = document.getElementById('fig1-legend');
   lg.innerHTML = GAP.series.map(function(s){
     return '<span><i style="background:'+s.fill+'"></i>'+s.name+'</span>';
   }).join('');
 }
-
 /* ========================= Fig 2 — verdict composition ========================= */
 function drawVerdict(){
   var svg = document.getElementById('viz-verdict');
   if (!svg) return;
   svg.textContent = '';
-
   var W = svg.clientWidth || svg.parentNode.clientWidth || 380;
   var padL = 0, padR = 0, padT = 8, barH = 34, gap = 2;
   var H = padT + barH + 46;
   svg.setAttribute('viewBox','0 0 '+W+' '+H);
   svg.setAttribute('height', H);
-
   var inner = W - padL - padR;
   var totalGaps = gap * (VERDICT.parts.length - 1);
   var scale = (inner - totalGaps) / VERDICT.total;
-
   // clip the whole bar so only the outer ends are rounded — rx on each rect
   // would round the inner corners too and read as three detached pills
   var cid = 'clip-verdict';
@@ -1065,13 +978,11 @@ function drawVerdict(){
   defs.appendChild(cp); svg.appendChild(defs);
   var bars = el('g',{'clip-path':'url(#'+cid+')'});
   svg.appendChild(bars);
-
   var cx = padL;
   VERDICT.parts.forEach(function(p, i){
     var w = p.n * scale;
     var r = el('rect',{ x:cx, y:padT, width:0, height:barH, fill:p.fill });
     bars.appendChild(r);
-
     var pct = (p.n / VERDICT.total * 100);
     var hit = el('rect',{class:'hit', x:cx, y:padT-6, width:w, height:barH+12});
     (function(px, pn, ppct, pname){
@@ -1081,7 +992,6 @@ function drawVerdict(){
     })(cx, p.n, pct, p.name);
     hit.addEventListener('mouseleave', hideTip);
     svg.appendChild(hit);
-
     // every segment gets its count; the name only where it fits
     var t1 = el('text',{class:'val', x:cx + w/2, y:padT+barH+20, 'text-anchor':'middle'});
     t1.textContent = p.n;
@@ -1091,7 +1001,6 @@ function drawVerdict(){
       t2.textContent = p.name.toLowerCase();
       svg.appendChild(t2);
     }
-
     if (reduce){ r.setAttribute('width', w); }
     else {
       var t0=null, dur=800, delay=i*110;
@@ -1105,13 +1014,11 @@ function drawVerdict(){
     }
     cx += w + gap;
   });
-
   var lg = document.getElementById('fig2-legend');
   lg.innerHTML = VERDICT.parts.map(function(p){
     return '<span><i style="background:'+p.fill+'"></i>'+p.name+'</span>';
   }).join('');
 }
-
 /* draw when visible, redraw on resize */
 var drawn = {};
 function drawIfNeeded(id, fn){ if(!drawn[id]){ drawn[id]=true; fn(); } }
@@ -1126,13 +1033,11 @@ if ('IntersectionObserver' in window){
   },{threshold:.25});
   ['fig1','fig2'].forEach(function(id){ var n=document.getElementById(id); if(n) vizObs.observe(n); });
 } else { drawGap(); drawVerdict(); }
-
 var rt;
 window.addEventListener('resize', function(){
   clearTimeout(rt);
   rt = setTimeout(function(){ if(drawn.fig1) drawGap(); if(drawn.fig2) drawVerdict(); }, 160);
 });
-
 /* ========================= table toggles ========================= */
 document.querySelectorAll('.tbl-toggle').forEach(function(btn){
   btn.addEventListener('click', function(){
@@ -1143,7 +1048,6 @@ document.querySelectorAll('.tbl-toggle').forEach(function(btn){
     btn.textContent = open ? 'Hide data table' : 'Show data table';
   });
 });
-
 /* ========================= FactTrace runner ========================= */
 var runBtn = document.getElementById('run-btn');
 var traceEl = document.getElementById('trace');
@@ -1188,7 +1092,6 @@ if (runBtn && traceEl){
     ro.observe(traceEl);
   }
 }
-
 /* ========================= reveal ========================= */
 var rvs = document.querySelectorAll('.rv');
 if ('IntersectionObserver' in window && !reduce){
@@ -1202,14 +1105,12 @@ if ('IntersectionObserver' in window && !reduce){
 } else {
   rvs.forEach(function(n){ n.classList.add('in'); });
 }
-
 /* ========================= nav state ========================= */
 var top = document.querySelector('.top');
 var onScroll = function(){ top.classList.toggle('stuck', window.scrollY > 8); };
 window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
-
 var marks = Array.prototype.slice.call(document.querySelectorAll('.topnav a, .rail a'));
-var ids = ['approach','work','methods','experience','contact'];
+var ids = ['approach','work','methods','contact'];
 if ('IntersectionObserver' in window){
   var sObs = new IntersectionObserver(function(es){
     es.forEach(function(e){
@@ -1221,7 +1122,6 @@ if ('IntersectionObserver' in window){
   },{rootMargin:'-45% 0px -50% 0px'});
   ids.forEach(function(id){ var n=document.getElementById(id); if(n) sObs.observe(n); });
 }
-
 /* ========================= copy email ========================= */
 var copyBtn = document.getElementById('copy-email');
 if (copyBtn){
@@ -1237,26 +1137,25 @@ if (copyBtn){
     } else { window.location.href = 'mailto:'+addr; }
   });
 }
-
 /* ========================= command palette ========================= */
 var CMDS = [
+  {label:'Download CV', href:'Aviral_Nigam_CV.pdf', tag:'file'},
   {label:'Approach',  href:'#approach',   tag:'section'},
   {label:'Work',      href:'#work',       tag:'section'},
   {label:'FactTrace', href:'#work',       tag:'project'},
   {label:'CalibCheck',href:'#work',       tag:'project'},
   {label:'Last Translation Benchmark', href:'#work', tag:'project'},
   {label:'Methods & tooling',   href:'#methods',    tag:'section'},
-  {label:'Research experience', href:'#experience', tag:'section'},
   {label:'Contact',   href:'#contact',    tag:'section'},
   {label:'GitHub',    href:'https://github.com/Aviral0gHub', tag:'link', ext:true},
   {label:'LinkedIn',  href:'https://www.linkedin.com/in/aviral-nigam-a0b469271/', tag:'link', ext:true},
+  {label:'arXiv',     href:'https://arxiv.org/abs/2609.04173', tag:'link', ext:true},
   {label:'Email',     href:'mailto:nigamaviral21@gmail.com', tag:'link', ext:true}
 ];
 var cmdk = document.getElementById('cmdk');
 var cmdkIn = document.getElementById('cmdk-input');
 var cmdkList = document.getElementById('cmdk-list');
 var sel = 0, filtered = CMDS.slice(), lastFocus = null;
-
 function renderCmd(){
   cmdkList.innerHTML = filtered.map(function(c,i){
     return '<li class="'+(i===sel?'sel':'')+'"><a href="'+c.href+'"'+(c.ext?' target="_blank" rel="noopener noreferrer"':'')+'>'+
@@ -1295,11 +1194,13 @@ document.addEventListener('keydown', function(e){
   else if (e.key === 'Tab'){ e.preventDefault(); cmdkIn.focus(); }
 });
 cmdkList.addEventListener('click', function(){ closeCmd(); });
-
 /* respect a mid-session motion-preference change */
 motionQ.addEventListener('change', function(e){ reduce = e.matches; });
-
 })();
 </script>
 </body>
 </html>
+ 
+
+
+Downloaded index_3.html Show in Explorer

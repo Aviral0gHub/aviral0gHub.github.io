@@ -401,6 +401,12 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
   .kbd-hint{display:none}          /* ⌘K is meaningless on touch — keep the CV button instead */
   h1{font-size:clamp(2.2rem,9vw,3rem)}
 }
+@media(max-width:430px){
+  /* three link buttons on the LTB entry exceed a 320px viewport and get
+     clipped by body{overflow-x:hidden} — give the row its own line */
+  .entry-top{flex-direction:column;align-items:stretch}
+  .links{flex:1 1 100%;width:100%}
+}
 @media(max-width:400px){
   .cv-btn span{display:none}       /* icon-only at the very narrow end */
   .cv-btn{padding:.4rem .55rem}
@@ -893,7 +899,10 @@ function drawGap(){
   if (!svg) return;
   svg.textContent = '';
   var W = svg.clientWidth || svg.parentNode.clientWidth || 420;
-  var padL = 62, padR = 34, padT = 26, padB = 30;
+  // narrow phones: the two end labels collide on one baseline, so shorten
+  // them and drop the second onto its own row
+  var narrow = W < 400;
+  var padL = narrow ? 26 : 62, padR = narrow ? 20 : 34, padT = 26, padB = narrow ? 48 : 30;
   var rowH = 78;
   var H = padT + GAP.rows.length * rowH + padB;
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
@@ -939,9 +948,9 @@ function drawGap(){
     var dStated = dot(xs, 'var(--viz-amber)', 'stated', 'Stated confidence');
     // direct labels on both ends (identity is never color-alone)
     var la = el('text',{class:'val', x:xa, y:cy + 26, 'text-anchor':'middle'});
-    la.textContent = row.actual.toFixed(0) + '% correct';
-    var ls = el('text',{class:'val', x:xs, y:cy + 26, 'text-anchor':'middle'});
-    ls.textContent = row.stated.toFixed(1) + '% claimed';
+    la.textContent = narrow ? row.actual.toFixed(0) + '%' : row.actual.toFixed(0) + '% correct';
+    var ls = el('text',{class:'val', x:xs, y:cy + (narrow ? 44 : 26), 'text-anchor':'middle'});
+    ls.textContent = narrow ? row.stated.toFixed(1) + '%' : row.stated.toFixed(1) + '% claimed';
     svg.appendChild(la); svg.appendChild(ls);
     // animate the gap opening
     if (reduce){
@@ -1051,10 +1060,31 @@ if ('IntersectionObserver' in window){
   },{threshold:.25});
   ['fig1','fig2'].forEach(function(id){ var n=document.getElementById(id); if(n) vizObs.observe(n); });
 } else { drawGap(); drawVerdict(); }
+/* Fallback: if IntersectionObserver never fires (restored scroll position,
+   print, in-app browsers, prerender) a figure would sit permanently blank.
+   Cheap geometry check on scroll/load; early-exits once both are drawn. */
+function vizFallback(){
+  if (drawn.fig1 && drawn.fig2) return;
+  var vh = window.innerHeight || 800;
+  [['fig1', drawGap], ['fig2', drawVerdict]].forEach(function(pair){
+    if (drawn[pair[0]]) return;
+    var n = document.getElementById(pair[0]);
+    if (!n) return;
+    var r = n.getBoundingClientRect();
+    if (r.top < vh * 1.5 && r.bottom > -vh * 0.5) drawIfNeeded(pair[0], pair[1]);
+  });
+}
+window.addEventListener('scroll', vizFallback, {passive:true});
+window.addEventListener('load', vizFallback);
+setTimeout(vizFallback, 1200);
 var rt;
 window.addEventListener('resize', function(){
   clearTimeout(rt);
-  rt = setTimeout(function(){ if(drawn.fig1) drawGap(); if(drawn.fig2) drawVerdict(); }, 160);
+  rt = setTimeout(function(){
+    if(drawn.fig1) drawGap();
+    if(drawn.fig2) drawVerdict();
+    vizFallback();
+  }, 160);
 });
 /* ========================= table toggles ========================= */
 document.querySelectorAll('.tbl-toggle').forEach(function(btn){

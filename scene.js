@@ -12,9 +12,11 @@ const material=new THREE.MeshStandardMaterial({color:0x143ccc,metalness:.45,roug
 for(let i=0;i<9;i++){const r=Math.sqrt(1-Math.pow((i-4)/5,2))*1.45;const mesh=new THREE.Mesh(new THREE.TorusGeometry(r,.055,12,100),material);mesh.rotation.x=Math.PI/2;sculpture.add(mesh);layers.push(mesh)}
 const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.5,1),new THREE.MeshStandardMaterial({color:0xf0442d,metalness:.2,roughness:.52,flatShading:true}));sculpture.add(core);
 const orbit=new THREE.Mesh(new THREE.TorusGeometry(1.76,.014,8,120),new THREE.MeshStandardMaterial({color:0x11110f,roughness:.5}));orbit.rotation.x=.3;orbit.rotation.y=.6;sculpture.add(orbit);
+const orbitMarker=new THREE.Mesh(new THREE.SphereGeometry(.075,16,12),new THREE.MeshBasicMaterial({color:0xd6ff44}));orbitMarker.position.set(1.76,0,0);orbit.add(orbitMarker);
 function positionLayers(){const s=Number(slider.value)/100;layers.forEach((m,i)=>{m.position.y=(i-4)*(.21+s*.19);m.rotation.z=(i-4)*s*.18})}positionLayers();
 function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);render()}
 function render(){renderer.render(scene,camera)}
+function sceneTheme(){const dark=document.documentElement.dataset.theme==='dark';material.color.setHex(dark?0x7895ff:0x143ccc);core.material.color.setHex(dark?0xff654f:0xf0442d);orbit.material.color.setHex(dark?0xf0eadc:0x11110f);render()}window.addEventListener('theme-change',sceneTheme);sceneTheme();
 function eligible(){return !paused&&visible&&!document.hidden&&document.getElementById('overview').classList.contains('active')}
 function tick(){frame=0;if(!eligible())return;if(!drag)sculpture.rotation.y+=.004;core.rotation.x+=.003;render();frame=requestAnimationFrame(tick)}
 function schedule(){if(frame){cancelAnimationFrame(frame);frame=0}if(eligible())frame=requestAnimationFrame(tick);else render()}

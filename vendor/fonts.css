@@ -55,3 +55,18 @@
   font-display: swap;
   src: url(fonts/font-7.ttf) format('truetype');
 }
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/fraunces-1.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/fraunces-3.ttf) format('truetype');
+}
